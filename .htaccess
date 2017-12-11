@@ -1,0 +1,22 @@
+#Order Deny,Allow
+#Deny from all
+#Allow from 192.168.1.1
+
+<IfModule mod_rewrite.c>
+RewriteEngine On
+Options -Indexes
+Options +FollowSymLinks
+
+#RewriteCond %{HTTP_HOST} !^test.com$ [nocase] 
+#RewriteRule .* - [forbidden,last] 
+
+RewriteCond %{REQUEST_URI}::$1 ^(/.+)/(.*)::\2$
+RewriteRule ^(.*) - [E=BASE:%1]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [QSA,L]
+</IfModule>
+
+<ifModule mod_expires.c>
+ExpiresActive On
+</ifModule>

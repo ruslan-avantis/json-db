@@ -98,8 +98,8 @@ $key = $config['settings']['db']['key']; // Взять key из конфигур
 $table_name = 'db';
 $id = '1';
 
-$uri = 'https://example.com/_12345_/api.php?key='.$key;
-$uri = 'https://example.com/_12345_/'.$table_name.'?key='.$key;
+// $uri = 'https://example.com/_12345_/api.php?key='.$key;
+// $uri = 'https://example.com/_12345_/'.$table_name.'?key='.$key;
 $uri = 'https://example.com/_12345_/'.$table_name.'/'.$id.'?key='.$key;
 
 $client = new \GuzzleHttp\Client();

@@ -93,7 +93,7 @@ Allow from 192.168.1.1
 ### Пример использования с HTTP клиентом Guzzle
 
 ``` php	
-$key = $config['settings']['db']['key']; // Взять key из конфигурации api.php
+$key = $config['settings']['db']['key']; // Взять key из конфигурации `https://example.com/_12345_/index.php`
 
 $table_name = 'db';
 $id = '1';

@@ -71,10 +71,19 @@
 $config['settings']['db']['access_key'] = true;
 ```
 
-Если установлен флаг `true` - тогда во всех запросах к db необходимо указывать параметр 
+Если установлен флаг `true` - тогда во всех запросах к db необходимо указывать параметр
 
 ```php
-$key = $config['settings']['db']['key'];
+$key = $config['settings']['db']['key']; // Взять key из конфигурации
+
+// https://example.com/_12345_/api.php?key='.$key.'
+// https://example.com/_12345_/table_name?key='.$key.'
+// https://example.com/_12345_/table_name/id?key='.$key.'
+
+// curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET https://example.com/_12345_/table_name?key='.$key.'
+
+// curl --request POST "https://example.com/_12345_/table_name" --data "key='.$key.'"
+
 ```
 
 При запросе без ключа API будет отдавать ответ

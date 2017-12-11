@@ -392,6 +392,7 @@
 	
 	$app->post('/{table}', function (Request $request, Response $response, array $args) {
 		
+		// В разработке
 		$table = $request->getAttribute('table');
 		$param = $request->getQueryParams();
 		$post = $request->getParsedBody();
@@ -401,6 +402,7 @@
 	
 	$app->put('/{table}[/{id}]', function (Request $request, Response $response, array $args) {
 		
+		// В разработке
 		$table = $request->getAttribute('table');
 		$param = $request->getQueryParams();
 		
@@ -408,6 +410,7 @@
 	
 	$app->delete('/{table}[/{id}]', function (Request $request, Response $response, array $args) {
 		
+		// В разработке
 		$table = $request->getAttribute('table');
 		$param = $request->getQueryParams();
 		

@@ -76,9 +76,12 @@ $config['settings']['db']['access_key'] = true;
 ```php
 $key = $config['settings']['db']['key']; // Взять key из конфигурации
 
-// https://example.com/_12345_/api.php?key='.$key.'
-// https://example.com/_12345_/table_name?key='.$key.'
-// https://example.com/_12345_/table_name/id?key='.$key.'
+$table_name = 'table_name';
+$id = 'id';
+
+$uri = 'https://example.com/_12345_/api.php?key='.$key;
+$uri = 'https://example.com/_12345_/'.$table_name.'?key='.$key;
+$uri = 'https://example.com/_12345_/'.$table_name.'/'.$id.'?key='.$key;
 
 // curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET https://example.com/_12345_/table_name?key=key
 

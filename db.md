@@ -54,11 +54,13 @@ $db->run();
 
 ### Создать таблицу в базе данных
 ```php
-jsonDb::create('table_name', array(
+$arr = array(
     'id' => 'integer',
-    'nickname' => 'string',
+    'name' => 'string',
     'название_поля' => 'тип данных'
-));
+);
+
+jsonDb::create('table_name', $arr);
 ```
 	
 ### Удалить таблицу в базе данных

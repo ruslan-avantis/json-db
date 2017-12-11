@@ -6,7 +6,7 @@
 	}
 	
 	// !!! Указываем директорию где будет храниться json db !!!
-	$_db = __DIR__ . '/../../_db_json/';
+	$_db = __DIR__ . '/../../_db_/';
 	
 	// Composer
 	require __DIR__ . '/../../vendor/autoload.php';
@@ -87,8 +87,6 @@
 	});
 	
 	$app->get('/{table}[/{id}]', function (Request $request, Response $response, array $args) {
-		
-		//	https://ru.pllano.com/db_json_api/property?offset=250&limit=5
 		
 		$table_name = $request->getAttribute('table');
 		$id = $request->getAttribute('id');
@@ -182,8 +180,6 @@
 								$resp["headers"]["message_id"] = "";
 								
 								if (isset($query["JSONPath"]) || isset($query["jsonpath"])) {
-									//	https://ru.pllano.com/db_json_api/vm_product?JSONPath="$..[?(@.id=126333)]"
-									//	https://ru.pllano.com/db_json_api/property?JSONPath="$..[?(@.id=17004)]"
 									if (isset($query["JSONPath"])) {$unit = $query["JSONPath"];	}
 									if (isset($query["jsonpath"])) {$unit = $query["jsonpath"];	}
 									$unit = str_replace('"', '', $unit);
@@ -193,17 +189,12 @@
 								}
 								
 								if (isset($query["JmesPath"]) || isset($query["jmespath"])) {
-									//	https://ru.pllano.com/db_json_api/property?jmespath=[17004]
 									if (isset($query["JmesPath"])) {$unit = $query["JmesPath"];}
 									if (isset($query["jmespath"])) {$unit = $query["jmespath"];	}
 									$unit = str_replace('"', '', $unit);
 									$file = $this->get('settings')['db']["dir"].''.$table_name.'.data.json';
 									$data = json_decode(file_get_contents($file));
 									$resp["items"] = \JmesPath\search($unit, $data);
-									/*
-										$resp = new JmesPath\CompilerRuntime($data);
-										$resp($querty);
-									*/
 								}
 								
 								if (
@@ -231,11 +222,6 @@
 										), true)){
 											
 											if (isset($key) && isset($value)) {
-												
-												//print_r($resp);
-												//print_r(array_keys($table_config["schema"]));
-												//if (in_array($key, $table_config["schema"])) {}
-												
 												if (array_key_exists($key, $table_config["schema"])) {
 													// Убираем пробелы и одинарные кавычки
 													$key = str_replace(array(" ", "'", "%", "%27", "%20"), "", $key);

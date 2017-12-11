@@ -90,7 +90,7 @@ Deny from all
 Allow from 192.168.1.1
 ```
 
-### Пример использования с Guzzle
+### Пример использования с HTTP клиентом Guzzle
 
 ``` php	
 $key = $config['settings']['db']['key']; // Взять key из конфигурации api.php

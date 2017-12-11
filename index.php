@@ -59,7 +59,7 @@ $container = $app->getContainer();
 $container['logger'] = function ($logger) {
 $logger = new Monolog\Logger("db_json_api");
 $logger->pushProcessor(new Monolog\Processor\UidProcessor());
-$logger->pushHandler(new Monolog\Handler\StreamHandler(isset($_ENV['docker']) ? 'php://stdout' : $_db_json . 'log/_monolog/app.log', \Monolog\Logger::DEBUG));
+$logger->pushHandler(new Monolog\Handler\StreamHandler(isset($_ENV['docker']) ? 'php://stdout' : $_db . 'log/_monolog/app.log', \Monolog\Logger::DEBUG));
 return $logger;
 };
 

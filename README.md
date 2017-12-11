@@ -89,8 +89,7 @@ jsonDb::table('table_name')->find(10)->delete();
 «API json DB» имеет свой RESTfull API роутинг для cURL запросов который написан на PHP с использованием Micro Framework [Slim](https://github.com/slimphp), что позволяет использовать «API json DB» с любым другим языком программирования. Для унификации обмена данными сервер-сервер и клиент-сервер используется стандарт [APIS-2018](https://github.com/pllano/APIS-2018/). `Стандарт APIS-2018 - не является общепринятым` и является нашим взглядом в будущее и рекомендацией для унификации построения легких движков интернет-магазинов нового поколения.
 
 ### RESTfull API состоит всего из двух файлов:
-- [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php) - RESTfull API
-- [.htaccess](https://github.com/pllano/api-json-db/blob/master/api/.htaccess)
+- [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php) и [.htaccess](https://github.com/pllano/api-json-db/blob/master/api/.htaccess)
 
 Для установки `RESTful API` выполните следующие действия:
 
@@ -125,8 +124,6 @@ jsonDb::table('table_name')->find(10)->delete();
 - `{api_dir}` - папка в которой лежит 
 - `{table_name}` - название таблицы к которой обращаемся. Например price или user.
 - `{id}` - уникальный индефикатор
-
-П
 
 ### GET запрос к RESTful API jsonDB
 `?offset={offset}&limit={limit}&order={order}&sort={sort}&key={key}`

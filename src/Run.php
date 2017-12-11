@@ -113,25 +113,25 @@ class Db {
 			
 		//	Создаем основную запись в главной таблице
 		$row = jsonDb::table('db');
-		$row->type			= 'root';
-		$row->table			= 'root';
+		$row->type		= 'root';
+		$row->table		= 'root';
 		$row->version		= '1.0.1';
-		$row->time			= $date;
+		$row->time		= $date;
 		$row->user_key		= $this->randomUid();
 		$row->password		= $this->randomUid();
-		$row->temp			= $this->temp;
-		$row->api			= $this->api;
+		$row->temp		= $this->temp;
+		$row->api		= $this->api;
 		$row->cached		= $this->cached;
 		$row->cache_lifetime	= $this->cache_lifetime;
 		$row->export		= $this->export;
-		$row->size			= $this->size;
+		$row->size		= $this->size;
 		$row->max_size		= $this->max_size;
 		$row->bd_path		= $this->bd_path;
 		$row->dir_core		= $this->dir_core;
 		$row->dir_temp		= $this->dir_temp;
 		$row->dir_log		= $this->dir_log;
-		$row->dir_cached		= $this->dir_cached;
-		$row->dir_request		= $this->dir_request;
+		$row->dir_cached	= $this->dir_cached;
+		$row->dir_request	= $this->dir_request;
 		$row->save();
 			
 		//	$row->user->name = $this->api;

@@ -202,5 +202,5 @@ if ($records['headers']['code'] == '200') {
 Лицензия API json DB
 -------
 
-The MIT License (MIT). Please see [LICENSE](LICENSE.md) for more information.
+The MIT License (MIT). Please see [LICENSE](https://github.com/pllano/api-json-db/blob/master/LICENSE) for more information.
 

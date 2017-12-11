@@ -80,9 +80,9 @@ $key = $config['settings']['db']['key']; // Взять key из конфигур
 // https://example.com/_12345_/table_name?key='.$key.'
 // https://example.com/_12345_/table_name/id?key='.$key.'
 
-// curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET https://example.com/_12345_/table_name?key='.$key.'
+// curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET https://example.com/_12345_/table_name?key=key
 
-// curl --request POST "https://example.com/_12345_/table_name" --data "key='.$key.'"
+// curl --request POST "https://example.com/_12345_/table_name" --data "key=key"
 
 ```
 

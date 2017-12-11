@@ -87,6 +87,15 @@ curl --request POST "https://example.com/_12345_/table_name" --data "key=key"
 }
 ```
 
+Вы также можете ограничить доступ в /_12345_/.htaccess к API только для своих IP
+
+Добавить
+```
+Order Deny,Allow
+Deny from all
+Allow from 192.168.1.1
+```
+
 ### Пример использования с Guzzle
 
 ```

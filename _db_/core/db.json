@@ -1,0 +1,249 @@
+[
+	{
+		"table": "user",
+		"action": "create",
+		"schema": {
+			"alias": "string",
+			"site_id": "integer",
+			"login": "string",
+			"password": "string",
+			"role": "string",
+			"email": "string",
+			"phone": "string",
+			"cookie": "string",
+			"language": "string",
+			"state": "integer"
+		},
+		"relations": {
+			"user_data": {
+				"type": "hasMany",
+				"keys": {
+					"local": "id",
+					"foreign": "user_id"
+				}
+			},
+			"cart": {
+				"type": "hasMany",
+				"keys": {
+					"local": "id",
+					"foreign": "user_id"
+				}
+			}
+		}
+	},
+	{
+		"table": "user_data",
+		"action": "create",
+		"schema": {
+			"user_id": "string",
+			"alias": "string",
+			"account_type": "integer",
+			"fname": "string",
+			"iname": "string",
+			"oname": "string",
+			"rating": "integer",
+			"balans": "integer",
+			"credit_limit": "integer",
+			"payment_mode": "integer",
+			"payment_method": "integer",
+			"state_verified": "integer",
+			"user_verification": "integer",
+			"bonus_code": "string",
+			"referral_code": "string",
+			"promocode": "string",
+			"country_id": "integer",
+			"country_name": "string",
+			"city_id": "integer",
+			"city_name": "string",
+			"region_id": "integer",
+			"district": "string",
+			"district_id": "integer",
+			"prefix": "string",
+			"street": "string",
+			"street_id": "integer",
+			"build": "string",
+			"parade": "string",
+			"floor": "string",
+			"apart": "string",
+			"description": "string",
+			"email_confirmation": "string",
+			"register_newsletter": "integer",
+			"terms_and_conditions": "integer",
+			"created": "string",
+			"visited": "string",
+			"modified": "string"
+		},
+		"relations": {
+			"user": {
+				"type": "belongsTo",
+				"keys": {
+					"local": "user_id",
+					"foreign": "id"
+				}
+			},
+			"cart": {
+				"type": "hasMany",
+				"keys": {
+					"local": "id",
+					"foreign": "user_data_id"
+				}
+			}
+		}
+	},
+	{
+		"table": "cart",
+		"action": "create",
+		"schema": {
+			"user_id": "integer",
+			"user_data_id": "integer",
+			"alias": "string"
+		},
+		"relations": {
+			"user": {
+				"type": "belongsTo",
+				"keys": {
+					"local": "user_id",
+					"foreign": "id"
+				}
+			}
+		}
+	},
+	{
+		"table": "cart_product",
+		"action": "create",
+		"schema": {
+			"cart_id": "integer",
+			"user_id": "integer",
+			"product_id": "integer",
+			"alias": "string",
+			"created": "string",
+			"modified": "string"
+		},
+		"relations": {
+			"cart": {
+				"type": "belongsTo",
+				"keys": {
+					"local": "cart_id",
+					"foreign": "id"
+				}
+			},
+			"user": {
+				"type": "belongsTo",
+				"keys": {
+					"local": "user_id",
+					"foreign": "id"
+				}
+			},
+			"product": {
+				"type": "hasMany",
+				"keys": {
+					"local": "product_id",
+					"foreign": "id"
+				}
+			}
+		}
+	},
+	{
+		"table": "order",
+		"action": "create",
+		"schema": {
+			"cart_id": "integer",
+			"user_id": "integer",
+			"user_data_id": "integer",
+			"alias": "string"
+		},
+		"relations": {
+			"user": {
+				"type": "belongsTo",
+				"keys": {
+					"local": "user_id",
+					"foreign": "id"
+				}
+			},
+			"user_data": {
+				"type": "belongsTo",
+				"keys": {
+					"local": "user_data_id",
+					"foreign": "id"
+				}
+			},
+			"cart": {
+				"type": "belongsTo",
+				"keys": {
+					"local": "cart_id",
+					"foreign": "id"
+				}
+			}
+		}
+	},
+	{
+		"table": "product",
+		"action": "create",
+		"schema": {
+			"priority": "integer",
+			"brand_id": "integer",
+			"serie_id": "integer",
+			"type_id": "integer",
+			"mod_id": "integer",
+			"description_id": "integer",
+			"supplier_id": "integer",
+			"pay_online": "integer",
+			"available": "integer",
+			"state": "integer"
+		},
+		"relations": {
+			"property": {
+				"type": "hasMany",
+				"keys": {
+					"local": "id",
+					"foreign": "product_id"
+				}
+			},
+			"product_view": {
+				"type": "hasMany",
+				"keys": {
+					"local": "id",
+					"foreign": "product_id"
+				}
+			}
+		}
+	},
+	{
+		"table": "property",
+		"action": "create",
+		"schema": {
+			"product_id": "integer",
+			"property_id": "integer",
+			"individual": "integer",
+			"propertyvalue_id": "integer",
+			"state": "integer"
+		},
+		"relations": {
+			"product": {
+				"type": "belongsTo",
+				"keys": {
+					"local": "product_id",
+					"foreign": "id"
+				}
+			}
+		}
+	},
+	{
+		"table": "product_view",
+		"action": "create",
+		"schema": {
+			"product_id": "integer",
+			"browse_hits": "integer",
+			"details_hits": "integer"
+		},
+		"relations": {
+			"product": {
+				"type": "belongsTo",
+				"keys": {
+					"local": "product_id",
+					"foreign": "id"
+				}
+			}
+		}
+	}
+]

@@ -62,9 +62,9 @@
 $config['settings']['db']['access_key'] = true;
 ```
 
-Если установлен флаг `true` - тогда во всех запросах к db необходимо указывать параметр
+Если установлен флаг `true` - тогда во всех запросах к db необходимо передавать параметр `key`
 
-`curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET https://example.com/_12345_/table_name?key=key`
+`curl https://example.com/_12345_/table_name?key=key`
 
 `curl --request POST "https://example.com/_12345_/table_name" --data "key=key"`
 

@@ -51,9 +51,6 @@ $db->setTemp(true);
 $db->setApi(true);
 $db->run();
 
-// Подключаем роутер
-require __DIR__ . '/router.php';
-
 $container = $app->getContainer();
 
 $container['logger'] = function ($logger) {

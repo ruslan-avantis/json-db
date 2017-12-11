@@ -1,62 +1,71 @@
 <?php
-if (PHP_SAPI == 'cli-server') {
-  $url  = parse_url($_SERVER['REQUEST_URI']); 
-  $file = __DIR__ . $url['path']; 
-  if (is_file($file)) {return false;}
-}
-
-// Composer
-require __DIR__ . '/../../vendor/autoload.php';
-
-// !!! Указываем директорию где будет храниться json db !!!
-$_db = __DIR__ . '/../../_db_/';
-
-if (!file_exists($_db . 'core/key_db.txt')){
-$ajax_key = \Defuse\Crypto\Key::createNewRandomKey();
-$key_db = $ajax_key->saveToAsciiSafeString();
-file_put_contents($_db . 'core/key_db.txt', $key_db);
-}
-
-// Конфигурация
-$config = array();
-$config['settings']['db']['dir'] = $_db;
-$config['settings']['db']['key_cryp'] = \Defuse\Crypto\Key::loadFromAsciiSafeString(file_get_contents($_db . 'core/key_db.txt', true));
-$config['settings']['db']['key'] = file_get_contents($_db . 'core/key_db.txt', true);
-$config['settings']['db']['access_key'] = false;
-$config['settings']['displayErrorDetails'] = true;
-$config['settings']['addContentLengthHeader'] = false;
-$config['settings']['determineRouteBeforeAppMiddleware'] = true;
-$config['settings']['debug'] = true;
-
-// Подключаем Slim
-$app = new \Slim\App($config);
-
-// Запускаем json db
-$db = new \jsonDB\Db($_db);
-$db->setCached(true);
-$db->setCacheLifetime(5);
-$db->setTemp(true);
-$db->setApi(true);
-$db->run();
-
-$container = $app->getContainer();
-
-$container['logger'] = function ($logger) {
-$logger = new Monolog\Logger("db_json_api");
-$logger->pushProcessor(new Monolog\Processor\UidProcessor());
-$logger->pushHandler(new Monolog\Handler\StreamHandler(isset($_ENV['docker']) ? 'php://stdout' : $_db . 'log/_monolog/app.log', \Monolog\Logger::DEBUG));
-return $logger;
-};
-
-use Slim\Http\Request;
-use Slim\Http\Response;
+	if (PHP_SAPI == 'cli-server') {
+		$url  = parse_url($_SERVER['REQUEST_URI']);
+		$file = __DIR__ . $url['path'];
+		if (is_file($file)) {return false;}
+	}
 	
-use jsonDB\Db;
-use jsonDB\Database as jsonDb;
-use jsonDB\Validate;
-use jsonDB\dbException;
+	// !!! Указываем директорию где будет храниться json db !!!
+	$_db = __DIR__ . '/../../_db_json/';
 	
-$app->get('/', function (Request $request, Response $response, array $args) {
+	// Composer
+	require __DIR__ . '/../../vendor/autoload.php';
+	
+	use Slim\App;
+	use Slim\Http\Request;
+	use Slim\Http\Response;
+	
+	use Monolog\Logger;
+	use Monolog\Processor\UidProcessor;
+	use Monolog\Handler\StreamHandler;
+	
+	use Defuse\Crypto\Key;
+	use Flow\JSONPath\JSONPath;
+	
+	use jsonDB\Db;
+	use jsonDB\Database as jsonDb;
+	use jsonDB\Validate;
+	use jsonDB\dbException;
+	
+	// Создаем ключ доступа
+	if (!file_exists($_db . 'core/key_db.txt')){
+		$ajax_key = Key::createNewRandomKey();
+		$key_db = $ajax_key->saveToAsciiSafeString();
+		file_put_contents($_db . 'core/key_db.txt', $key_db);
+	}
+	
+	// Запускаем json db
+	$db = new Db($_db);
+	$db->setCached(true);
+	$db->setCacheLifetime(5);
+	$db->setTemp(true);
+	$db->setApi(true);
+	$db->run();
+	
+	// Конфигурация
+	$config = array();
+	$config['settings']['db']['dir'] = $_db;
+	$config['settings']['db']['key_cryp'] = Key::loadFromAsciiSafeString(file_get_contents($_db . 'core/key_db.txt', true));
+	$config['settings']['db']['key'] = file_get_contents($_db . 'core/key_db.txt', true);
+	$config['settings']['db']['access_key'] = false;
+	$config['settings']['displayErrorDetails'] = true;
+	$config['settings']['addContentLengthHeader'] = false;
+	$config['settings']['determineRouteBeforeAppMiddleware'] = true;
+	$config['settings']['debug'] = true;
+	
+	// Подключаем Slim
+	$app = new App($config);
+	
+	$container = $app->getContainer();
+	
+	$container['logger'] = function ($logger) {
+		$logger = new Logger("db_json_api");
+		$logger->pushProcessor(new UidProcessor());
+		$logger->pushHandler(new StreamHandler(isset($_ENV['docker']) ? 'php://stdout' : $_db . 'log/_monolog/app.log', Logger::DEBUG));
+		return $logger;
+	};
+	
+	$app->get('/', function (Request $request, Response $response, array $args) {
 		
 		$param = $request->getQueryParams();
 		$param_key = (isset($param['key'])) ? Db::clean($param['key']) : null;
@@ -75,34 +84,6 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 		
 		return $response->withStatus(200)->withHeader('Content-Type','application/json');
 		
-	});
-	
-	$app->get( '/test', function (Request $request, Response $response, array $args) {
-		
-		/* 	$res->with('property');
-		$res->with('product_view'); */
-		$res = jsonDb::table("product")->where("id", ">=", 61456)->orderBy('id')->limit(15)->findAll()->asArray();
-		
-		
-		
-		/* 	foreach($res AS $key => $unit){
-			if (isset($key) && isset($unit)) {
-			$item[$key] = $unit;
-			$items["item"] = $item;
-			}
-		} */
-		
-		$resp = array();
-		$resp["headers"]["status"] = "200 OK";
-		$resp["headers"]["code"] = 200;
-		$resp["headers"]["message"] = 'Access is denied';
-		
-		$resp["body"]["items"] = $res;
-		
-		print_r($resp);
-		
-		echo json_encode($resp, JSON_PRETTY_PRINT);
-		return $response->withStatus(200)->withHeader('Content-Type','application/json');
 	});
 	
 	$app->get('/{table}[/{id}]', function (Request $request, Response $response, array $args) {
@@ -208,12 +189,12 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 									$unit = str_replace('"', '', $unit);
 									$file = $this->get('settings')['db']["dir"].''.$table_name.'.data.json';
 									$data = json_decode(file_get_contents($file));
-									$resp["items"] = (new \Flow\JSONPath\JSONPath($data))->find($unit);
+									$resp["items"] = (new JSONPath($data))->find($unit);
 								}
 								
 								if (isset($query["JmesPath"]) || isset($query["jmespath"])) {
 									//	https://ru.pllano.com/db_json_api/property?jmespath=[17004]
-									if (isset($query["JmesPath"])) {$unit = $query["JmesPath"];}	
+									if (isset($query["JmesPath"])) {$unit = $query["JmesPath"];}
 									if (isset($query["jmespath"])) {$unit = $query["jmespath"];	}
 									$unit = str_replace('"', '', $unit);
 									$file = $this->get('settings')['db']["dir"].''.$table_name.'.data.json';
@@ -225,10 +206,29 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 									*/
 								}
 								
-								if (isset($query["JSONPath"]) == false && isset($query["jsonpath"]) == false && isset($query["JmesPath"]) == false && isset($query["jmespath"]) == false) {
+								if (
+								isset($query["JSONPath"]) == false
+								&& isset($query["jsonpath"]) == false
+								&& isset($query["JmesPath"]) == false
+								&& isset($query["jmespath"]) == false
+								) {
 									
 									foreach($query as $key => $value){
-										if(!in_array($key, array('andWhere', 'orWhere', 'asArray', 'LIKE', 'relation', 'order', 'sort', 'limit', 'offset', 'JSONPath', 'jsonpath', 'JmesPath', 'jmespath'), true)){
+										if(!in_array($key, array(
+										'andWhere',
+										'orWhere',
+										'asArray',
+										'LIKE',
+										'relation',
+										'order',
+										'sort',
+										'limit',
+										'offset',
+										'JSONPath',
+										'jsonpath',
+										'JmesPath',
+										'jmespath'
+										), true)){
 											
 											if (isset($key) && isset($value)) {
 												
@@ -334,9 +334,11 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 										$order = "DESC";
 										$sort = "id";
 										
-										if (isset($query["order"])) {if ($query["order"] == "DESC" || $query["order"] == "ASC" || $query["order"] == "desc" || $query["order"] == "asc") {
-											$order = $query["offset"];
-										}}
+										if (isset($query["order"])) {
+											if ($query["order"] == "DESC" || $query["order"] == "ASC" || $query["order"] == "desc" || $query["order"] == "asc") {
+												$order = $query["offset"];
+											}
+										}
 										
 										if (isset($query["sort"])) {if (preg_match("/^[A-Za-z0-9]+$/", $query["sort"])) {
 											$sort = $query["sort"];
@@ -407,7 +409,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 						$resp = $cacheReader;
 					}
 					
-				} 
+				}
 				catch(dbException $e){
 					// Доступ запрещен. Такой таблицы не существует.
 					$resp["headers"]["status"] = '403';
@@ -464,7 +466,6 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 		$param = $request->getQueryParams();
 		
 	});
-
-// Запускаем Slim
-$app->run();
-
+	
+	// Запускаем Slim
+	$app->run();

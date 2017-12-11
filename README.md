@@ -36,12 +36,12 @@
 
 Если вы хотите использовать `RESTful API роутинг` выполните следующие действия:
 
-— В файле [index.php](https://github.com/pllano/api-json-db/blob/master/index.php) указать директорию где будет находится база желательно ниже корневой директории вашего сайта. (Пример: ваш сайт находится в папке /www/example.com/public/ разместите базу в `/www/_db_/` таким образом к ней будет доступ только у скриптов). 
+- В файле [index.php](https://github.com/pllano/api-json-db/blob/master/index.php) указать директорию где будет находится база желательно ниже корневой директории вашего сайта. (Пример: ваш сайт находится в папке /www/example.com/public/ разместите базу в `/www/_db_/` таким образом к ней будет доступ только у скриптов). 
 
-— Перенесите файлы [index.php](https://github.com/pllano/api-json-db/blob/master/index.php), [router.php](https://github.com/pllano/api-json-db/blob/master/router.php) и [.htaccess](https://github.com/pllano/api-json-db/blob/master/.htaccess) в директорию к которой будет доступ через url (Пример: https://example.com/_12345_/ название директории должно быть максимально сложным)
+- Перенесите файлы [index.php](https://github.com/pllano/api-json-db/blob/master/index.php), [router.php](https://github.com/pllano/api-json-db/blob/master/router.php) и [.htaccess](https://github.com/pllano/api-json-db/blob/master/.htaccess) в директорию к которой будет доступ через url (Пример: https://example.com/_12345_/ название директории должно быть максимально сложным)
 
-— Запустите `https://example.com/_12345_/` если все хорошо вы увидите
-
+- Запустите `https://example.com/_12345_/`		
+если все хорошо вы увидите
 ```json
 {
     "status": "OK",

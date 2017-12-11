@@ -52,7 +52,7 @@
 
 При запуске база автоматически создаст файл с ключом доступа который находится в директории: `/www/_db_/core/key_db.txt`
 
-Активация доступа по ключу устанавливается в файле `index.php`
+Активация доступа по ключу устанавливается в файле [index.php](https://github.com/pllano/api-json-db/blob/master/index.php)
 
 ```php
 $config['settings']['db']['access_key'] = true;
@@ -74,7 +74,7 @@ $config['settings']['db']['access_key'] = true;
 }
 ```
 
-Вы также можете разрешить доступ к API DB только для своих IP с помощью .htaccess
+Вы также можете разрешить доступ к API DB только для своих IP с помощью [.htaccess](https://github.com/pllano/api-json-db/blob/master/.htaccess)
 
 ВАЖНО !!! Не попутайте с основным `https://example.com/.htaccess` который запретит доступ ко всему сайту
 

@@ -59,8 +59,6 @@ try{
     // Таблица не существует
 }
 ```
-### Прямое подключение к DB без RESTful API
-Если вам не нужен API роутинг Вы можете работать с базой данных напрямую без REST API интерфейса - [Документация](https://github.com/pllano/api-json-db/blob/master/db.md) или использовать оригинальный пакет [Lazer-Database](https://github.com/Greg0/Lazer-Database/).
 ## RESTful API роутинг для cURL запросов
 «API json DB» имеет свой RESTfull API роутинг для cURL запросов который написан на PHP с использованием Micro Framework [Slim](https://github.com/slimphp), что позволяет использовать «API json DB» с любым другим языком программирования. Для унификации обмена данными сервер-сервер и клиент-сервер используется стандарт [APIS-2018](https://github.com/pllano/APIS-2018/). `Стандарт APIS-2018 - не является общепринятым` и является нашим взглядом в будущее и рекомендацией для унификации построения легких движков интернет-магазинов нового поколения.
 ### RESTfull API состоит из двух файлов:
@@ -82,6 +80,8 @@ try{
     "message": "db_json_api works!"
 }
 ```
+### Прямое подключение к DB
+Если вам не нужен API роутинг Вы можете работать с базой данных напрямую без REST API интерфейса - [Документация](https://github.com/pllano/api-json-db/blob/master/db.md) или использовать оригинальный пакет [Lazer-Database](https://github.com/Greg0/Lazer-Database/).
 
 <a name="feedback"></a>
 ## Поддержка, обратная связь, новости

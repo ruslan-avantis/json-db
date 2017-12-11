@@ -87,7 +87,7 @@ curl --request POST "https://example.com/_12345_/table_name" --data "key=key"
 }
 ```
 
-Вы также можете разрешить доступ к API только для своих IP с помощью .htaccess
+Вы также можете разрешить доступ к API DB только для своих IP с помощью .htaccess
 
 ВАЖНО !!! Не попутайте с основным `https://example.com/.htaccess` который запретит доступ ко всему сайту
 

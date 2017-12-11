@@ -73,21 +73,9 @@ $config['settings']['db']['access_key'] = true;
 
 Если установлен флаг `true` - тогда во всех запросах к db необходимо указывать параметр
 
-```php
-$key = $config['settings']['db']['key']; // Взять key из конфигурации
+curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET https://example.com/_12345_/table_name?key=key
 
-$table_name = 'table_name';
-$id = 'id';
-
-$uri = 'https://example.com/_12345_/api.php?key='.$key;
-$uri = 'https://example.com/_12345_/'.$table_name.'?key='.$key;
-$uri = 'https://example.com/_12345_/'.$table_name.'/'.$id.'?key='.$key;
-
-// curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET https://example.com/_12345_/table_name?key=key
-
-// curl --request POST "https://example.com/_12345_/table_name" --data "key=key"
-
-```
+curl --request POST "https://example.com/_12345_/table_name" --data "key=key"
 
 При запросе без ключа API будет отдавать ответ
 
@@ -115,12 +103,17 @@ composer.json
 ``` php	
 require '../vendor/autoload.php'; // Подключить Composer
 
-$key = $config['settings']['db']['key']; // Взять key из конфигурации
-$table_name = 'table_name';
-$id = 'id';
+$key = $config['settings']['db']['key']; // Взять key из конфигурации api.php
+
+$table_name = 'db';
+$id = '1';
+
+$uri = 'https://example.com/_12345_/api.php?key='.$key;
+$uri = 'https://example.com/_12345_/'.$table_name.'?key='.$key;
+$uri = 'https://example.com/_12345_/'.$table_name.'/'.$id.'?key='.$key;
 
 $client = new \GuzzleHttp\Client();
-$response = $client->request('GET', 'https://example.com/_12345_/'.$table_name.'?key='.$key);
+$response = $client->request('GET', $uri);
 $output = $response->getBody();
 
 // Чистим все что не нужно, иначе json_decode не сможет конвертировать json в массив
@@ -136,7 +129,7 @@ if ($records['headers']['code'] == '200') {
 	if ($count >= 1) {
 		foreach($records['body']['items'] as $item)
 		{
-			print_r($item['item']['id']);
+			print_r($item['item']);
 		}
 	}
 }

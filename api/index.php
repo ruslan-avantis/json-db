@@ -8,19 +8,7 @@ if (PHP_SAPI == 'cli-server') {
 // Composer
 require __DIR__ . '/../../vendor/autoload.php';
 
-// Локальное подключение
-// require __DIR__ . '/../../vendor/pllano/api-json-db/src/dbException.php';
-// require __DIR__ . '/../../vendor/pllano/api-json-db/src/Database.php';
-// require __DIR__ . '/../../vendor/pllano/api-json-db/src/Relation.php';
-// require __DIR__ . '/../../vendor/pllano/api-json-db/src/FileInterface.php';
-// require __DIR__ . '/../../vendor/pllano/api-json-db/src/File.php';
-// require __DIR__ . '/../../vendor/pllano/api-json-db/src/Validate.php';
-// require __DIR__ . '/../../vendor/pllano/api-json-db/src/Data.php';
-// require __DIR__ . '/../../vendor/pllano/api-json-db/src/Config.php';
-// require __DIR__ . '/../../vendor/pllano/api-json-db/src/Run.php';
-
 // !!! Указываем директорию где будет храниться json db !!!
-// !!! На уровень ниже корневой директории сайта !!!
 $_db = __DIR__ . '/../../_db_/';
 
 if (!file_exists($_db . 'core/key_db.txt')){
@@ -60,15 +48,15 @@ $logger->pushHandler(new Monolog\Handler\StreamHandler(isset($_ENV['docker']) ? 
 return $logger;
 };
 
-	use Slim\Http\Request;
-	use Slim\Http\Response;
+use Slim\Http\Request;
+use Slim\Http\Response;
 	
-	use jsonDB\Db;
-	use jsonDB\Database as jsonDb;
-	use jsonDB\Validate;
-	use jsonDB\dbException;
+use jsonDB\Db;
+use jsonDB\Database as jsonDb;
+use jsonDB\Validate;
+use jsonDB\dbException;
 	
-	$app->get('/', function (Request $request, Response $response, array $args) {
+$app->get('/', function (Request $request, Response $response, array $args) {
 		
 		$param = $request->getQueryParams();
 		$param_key = (isset($param['key'])) ? Db::clean($param['key']) : null;

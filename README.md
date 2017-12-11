@@ -38,6 +38,8 @@ $db->run();
 - `double` — Число с плавающей точкой
 ### Создать таблицу в базе данных
 ```php
+use jsonDB\Database as jsonDb;
+
 $arr = array(
     'id' => 'integer',
     'name' => 'string',
@@ -48,40 +50,55 @@ jsonDb::create('table_name', $arr);
 ```	
 ### Удалить таблицу в базе данных
 ```php
+use jsonDB\Database as jsonDb;
+
 jsonDb::remove('table_name');
 ```
 #### Очистить таблицу
 ```php
+use jsonDB\Database as jsonDb;
+
 jsonDb::table('table_name')->delete();
 ```
 ### Проверьте, существует ли таблица в базе данных
 ```php
+use jsonDB\Validate;
+use jsonDB\dbException;
+
 try{
-    \jsonDb\Validate::table('table_name')->exists();
-} catch(\jsonDb\jsonDbException $e){
+    Validate::table('table_name')->exists();
+} catch(jsonDbException $e){
     // Таблица не существует
 }
 ```
 #### Создать запись в таблице
 ```php
+use jsonDB\Database as jsonDb;
+
 $row = jsonDb::table('table_name');
 $row->name = 'Ivan';
 $row->save();
 ```
 #### Получить данные с таблицы
 ```php
+use jsonDB\Database as jsonDb;
+
 echo jsonDb::table('table_name')->where('name', '=', 'Ivan')->findAll();
 // или по id
 echo jsonDb::table('table_name')->where('id', '=', '10')->findAll();
 ```
 #### Обновить данные
 ```php
+use jsonDB\Database as jsonDb;
+
 $row = jsonDb::table('table_name')->find(10);
 $row->name = 'Andrey';
 $row->save();
 ```
 #### Удалить запись по id
 ```php
+use jsonDB\Database as jsonDb;
+
 jsonDb::table('table_name')->find(10)->delete();
 ```
 

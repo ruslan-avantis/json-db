@@ -102,8 +102,6 @@ Allow from 192.168.1.1
 ### Пример использования с Guzzle
 
 ``` php	
-require '../vendor/autoload.php'; // Подключить Composer
-
 $key = $config['settings']['db']['key']; // Взять key из конфигурации api.php
 
 $table_name = 'db';

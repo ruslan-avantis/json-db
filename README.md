@@ -101,17 +101,6 @@ Allow from 192.168.1.1
 
 ### Пример использования с Guzzle
 
-```
-$ composer require guzzlehttp/guzzle
-```
-composer.json
-``` json
-"require": {
-	"pllano/api-json-db": "*",
-	"guzzlehttp/guzzle": "^6.3"
-}
-```
-
 ``` php	
 require '../vendor/autoload.php'; // Подключить Composer
 

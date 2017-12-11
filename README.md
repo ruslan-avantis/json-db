@@ -64,9 +64,9 @@ $config['settings']['db']['access_key'] = true;
 
 Если установлен флаг `true` - тогда во всех запросах к db необходимо указывать параметр
 
-curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET https://example.com/_12345_/table_name?key=key
+`curl -i -H "Accept: application/json" -H "Content-Type: application/json" -X GET https://example.com/_12345_/table_name?key=key`
 
-curl --request POST "https://example.com/_12345_/table_name" --data "key=key"
+`curl --request POST "https://example.com/_12345_/table_name" --data "key=key"`
 
 При запросе без ключа API будет отдавать ответ
 

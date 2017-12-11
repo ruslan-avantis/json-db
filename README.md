@@ -99,6 +99,49 @@ $uri = 'https://example.com/_12345_/'.$table_name.'/'.$id.'?key='.$key;
 }
 ```
 
+### Пример использования с Guzzle
+
+```
+$ composer require guzzlehttp/guzzle
+```
+composer.json
+``` json
+"require": {
+	"guzzlehttp/guzzle": "^6.3"
+}
+```
+
+``` php	
+require '../vendor/autoload.php'; // Подключить Composer
+
+$key = $config['settings']['db']['key']; // Взять key из конфигурации
+$table_name = 'table_name';
+$id = 'id';
+
+$client = new \GuzzleHttp\Client();
+$response = $client->request('GET', 'https://example.com/_12345_/'.$table_name.'?key='.$key);
+$output = $response->getBody();
+
+// Чистим все что не нужно, иначе json_decode не сможет конвертировать json в массив
+for ($i = 0; $i <= 31; ++$i) {$output = str_replace(chr($i), "", $output);}
+$output = str_replace(chr(127), "", $output);
+if (0 === strpos(bin2hex($output), 'efbbbf')) {$output = substr($output, 3);}
+
+$records = json_decode($output, true);
+
+if (isset($records['headers']['code'])) {
+if ($records['headers']['code'] == '200') {
+	$count = count($records['body']['items']);
+	if ($count >= 1) {
+		foreach($records['body']['items'] as $item)
+		{
+			print_r($item['item']['id']);
+		}
+	}
+}
+}
+```
+
 ### Создание таблиц
 
 Вы можете создавать таблицы автоматически с использованием файла `/www/_db_/core/db.json`

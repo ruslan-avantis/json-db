@@ -61,13 +61,14 @@ try{
 ```
 ## RESTful API роутинг для cURL запросов
 «API json DB» имеет свой RESTfull API роутинг для cURL запросов который написан на PHP с использованием Micro Framework [Slim](https://github.com/slimphp), что позволяет использовать «API json DB» с любым другим языком программирования. Для унификации обмена данными сервер-сервер и клиент-сервер используется стандарт [APIS-2018](https://github.com/pllano/APIS-2018/). `Стандарт APIS-2018 - не является общепринятым` и является нашим взглядом в будущее и рекомендацией для унификации построения легких движков интернет-магазинов нового поколения.
-### RESTfull API состоит из двух файлов:
-- [index.php]https://github.com/pllano/api-json-db/blob/master/api/index.php) - RESTfull API
+
+### RESTfull API состоит всего из двух файлов:
+- [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php) - RESTfull API
 - [.htaccess](https://github.com/pllano/api-json-db/blob/master/api/.htaccess)
 
-Если вы хотите использовать `RESTful API роутинг` выполните следующие действия:
+Для установки `RESTful API` выполните следующие действия:
 
-- В файле [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php) укажите директорию где будет хранится база, желательно ниже корневой директории вашего сайта, например `/www/_db_/`.
+- В файле [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php) укажите директорию где хранится база, например `/www/_db_/` или `__DIR__ . '/../../_db_/'`.
 
 - Перенесите файлы [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php) и [.htaccess](https://github.com/pllano/api-json-db/blob/master/api/.htaccess) в директорию доступную через URL например: `https://example.com/_12345_/`
 

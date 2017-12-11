@@ -53,6 +53,44 @@
     "message": "db_json_api works!"
 }
 ```
+### RESTful API jsonDB потдерживает запросы:
+- `POST /price` Создание записи 
+- `POST /price/42` Ошибка
+- `GET /price` Список прайс-строк
+- `GET /price/42` Данные конкретной прайс-строки
+- `PUT /price` Обновить данные прайс-строк
+- `PUT /price/42` Обновить данные конкретной прайс-строки
+- `DELETE /price` Удалить все прайс-строки
+- `DELETE /price/42` Удалить конкретную прайс-строку
+
+Для тех кто может отправлять только с `POST` и `GET` запросы мы дублируем тип запроса в параметре `query`
+
+### URL RESTful API jsonDB
+- `https://example.com/{api_dir}/{table_name}/{id}`
+- `{api_dir}` - папка в которой лежит 
+- `{table_name}` - модель к которой обращаемся. Например price или search. Список всех ресурсов [RESTful API jsonDB](doc/query.md)
+- `{id}` - уникальный индефикатор
+
+### GET запрос к RESTful API jsonDB
+`?offset={offset}&limit={limit}&order={order}&sort={sort}&key={key}`
+- `{key}` - Ключ доступа к RESTful API
+- `{limit}` - Записей на страницу. По умолчанию 10
+- `{offset}` - Страница. По умолчанию 0
+- `{order}` - Тип сортировки. По умолчанию asc
+- `{sort}` - Поле сортировки. По умолчанию uid
+- `{*}` - Любое из полей таблицы
+
+[Список всех параметров запроса](doc/query.md)
+
+### RESTful API jsonDB - Всегда возвращает код 200 даже при логических ошибках !
+
+`HTTP/1.1 200 OK`
+
+`Content-Type: application/json`
+
+### В теле ответа RESTful API jsonDB вернет код ошибки, статус и описание ошибки.
+
+[Коды ошибок HTTP](doc/errors.md)
 
 ### Безопасность
 

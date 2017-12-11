@@ -51,9 +51,10 @@ $db->run();
 jsonDb::create('table_name', array(
     'id' => 'integer',
     'nickname' => 'string',
-    {field_name} => {field_type}
+    'название_поля' => 'тип данных'
 ));
 ```
+Поддерживаемые типы данных: `boolean`, `integer`, `string`, `double`
 	
 ### Удалить таблицу в базе данных
 ```php

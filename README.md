@@ -123,7 +123,7 @@ if ($records['headers']['code'] == '200') {
 
 [Коды ошибок HTTP](doc/errors.md)
 
-### Безопасность
+## Безопасность
 [Советы по увеличению безопасности API json DB](https://github.com/pllano/api-json-db/blob/master/doc/security.md)
 
 ## Прямое подключение к DB

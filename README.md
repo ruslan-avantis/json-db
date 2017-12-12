@@ -117,9 +117,9 @@ if ($records['headers']['code'] == '200') {
 
 `Content-Type: application/json`
 
-### В теле ответа RESTful API jsonDB вернет код ошибки, статус и описание ошибки.
+### В теле ответа RESTful API jsonDB вернет код состояния HTTP, статус и описание.
 
-[Коды ошибок HTTP](doc/errors.md)
+[Коды состояния HTTP](https://github.com/pllano/api-json-db/tree/master/doc/http-codes)
 
 ## Безопасность
 [Советы по увеличению безопасности API json DB](https://github.com/pllano/api-json-db/blob/master/doc/security.md)

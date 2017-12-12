@@ -34,7 +34,7 @@ $db->setCacheLifetime(60); // Время жижни кеша 60 минут
 $db->setTemp(true); // Используем очередь true|false
 $db->setApi(false); // Если работаем как основная база устанавливаем false
 $db->setCrypt(true); // Шифруем таблицы true|false
-$db->setKey($_db.'/core/key_db.txt'); // Путь к ключу шифрования
+$db->setKey(file_get_contents($_db . 'core/key_db.txt', true)); // Загружаем ключ шифрования
 $db->run();
 ```
 	

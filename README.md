@@ -15,13 +15,29 @@
 $_db = __DIR__ . '/../../_db_/';
 
 // Запускаем jsonDB
-$db = new \jsonDB\Db($_db);
+use jsonDB\Db;
+
+$db = new Db($_db);
 $db->run();
 ```
 или одной строчкой
 ```php
 (new \jsonDB\Db(__DIR__ . '/../../_db_/'))->run();
 ```
+или с популярными настройками
+```php
+use jsonDB\Db;
+
+$db = new Db($_db);
+$db->setCached(true); // Включаем кеширование true|false
+$db->setCacheLifetime(60); // Время жижни кеша 60 минут
+$db->setTemp(true); // Используем очередь true|false
+$db->setApi(false); // Работаем как основная база true|false
+$db->setCrypt(true); // Шифруем таблицы true|false
+$db->setKey($_db.'/core/key_db.txt'); // Путь к ключу шифрования
+$db->run();
+```
+	
 ### Автоматическое разворачиваение
 При запуске в папке `_db_` которую вы указали база создаст:   
 Таблицу своей конфигурации `db.data.json` и `db.config.json`   

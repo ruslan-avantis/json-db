@@ -6,7 +6,6 @@
 «APIS-2018» — Стандарт обмена информацией между базами данных, торговыми платформами, интернет-магазинами, поставщиками товаров и сторонними платформами через RESTful API интерфейс.
 
 Основанием для «API json DB» мы выбрали прекрасную работу [Greg0/Lazer-Database](https://github.com/Greg0/Lazer-Database/). Мы полностью изменили структуру оригинала и добавили: шифрование, API роутинг, кеширование, проверку валидности, очередь на запись и другой удобный функционал.
-
 ## Старт
 Подключить пакет с помощью Composer - [Список зависимостей](https://github.com/pllano/api-json-db/blob/master/composer.json)
 ```json
@@ -16,16 +15,11 @@
 ```
 ## RESTful API роутинг для cURL запросов
 «API json DB» имеет свой RESTfull API роутинг для cURL запросов который написан на PHP с использованием Micro Framework [Slim](https://github.com/slimphp), что позволяет использовать «API json DB» с любым другим языком программирования. Для унификации обмена данными сервер-сервер и клиент-сервер используется стандарт [APIS-2018](https://github.com/pllano/APIS-2018/). `Стандарт APIS-2018 - не является общепринятым` и является нашим взглядом в будущее и рекомендацией для унификации построения легких движков интернет-магазинов нового поколения.
-
 ### RESTfull API состоит всего из двух файлов:
 - [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php) и [.htaccess](https://github.com/pllano/api-json-db/blob/master/api/.htaccess)
-
 ### Для установки `RESTful API` выполните следующие действия:
-
 - В файле [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php) укажите директорию где хранится база, например `/www/_db_/` или `__DIR__ . '/../../_db_/'`.
-
 - Перенесите файлы [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php) и [.htaccess](https://github.com/pllano/api-json-db/blob/master/api/.htaccess) в директорию доступную через URL. Например: `https://example.com/_12345_/`
-
 - Запустите `https://example.com/_12345_/`		
 - Если база работает Вы увидите следующий результат:
 ```json
@@ -35,7 +29,18 @@
     "message": "db_json_api works!"
 }
 ```
-### URL RESTful API jsonDB
+### Автоматическое разворачиваение
+При запуске в папке `_db_` которую вы указали база создаст:   
+Таблицу своей конфигурации `db.data.json` и `db.config.json`   
+Таблицу для кеша `cached.data.json` и `cached.config.json`  
+### Поддерживаемые типы данных в DB
+- `boolean` — Логический тип `true` или `false`
+- `integer` — Целое число	
+- `string` — Строковый тип
+- `double` — Число с плавающей точкой
+### Автоматическое создание таблиц базы данных
+База автоматически создает таблицы по стандарту [APIS-2018](https://github.com/pllano/APIS-2018). Структуру и взаимосвязи берет из файла [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json). Для создания индивидуальныой конфигурации таблиц отредактируйте файл [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) и перед запуском скопируйте его в директорию `/_db_/core/` или с создайте самостоятельно выполнив одну из команд ниже.
+### URL запросов к RESTful API jsonDB
 - `https://example.com/{api_dir}/{table_name}/{id}`
 - `{api_dir}` - папка в которой лежит [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php)
 - `{table_name}` - название таблицы к которой обращаемся. Например price или user.
@@ -61,7 +66,6 @@
 - `PATCH /{table_name}/{id}` Обновить данные конкретной записи
 - `DELETE /{table_name}` Удалить все записи
 - `DELETE /{table_name}/{id}` Удалить конкретную запись
-
 ### Вы можете отправлять только `GET` запросы:
 - `GET /_post/{table_name}?{param}` Создание записи 
 - `GET /_post/{table_name}/{id}` Ошибка
@@ -124,20 +128,6 @@ if ($records['headers']['code'] == '200') {
 
 ### Безопасность
 [Советы по увеличению безопасности API json DB](https://github.com/pllano/api-json-db/blob/master/doc/security.md)
-
-### Автоматическое разворачиваение
-При запуске в папке `_db_` которую вы указали база создаст:   
-Таблицу своей конфигурации `db.data.json` и `db.config.json`   
-Таблицу для кеша `cached.data.json` и `cached.config.json`  
-
-### Поддерживаемые типы данных в DB
-- `boolean` — Логический тип `true` или `false`
-- `integer` — Целое число	
-- `string` — Строковый тип
-- `double` — Число с плавающей точкой
-
-### Автоматическое создание таблиц базы данных
-База автоматически создает таблицы по стандарту [APIS-2018](https://github.com/pllano/APIS-2018). Структуру и взаимосвязи берет из файла [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json). Для создания индивидуальныой конфигурации таблиц отредактируйте файл [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) и перед запуском скопируйте его в директорию `/_db_/core/` или с создайте самостоятельно выполнив одну из команд ниже.
 
 ## Прямое подключение к DB
 Если вам не нужен API роутинг Вы можете работать с базой данных напрямую без REST API интерфейса - [Документация - работа с DB напрямую](https://github.com/pllano/api-json-db/blob/master/doc/db.md) или если вам не нужны (кеширование, шифрование) использовать оригинальный пакет [Lazer-Database](https://github.com/Greg0/Lazer-Database/).

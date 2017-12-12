@@ -35,6 +35,9 @@ $db->setCrypt(true); // Шифруем таблицы true|false
 $db->setKey(file_get_contents($_db . 'core/key_db.txt', true)); // Загружаем ключ шифрования
 $db->run();
 ```
+### Безопасность
+[Советы по увеличению безопасности API json DB](https://github.com/pllano/api-json-db/blob/master/doc/security.md)
+
 ### Автоматическое разворачиваение
 При запуске в папке `_db_` которую вы указали база создаст:   
 Таблицу своей конфигурации `db.data.json` и `db.config.json`   

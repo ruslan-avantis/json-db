@@ -42,7 +42,7 @@ $db->run();
 Таблицу для кеша `cached.data.json` и `cached.config.json`  
 
 ### Автоматическое создание таблиц базы данных
-Для автоматического создания таблиц отредактируйте файл [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) и скопируйте его в директорию `/_db_/core/`	 
+База автоматически создает таблицы по стандарту [APIS-2018](https://github.com/pllano/APIS-2018) структуру и взаимосвязи берет с файла [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json). Для создания индивидуальныой конфигурации таблиц отредактируйте файл [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) перед запуском и скопируйте его в директорию `/_db_/core/`	 
 
 ### Поддерживаемые типы данных
 - `boolean` — Логический тип `true` или `false`

@@ -27,9 +27,7 @@ $db->run();
 или с популярными настройками
 ```php
 use jsonDB\Db;
-
-$_db = __DIR__ . '/../../_db_/';
-$db = new Db($_db);
+$db = new jsonDB\Db(__DIR__ . '/../../_db_/');
 $db->setCached(true); // Включаем кеширование true|false
 $db->setCacheLifetime(60); // Время жижни кеша 60 минут
 $db->setTemp(true); // Используем очередь true|false

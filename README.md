@@ -149,7 +149,7 @@ jsonDb::table('table_name')->find(10)->delete();
 - `{order}` - Тип сортировки. По умолчанию asc
 - `{sort}` - Поле сортировки. По умолчанию id
 - `{*}` - Любое из полей таблицы
-### RESTful API jsonDB потдерживает запросы:
+### RESTful API jsonDB потдерживает `POST` `GET` `PUT` `PATCH` `DELETE` запросы:
 - `POST /{table_name}` Создание записи 
 - `POST /{table_name}/{id}` Ошибка
 - `GET /{table_name}` Список всех записей
@@ -157,16 +157,20 @@ jsonDb::table('table_name')->find(10)->delete();
 - `GET /{table_name}/{id}` Данные конкретной записи
 - `PUT /{table_name}` Обновить данные записей
 - `PUT /{table_name}/{id}` Обновить данные конкретной записи
+- `PATCH /{table_name}` Обновить данные записей
+- `PATCH /{table_name}/{id}` Обновить данные конкретной записи
 - `DELETE /{table_name}` Удалить все записи
 - `DELETE /{table_name}/{id}` Удалить конкретную запись
 
-### Вы можете отправлять только GET запросы:
+### Вы можете отправлять только `GET` запросы:
 - `GET /_post/{table_name}?{param}` Создание записи 
 - `GET /_post/{table_name}/{id}` Ошибка
 - `GET /_get/{table_name}?{param}` Список всех записей с фильтром по параметрам
 - `GET /_get/{table_name}/{id}` Данные конкретной записи
 - `GET /_put/{table_name}?{param}` Обновить данные записей
 - `GET /_put/{table_name}/{id}?{param}` Обновить данные конкретной записи
+- `GET /_patch/{table_name}?{param}` Обновить данные записей
+- `GET /_patch/{table_name}/{id}?{param}` Обновить данные конкретной записи
 - `GET /_delete/{table_name}?{param}` Удалить все записи
 - `GET /_delete/{table_name}/{id}` Удалить конкретную запись
 

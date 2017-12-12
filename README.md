@@ -171,7 +171,7 @@ jsonDb::table('table_name')->find(10)->delete();
 - `GET /_put/{table_name}/{id}?{param}` Обновить данные конкретной записи
 - `GET /_patch/{table_name}?{param}` Обновить данные записей
 - `GET /_patch/{table_name}/{id}?{param}` Обновить данные конкретной записи
-- `GET /_delete/{table_name}?{param}` Удалить все записи
+- `GET /_delete/{table_name}` Удалить все записи
 - `GET /_delete/{table_name}/{id}` Удалить конкретную запись
 
 [Список всех параметров запроса](doc/query.md)

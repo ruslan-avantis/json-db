@@ -1,4 +1,7 @@
 <?php 
+ini_set('error_reporting', E_ALL);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
 
 if (PHP_SAPI == 'cli-server') {
 $url  = parse_url($_SERVER['REQUEST_URI']);
@@ -94,40 +97,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 
 });
 
-$app->get( '/test', function (Request $request, Response $response, array $args) {
-
-	/*
-	$res->with('property');
-	$res->with('product_view');
-	*/
-
-	$res = jsonDb::table("product")->where("id", ">=", 61456)->orderBy('id')->limit(15)->findAll()->asArray();
-
-	/*
-	foreach($res AS $key => $unit){
-		if (isset($key) && isset($unit)) {
-			$item[$key] = $unit;
-			$items["item"] = $item;
-		}
-	}
-	*/
-
-	$resp = array();
-	$resp["headers"]["status"] = "200 OK";
-	$resp["headers"]["code"] = 200;
-	$resp["headers"]["message"] = 'Access is denied';
-
-	$resp["body"]["items"] = $res;
-
-	print_r($resp);
-
-	echo json_encode($resp, JSON_PRETTY_PRINT);
-	
-	return $response->withStatus(200)->withHeader('Content-Type','application/json');
-	
-});
-
-$app->get('/{table}[/{id}]', function (Request $request, Response $response, array $args) {
+$app->get('/{table}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
 	
 	$table_name = $request->getAttribute('table');
 	$id = $request->getAttribute('id');
@@ -473,7 +443,7 @@ $app->get('/{table}[/{id}]', function (Request $request, Response $response, arr
 	
 });
 
-$app->post('/{table}[/{id}]', function (Request $request, Response $response, array $args) {
+$app->post('/{table}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
 
 	$table_name = $request->getAttribute('table');
 	$id = $request->getAttribute('id');
@@ -578,12 +548,12 @@ $app->post('/{table}[/{id}]', function (Request $request, Response $response, ar
 
 });
 
-$app->put('/{table}[/{id}]', function (Request $request, Response $response, array $args) {
+$app->put('/{table}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
 
 	$table_name = $request->getAttribute('table');
 	$id = $request->getAttribute('id');
 	$put = $request->getParsedBody();
-
+	
 	if (isset($table_name)) {
 
 		// Проверяем наличие главной базы если нет даем ошибку
@@ -626,7 +596,7 @@ $app->put('/{table}[/{id}]', function (Request $request, Response $response, arr
 					//	Сохраняем изменения
 					$row->save();
 
-					if (isset($row == 1)) {
+					if ($row == 1) {
 					
 						// Все ок. 202 Accepted «принято»
 						$resp["headers"]["status"] = "202 Accepted";
@@ -678,7 +648,7 @@ $app->put('/{table}[/{id}]', function (Request $request, Response $response, arr
 						$row->save();
 					}
 
-					if (isset($row == 1)) {
+					if ($row == 1) {
 						
 						// Все ок. 202 Accepted «принято»
 						$resp["headers"]["status"] = "202 Accepted";
@@ -738,7 +708,7 @@ $app->put('/{table}[/{id}]', function (Request $request, Response $response, arr
 
 });
 
-$app->delete('/{table}[/{id}]', function (Request $request, Response $response, array $args) {
+$app->delete('/{table}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
 
 	$table_name = $request->getAttribute('table');
 	$id = $request->getAttribute('id');
@@ -810,7 +780,7 @@ $app->delete('/{table}[/{id}]', function (Request $request, Response $response, 
 						}
 					}
 
-					if (isset($row == 1)) {
+					if ($row == 1) {
 						
 						// Все ок. 202 Accepted «принято»
 						$resp["headers"]["status"] = "200 Removed";

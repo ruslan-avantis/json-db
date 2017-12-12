@@ -14,115 +14,13 @@
 	"pllano/api-json-db": "*"
 }
 ```
-### Запуск одной строчкой кода
-```php
-(new \jsonDB\Db(__DIR__ . '/../../_db_/'))->run();
-```
-Запуск с параметрами
-```php
-use jsonDB\Db;
-$_db = __DIR__ . '/../../_db_/'; // Указываем директорию где будет храниться json db
-$db = new Db($_db);
-$db->setCached(true); // Включаем кеширование true|false
-$db->setCacheLifetime(60); // Время жижни кеша 60 минут
-$db->setTemp(true); // Используем очередь true|false
-$db->setApi(false); // Если работаем как основная база устанавливаем false
-$db->setCrypt(true); // Шифруем таблицы true|false
-$db->setKey(file_get_contents($_db . 'core/key_db.txt', true)); // Загружаем ключ шифрования
-$db->run();
-```
-Примечание: Если вы будете пользоваться RESTful API роутингом для cURL запросов, вам не нужно выполнять запуск базы, роутер [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php) сделает все сам. Вам достаточно установить пакет с помощью Composer и выпонить дейсвия с настройкой API роутинга описаны ниже.
-
-### Безопасность
-[Советы по увеличению безопасности API json DB](https://github.com/pllano/api-json-db/blob/master/doc/security.md)
-
-### Автоматическое разворачиваение
-При запуске в папке `_db_` которую вы указали база создаст:   
-Таблицу своей конфигурации `db.data.json` и `db.config.json`   
-Таблицу для кеша `cached.data.json` и `cached.config.json`  
-
-### Поддерживаемые типы данных в DB
-- `boolean` — Логический тип `true` или `false`
-- `integer` — Целое число	
-- `string` — Строковый тип
-- `double` — Число с плавающей точкой
-
-### Автоматическое создание таблиц базы данных
-База автоматически создает таблицы по стандарту [APIS-2018](https://github.com/pllano/APIS-2018). Структуру и взаимосвязи берет из файла [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json). Для создания индивидуальныой конфигурации таблиц отредактируйте файл [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) и перед запуском скопируйте его в директорию `/_db_/core/` или с создайте самостоятельно выполнив одну из команд ниже.
-
-#### Создать таблицу в базе данных
-```php
-use jsonDB\Database as jsonDb;
-
-$arr = array(
-    'id' => 'integer',
-    'name' => 'string',
-    'название_поля' => 'тип данных'
-);
-
-jsonDb::create('table_name', $arr);
-```	
-#### Удалить таблицу в базе данных
-```php
-use jsonDB\Database as jsonDb;
-
-jsonDb::remove('table_name');
-```
-#### Очистить таблицу
-```php
-use jsonDB\Database as jsonDb;
-
-jsonDb::table('table_name')->delete();
-```
-#### Проверьте, существует ли таблица в базе данных
-```php
-use jsonDB\Validate;
-use jsonDB\dbException;
-
-try{
-    Validate::table('table_name')->exists();
-} catch(dbException $e){
-    // Таблица не существует
-}
-```
-#### Создать запись в таблице
-```php
-use jsonDB\Database as jsonDb;
-
-$row = jsonDb::table('table_name');
-$row->name = 'Ivan';
-$row->save();
-```
-#### Получить данные с таблицы
-```php
-use jsonDB\Database as jsonDb;
-
-echo jsonDb::table('table_name')->where('name', '=', 'Ivan')->findAll();
-// или по id
-echo jsonDb::table('table_name')->where('id', '=', '10')->findAll();
-```
-#### Обновить данные
-```php
-use jsonDB\Database as jsonDb;
-
-$row = jsonDb::table('table_name')->find(10);
-$row->name = 'Andrey';
-$row->save();
-```
-#### Удалить запись по id
-```php
-use jsonDB\Database as jsonDb;
-
-jsonDb::table('table_name')->find(10)->delete();
-```
-
 ## RESTful API роутинг для cURL запросов
 «API json DB» имеет свой RESTfull API роутинг для cURL запросов который написан на PHP с использованием Micro Framework [Slim](https://github.com/slimphp), что позволяет использовать «API json DB» с любым другим языком программирования. Для унификации обмена данными сервер-сервер и клиент-сервер используется стандарт [APIS-2018](https://github.com/pllano/APIS-2018/). `Стандарт APIS-2018 - не является общепринятым` и является нашим взглядом в будущее и рекомендацией для унификации построения легких движков интернет-магазинов нового поколения.
 
 ### RESTfull API состоит всего из двух файлов:
 - [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php) и [.htaccess](https://github.com/pllano/api-json-db/blob/master/api/.htaccess)
 
-Для установки `RESTful API` выполните следующие действия:
+### Для установки `RESTful API` выполните следующие действия:
 
 - В файле [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php) укажите директорию где хранится база, например `/www/_db_/` или `__DIR__ . '/../../_db_/'`.
 
@@ -224,8 +122,110 @@ if ($records['headers']['code'] == '200') {
 
 [Коды ошибок HTTP](doc/errors.md)
 
-### Прямое подключение к DB
+### Безопасность
+[Советы по увеличению безопасности API json DB](https://github.com/pllano/api-json-db/blob/master/doc/security.md)
+
+### Автоматическое разворачиваение
+При запуске в папке `_db_` которую вы указали база создаст:   
+Таблицу своей конфигурации `db.data.json` и `db.config.json`   
+Таблицу для кеша `cached.data.json` и `cached.config.json`  
+
+### Поддерживаемые типы данных в DB
+- `boolean` — Логический тип `true` или `false`
+- `integer` — Целое число	
+- `string` — Строковый тип
+- `double` — Число с плавающей точкой
+
+### Автоматическое создание таблиц базы данных
+База автоматически создает таблицы по стандарту [APIS-2018](https://github.com/pllano/APIS-2018). Структуру и взаимосвязи берет из файла [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json). Для создания индивидуальныой конфигурации таблиц отредактируйте файл [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) и перед запуском скопируйте его в директорию `/_db_/core/` или с создайте самостоятельно выполнив одну из команд ниже.
+
+## Прямое подключение к DB
 Если вам не нужен API роутинг Вы можете работать с базой данных напрямую без REST API интерфейса - [Документация - работа с DB напрямую](https://github.com/pllano/api-json-db/blob/master/doc/db.md) или если вам не нужны (кеширование, шифрование) использовать оригинальный пакет [Lazer-Database](https://github.com/Greg0/Lazer-Database/).
+
+### Запуск одной строчкой кода
+```php
+(new \jsonDB\Db(__DIR__ . '/../../_db_/'))->run();
+```
+Запуск с параметрами
+```php
+use jsonDB\Db;
+$_db = __DIR__ . '/../../_db_/'; // Указываем директорию где будет храниться json db
+$db = new Db($_db);
+$db->setCached(true); // Включаем кеширование true|false
+$db->setCacheLifetime(60); // Время жижни кеша 60 минут
+$db->setTemp(true); // Используем очередь true|false
+$db->setApi(false); // Если работаем как основная база устанавливаем false
+$db->setCrypt(true); // Шифруем таблицы true|false
+$db->setKey(file_get_contents($_db . 'core/key_db.txt', true)); // Загружаем ключ шифрования
+$db->run();
+```
+Примечание: Если вы будете пользоваться RESTful API роутингом для cURL запросов, вам не нужно выполнять запуск базы, роутер [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php) сделает все сам. Вам достаточно установить пакет с помощью Composer и выпонить дейсвия с настройкой API роутинга описаны выше.
+
+#### Создать таблицу в базе данных
+```php
+use jsonDB\Database as jsonDb;
+
+$arr = array(
+    'id' => 'integer',
+    'name' => 'string',
+    'название_поля' => 'тип данных'
+);
+
+jsonDb::create('table_name', $arr);
+```	
+#### Удалить таблицу в базе данных
+```php
+use jsonDB\Database as jsonDb;
+
+jsonDb::remove('table_name');
+```
+#### Очистить таблицу
+```php
+use jsonDB\Database as jsonDb;
+
+jsonDb::table('table_name')->delete();
+```
+#### Проверьте, существует ли таблица в базе данных
+```php
+use jsonDB\Validate;
+use jsonDB\dbException;
+
+try{
+    Validate::table('table_name')->exists();
+} catch(dbException $e){
+    // Таблица не существует
+}
+```
+#### Создать запись в таблице
+```php
+use jsonDB\Database as jsonDb;
+
+$row = jsonDb::table('table_name');
+$row->name = 'Ivan';
+$row->save();
+```
+#### Получить данные с таблицы
+```php
+use jsonDB\Database as jsonDb;
+
+echo jsonDb::table('table_name')->where('name', '=', 'Ivan')->findAll();
+// или по id
+echo jsonDb::table('table_name')->where('id', '=', '10')->findAll();
+```
+#### Обновить данные
+```php
+use jsonDB\Database as jsonDb;
+
+$row = jsonDb::table('table_name')->find(10);
+$row->name = 'Andrey';
+$row->save();
+```
+#### Удалить запись по id
+```php
+use jsonDB\Database as jsonDb;
+
+jsonDb::table('table_name')->find(10)->delete();
+```
 
 <a name="feedback"></a>
 ## Поддержка, обратная связь, новости

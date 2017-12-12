@@ -31,13 +31,15 @@ use jsonDB\Database as jsonDb;
 use jsonDB\Validate;
 use jsonDB\dbException;
 
+// Проверяем папки DB, если нет создаем
+if (!file_exists($_db)){mkdir($_db);}
+if (!file_exists($_db . 'core')){mkdir($_db . 'core');}
+
 // Создаем ключ доступа
 if (!file_exists($_db . 'core/key_db.txt')){
-	
 	$ajax_key = Key::createNewRandomKey();
 	$key_db = $ajax_key->saveToAsciiSafeString();
 	file_put_contents($_db . 'core/key_db.txt', $key_db);
-	
 }
 
 // Конфигурация
@@ -82,52 +84,19 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 	$param_key = (isset($param['key'])) ? Db::clean($param['key']) : null;
 
 	if ($param_key == $this->get('settings')['db']["key"]) {
-		$resp["status"] = "OK";
+		$resp["status"] = "200 OK";
 		$resp["code"] = 200;
-		$resp["message"] = 'db_json_api works! To work, you need a key.';
+		$resp["message"] = "RESTfull API json DB works! works! To work, you need a key.";
 		echo json_encode($resp, JSON_PRETTY_PRINT);
 	} else {
-		$resp["status"] = "OK";
+		$resp["status"] = "200 OK";
 		$resp["code"] = 200;
-		$resp["message"] = 'db_json_api works!';
+		$resp["message"] = "RESTfull API json DB works!";
 		echo json_encode($resp, JSON_PRETTY_PRINT);
 	}
 
 	return $response->withStatus(200)->withHeader('Content-Type','application/json');
 
-});
-
-$app->get('/test', function (Request $request, Response $response, array $args) {
-
-	/*
-	$res->with('property');
-	$res->with('product_view');
-	*/
-
-	$res = jsonDb::table("product")->where("id", ">=", 61456)->orderBy('id')->limit(15)->findAll()->asArray();
-
-	/*
-	foreach($res AS $key => $unit){
-		if (isset($key) && isset($unit)) {
-			$item[$key] = $unit;
-			$items["item"] = $item;
-		}
-	}
-	*/
-
-	$resp = array();
-	$resp["headers"]["status"] = "200 OK";
-	$resp["headers"]["code"] = 200;
-	$resp["headers"]["message"] = 'Access is denied';
-
-	$resp["body"]["items"] = $res;
-
-	print_r($resp);
-
-	echo json_encode($resp, JSON_PRETTY_PRINT);
-	
-	return $response->withStatus(200)->withHeader('Content-Type','application/json');
-	
 });
 
 $app->get('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {

@@ -7,7 +7,7 @@ if (is_file($file)) {return false;}
 }
 
 // !!! Указываем директорию где будет храниться json db !!!
-$_db = __DIR__ . '/../../_db_json/';
+$_db = __DIR__ . '/../../_db_/';
 
 // Composer
 require __DIR__ . '/../../vendor/autoload.php';
@@ -126,7 +126,6 @@ $app->get( '/test', function (Request $request, Response $response, array $args)
 	return $response->withStatus(200)->withHeader('Content-Type','application/json');
 	
 });
-
 
 $app->get('/{table}[/{id}]', function (Request $request, Response $response, array $args) {
 	
@@ -479,7 +478,7 @@ $app->post('/{table}[/{id}]', function (Request $request, Response $response, ar
 	$table_name = $request->getAttribute('table');
 	$id = $request->getAttribute('id');
 	$post = $request->getParsedBody();
-
+			
 	if (isset($table_name)) {
 		if (isset($id)) {
 			// Если указан id даем ошибку: 400 Bad Request «плохой, неверный запрос»
@@ -492,11 +491,13 @@ $app->post('/{table}[/{id}]', function (Request $request, Response $response, ar
 
 			// Проверяем наличие главной базы если нет даем ошибку
 			try {Validate::table($table_name)->exists();
+			
+				$table_config = json_decode(file_get_contents($this->get('settings')['db']["dir"].'/'.$table_name.'.config.json'), true);
 
 				$param_key = '';
 				if ($this->get('settings')['db']["access_key"] == true){
 					//$param_key = (isset($getParams['key'])) ? Db::clean($getParams['key']) : "none";
-					$param_key = filter_var($post['key'], FILTER_SANITIZE_STRING);
+					$param_key = filter_var($post["request"]['key'], FILTER_SANITIZE_STRING);
 				} else {
 					$param_key = $this->get('settings')['db']["key"];
 				}
@@ -507,11 +508,11 @@ $app->post('/{table}[/{id}]', function (Request $request, Response $response, ar
 					$row = jsonDb::table($table_name);
 	
 					//	Разбираем параметры полученные в теле запроса
-					foreach($post as $key => $unit){
+					foreach($post["body"]["items"]["item"] as $key => $unit){
 	
 						if (isset($key) && isset($unit)) {
 	
-							if ($key != "key") {
+							if ($key != "key" && array_key_exists($key, $table_config["schema"])) {
 
 								$key = filter_var($key, FILTER_SANITIZE_STRING);
 								$unit = filter_var($unit, FILTER_SANITIZE_STRING);
@@ -579,7 +580,161 @@ $app->post('/{table}[/{id}]', function (Request $request, Response $response, ar
 
 $app->put('/{table}[/{id}]', function (Request $request, Response $response, array $args) {
 
-// В разработке
+	$table_name = $request->getAttribute('table');
+	$id = $request->getAttribute('id');
+	$put = $request->getParsedBody();
+
+	if (isset($table_name)) {
+
+		// Проверяем наличие главной базы если нет даем ошибку
+		try {Validate::table($table_name)->exists();
+	
+			$table_config = json_decode(file_get_contents($this->get('settings')['db']["dir"].'/'.$table_name.'.config.json'), true);
+	
+			$param_key = '';
+			if ($this->get('settings')['db']["access_key"] == true){
+				$param_key = filter_var($put["request"]['key'], FILTER_SANITIZE_STRING);
+			} else {
+				$param_key = $this->get('settings')['db']["key"];
+			}
+
+			if ($this->get('settings')['db']["key"] == $param_key) {
+
+				// Если указан id обновляем одну запись
+				if (isset($id)) {
+	
+					//	Подключаем таблицу
+					$row = jsonDb::table($table_name)->find($id);
+
+					//	Разбираем параметры полученные в теле запроса
+					foreach($put["body"]["items"]["item"] as $key => $unit){
+
+						if (isset($key) && isset($unit)) {
+
+							if ($key != "key" && array_key_exists($key, $table_config["schema"])) {
+
+								$key = filter_var($key, FILTER_SANITIZE_STRING);
+								$unit = filter_var($unit, FILTER_SANITIZE_STRING);
+
+								$row->$key = $unit;
+
+							}
+						}
+
+					}
+
+					//	Сохраняем изменения
+					$row->save();
+
+					if (isset($row->id)) {
+					
+						// Все ок. 202 Accepted «принято»
+						$resp["headers"]["status"] = "202 Accepted";
+						$resp["headers"]["code"] = 202;
+						$resp["headers"]["message"] = "Accepted";
+						$resp["headers"]["message_id"] = 202;
+						$resp["response"]["id"] = $id;
+						$resp["request"]["query"] = "PUT";
+						$resp["request"]["table"] = $table_name;
+
+					} else {
+
+						// Не удалось создать. 501 Not Implemented «не реализовано»
+						$resp["headers"]["status"] = '501 Not Implemented';
+						$resp["headers"]["code"] = 501;
+						$resp["headers"]["message"] = 'Not Implemented';
+						$resp["headers"]["message_id"] = 501;
+						$resp["response"]["total"] = 0;
+					}
+
+				} else {
+				// Обновляем несколько записей
+
+					//	Разбираем параметры полученные в теле запроса
+					foreach($put["body"]["items"] as $items){
+						
+						$row = '';
+
+						foreach($items["item"] as $key => $unit){
+
+							if (isset($key) && isset($unit)) {
+	
+								if ($key == "id") {
+									$row = jsonDb::table($table_name)->find($key);
+								}
+								if ($key != "key" && $key != "id" && array_key_exists($key, $table_config["schema"])) {
+
+									$key = filter_var($key, FILTER_SANITIZE_STRING);
+									$unit = filter_var($unit, FILTER_SANITIZE_STRING);
+
+									$row->$key = $unit;
+
+								}
+							}
+
+						}
+				
+						//	Сохраняем изменения
+						$row->save();
+					}
+
+					if (isset($row->id)) {
+						
+						// Все ок. 202 Accepted «принято»
+						$resp["headers"]["status"] = "202 Accepted";
+						$resp["headers"]["code"] = 202;
+						$resp["headers"]["message"] = "Accepted";
+						$resp["headers"]["message_id"] = 202;
+						$resp["response"]["id"] = $id;
+						$resp["request"]["query"] = "PUT";
+						$resp["request"]["table"] = $table_name;
+						
+					} else {
+						
+						// Не удалось создать. 501 Not Implemented «не реализовано»
+						$resp["headers"]["status"] = '501 Not Implemented';
+						$resp["headers"]["code"] = 501;
+						$resp["headers"]["message"] = 'Not Implemented';
+						$resp["headers"]["message_id"] = 501;
+						$resp["response"]["total"] = 0;
+					}
+
+				}
+
+			} else {
+
+				// Доступ запрещен. Ключ доступа не совпадает.
+				$resp["headers"]["status"] = '401 Unauthorized';
+				$resp["headers"]["code"] = 401;
+				$resp["headers"]["message"] = 'Access is denied';
+				$resp["headers"]["message_id"] = 401;
+				$resp["response"]["total"] = 0;
+			}
+
+		} catch(dbException $e){
+
+			// Таблица не существует даем ошибку 404
+			$resp["headers"]["status"] = '404 Not Found';
+			$resp["headers"]["code"] = 404;
+			$resp["headers"]["message"] = 'Not Found';
+			$resp["headers"]["message_id"] = 404;
+			$resp["response"]["total"] = 0;
+
+		}
+
+	} else {
+
+		// Если таблица не определена даем ошибку 400
+		$resp["headers"]["status"] = '400 Bad Request';
+		$resp["headers"]["code"] = 400;
+		$resp["headers"]["message"] = 'Bad Request';
+		$resp["headers"]["message_id"] = 400;
+		$resp["response"]["total"] = 0;
+	}
+
+	echo json_encode($resp, JSON_PRETTY_PRINT);
+
+	return $response->withStatus(200)->withHeader('Content-Type','application/json');
 
 });
 

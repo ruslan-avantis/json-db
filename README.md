@@ -27,9 +27,9 @@
 При запуске база создаст в папке `_db_` которую вы указали:   
 - Таблицу своей конфигурации `db.data.json` и `db.config.json`   
 - Таблицу для кеша `cached.data.json` и `cached.config.json`
-- Директории: `/_db_/cached` `/_db_/core` `/_db_/log` `/_db_/request` `/_db_/temp`
-- В директории `/_db_/core` сгенерирует файл с ключем для http запросов key_db.txt
-- В директорию `/_db_/core` скачает этот [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) файл структуры базы.
+- Директории: `cached` `core` `log` `request` `temp`
+- В директории `core` сгенерирует файл с ключем для http запросов key_db.txt
+- В директорию `core` скачает этот [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) файл структуры базы.
 ### Автоматическое создание таблиц
 База автоматически создаст все таблицы и взаимосвязи указанные в файле [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json). Для создания индивидуальныой конфигурации таблиц отредактируйте файл [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) и перед запуском скопируйте его в директорию `/_db_/core/`.
 ### Поддерживаемые типы данных в DB

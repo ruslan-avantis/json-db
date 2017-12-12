@@ -49,7 +49,7 @@ $db->run();
 ### Автоматическое создание таблиц базы данных
 База автоматически создает таблицы по стандарту [APIS-2018](https://github.com/pllano/APIS-2018). Структуру и взаимосвязи берет из файла [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json). Для создания индивидуальныой конфигурации таблиц отредактируйте файл [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) и перед запуском скопируйте его в директорию `/_db_/core/` или с создайте самостоятельно выполнив одну из команд ниже.
 
-### Создать таблицу в базе данных
+#### Создать таблицу в базе данных
 ```php
 use jsonDB\Database as jsonDb;
 
@@ -61,7 +61,7 @@ $arr = array(
 
 jsonDb::create('table_name', $arr);
 ```	
-### Удалить таблицу в базе данных
+#### Удалить таблицу в базе данных
 ```php
 use jsonDB\Database as jsonDb;
 
@@ -73,7 +73,7 @@ use jsonDB\Database as jsonDb;
 
 jsonDb::table('table_name')->delete();
 ```
-### Проверьте, существует ли таблица в базе данных
+#### Проверьте, существует ли таблица в базе данных
 ```php
 use jsonDB\Validate;
 use jsonDB\dbException;

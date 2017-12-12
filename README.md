@@ -14,8 +14,9 @@
 ```
 ```php
 // Указываем директорию где будет храниться json db
-$_db = __DIR__ . '/../../_db_/';
 use jsonDB\Db;
+
+$_db = __DIR__ . '/../../_db_/';
 $db = new Db($_db);
 $db->run();
 ```
@@ -26,6 +27,7 @@ $db->run();
 или с популярными настройками
 ```php
 use jsonDB\Db;
+
 $_db = __DIR__ . '/../../_db_/';
 $db = new Db($_db);
 $db->setCached(true); // Включаем кеширование true|false

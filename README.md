@@ -25,15 +25,18 @@
 ```
 ### Автоматическое разворачиваение
 При запуске в папке `_db_` которую вы указали база создаст:   
-Таблицу своей конфигурации `db.data.json` и `db.config.json`   
-Таблицу для кеша `cached.data.json` и `cached.config.json`  
+- Таблицу своей конфигурации `db.data.json` и `db.config.json`   
+- Таблицу для кеша `cached.data.json` и `cached.config.json`
+- Директории: `/_db_/cached` `/_db_/core` `/_db_/log` `/_db_/request` `/_db_/temp`
+- В директории `/_db_/core` сгенерирует файл с ключем для http запросов key_db.txt
+- В директорию `/_db_/core` скачает этот [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) файл структуры базы.
+### Автоматическое создание таблиц
+База автоматически создаст таблицы по стандарту [APIS-2018](https://github.com/pllano/APIS-2018). Структуру и взаимосвязи берет из файла [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json). Для создания индивидуальныой конфигурации таблиц отредактируйте файл [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) и перед запуском скопируйте его в директорию `/_db_/core/`.
 ### Поддерживаемые типы данных в DB
 - `boolean` — Логический тип `true` или `false`
 - `integer` — Целое число	
 - `string` — Строковый тип
 - `double` — Число с плавающей точкой
-### Автоматическое создание таблиц базы данных
-База автоматически создает таблицы по стандарту [APIS-2018](https://github.com/pllano/APIS-2018). Структуру и взаимосвязи берет из файла [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json). Для создания индивидуальныой конфигурации таблиц отредактируйте файл [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) и перед запуском скопируйте его в директорию `/_db_/core/` или с создайте самостоятельно выполнив одну из команд ниже.
 ### URL запросов к RESTful API jsonDB
 - `https://example.com/{api_dir}/{table_name}/{id}`
 - `{api_dir}` - папка в которой лежит [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php)

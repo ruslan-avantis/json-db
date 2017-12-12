@@ -1,7 +1,7 @@
 <?php 
-ini_set('error_reporting', E_ALL);
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
+//ini_set('error_reporting', E_ALL);
+//ini_set('display_errors', 1);
+//ini_set('display_startup_errors', 1);
 
 if (PHP_SAPI == 'cli-server') {
 $url  = parse_url($_SERVER['REQUEST_URI']);
@@ -99,8 +99,8 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 
 $app->get('/{table}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
 	
-	$table_name = $request->getAttribute('table');
-	$id = $request->getAttribute('id');
+	$table_name = Db::clean($request->getAttribute('table'));
+	$id = Db::clean($request->getAttribute('id'));
 	$getParams = $request->getQueryParams();
 	$getUri = $request->getUri();
 	
@@ -445,8 +445,8 @@ $app->get('/{table}[/{id:[0-9]+}]', function (Request $request, Response $respon
 
 $app->post('/{table}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
 
-	$table_name = $request->getAttribute('table');
-	$id = $request->getAttribute('id');
+	$table_name = Db::clean($request->getAttribute('table'));
+	$id = Db::clean($request->getAttribute('id'));
 	$post = $request->getParsedBody();
 			
 	if (isset($table_name)) {
@@ -472,7 +472,7 @@ $app->post('/{table}[/{id:[0-9]+}]', function (Request $request, Response $respo
 					$param_key = $this->get('settings')['db']["key"];
 				}
 
-				if ($this->get('settings')['db']["key"] == $param_key) {
+				if ($this->get('settings')['db']["key"] == Db::clean($param_key)) {
 
 					//	Подключаем таблицу
 					$row = jsonDb::table($table_name);
@@ -487,7 +487,7 @@ $app->post('/{table}[/{id:[0-9]+}]', function (Request $request, Response $respo
 								$key = filter_var($key, FILTER_SANITIZE_STRING);
 								$unit = filter_var($unit, FILTER_SANITIZE_STRING);
 								
-								$row->$key = $unit;
+								$row->$key = Db::clean($unit);
 							}
 						}
 
@@ -550,8 +550,8 @@ $app->post('/{table}[/{id:[0-9]+}]', function (Request $request, Response $respo
 
 $app->put('/{table}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
 
-	$table_name = $request->getAttribute('table');
-	$id = $request->getAttribute('id');
+	$table_name = Db::clean($request->getAttribute('table'));
+	$id = Db::clean($request->getAttribute('id'));
 	$put = $request->getParsedBody();
 	
 	if (isset($table_name)) {
@@ -568,7 +568,7 @@ $app->put('/{table}[/{id:[0-9]+}]', function (Request $request, Response $respon
 				$param_key = $this->get('settings')['db']["key"];
 			}
 
-			if ($this->get('settings')['db']["key"] == $param_key) {
+			if ($this->get('settings')['db']["key"] == Db::clean($param_key)) {
 
 				// Если указан id обновляем одну запись
 				if (isset($id)) {
@@ -586,7 +586,7 @@ $app->put('/{table}[/{id:[0-9]+}]', function (Request $request, Response $respon
 								$key = filter_var($key, FILTER_SANITIZE_STRING);
 								$unit = filter_var($unit, FILTER_SANITIZE_STRING);
 
-								$row->$key = $unit;
+								$row->$key = Db::clean($unit);
 
 							}
 						}
@@ -637,7 +637,7 @@ $app->put('/{table}[/{id:[0-9]+}]', function (Request $request, Response $respon
 									$key = filter_var($key, FILTER_SANITIZE_STRING);
 									$unit = filter_var($unit, FILTER_SANITIZE_STRING);
 
-									$row->$key = $unit;
+									$row->$key = Db::clean($unit);
 
 								}
 							}
@@ -710,8 +710,8 @@ $app->put('/{table}[/{id:[0-9]+}]', function (Request $request, Response $respon
 
 $app->delete('/{table}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
 
-	$table_name = $request->getAttribute('table');
-	$id = $request->getAttribute('id');
+	$table_name = Db::clean($request->getAttribute('table'));
+	$id = Db::clean($request->getAttribute('id'));
 	$delete = $request->getParsedBody();
 
 	if (isset($table_name)) {
@@ -728,13 +728,13 @@ $app->delete('/{table}[/{id:[0-9]+}]', function (Request $request, Response $res
 				$param_key = $this->get('settings')['db']["key"];
 			}
 
-			if ($this->get('settings')['db']["key"] == $param_key) {
+			if ($this->get('settings')['db']["key"] == Db::clean($param_key)) {
 
 				// Если указан id удаляем одну запись
 				if (isset($id)) {
 	
 					//	Удаляем запись из таблицы
-					$row = jsonDb::table($table_name)->find($id)->delete();
+					$row = jsonDb::table($table_name)->find(Db::clean($id))->delete();
 					print_r($row);
 
 					if ($row == 1) {
@@ -772,7 +772,7 @@ $app->delete('/{table}[/{id:[0-9]+}]', function (Request $request, Response $res
 							if (isset($key) && isset($unit)) {
 	
 								if ($key == "id") {
-									$row = jsonDb::table($table_name)->find($key)->delete();
+									$row = jsonDb::table($table_name)->find(Db::clean($unit))->delete();
 								}
 								
 							}

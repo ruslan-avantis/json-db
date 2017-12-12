@@ -31,7 +31,7 @@
 - В директории `core` сгенерирует файл с ключем для http запросов key_db.txt если его там еще нет.
 - В директорию `core` скачает этот [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) файл структуры если его там нет.
 ### Автоматическое создание таблиц
-База автоматически создаст все таблицы и взаимосвязи указанные в файле [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json). Для создания индивидуальныой конфигурации таблиц отредактируйте файл [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) и перед запуском скопируйте его в директорию `/_db_/core/`.
+База автоматически создаст все таблицы и взаимосвязи указанные в файле [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json). Для создания индивидуальной конфигурации таблиц отредактируйте файл [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) и перед запуском скопируйте его в директорию `/_db_/core/`.
 ### Поддерживаемые типы данных в DB
 - `boolean` — Логический тип `true` или `false`
 - `integer` — Целое число	

@@ -35,20 +35,20 @@ $db->setCrypt(true); // Шифруем таблицы true|false
 $db->setKey(file_get_contents($_db . 'core/key_db.txt', true)); // Загружаем ключ шифрования
 $db->run();
 ```
-	
 ### Автоматическое разворачиваение
 При запуске в папке `_db_` которую вы указали база создаст:   
 Таблицу своей конфигурации `db.data.json` и `db.config.json`   
 Таблицу для кеша `cached.data.json` и `cached.config.json`  
 
-### Автоматическое создание таблиц базы данных
-База автоматически создает таблицы по стандарту [APIS-2018](https://github.com/pllano/APIS-2018) структуру и взаимосвязи берет с файла [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json). Для создания индивидуальныой конфигурации таблиц отредактируйте файл [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) перед запуском и скопируйте его в директорию `/_db_/core/`	 
-
-### Поддерживаемые типы данных
+### Поддерживаемые типы данных в DB
 - `boolean` — Логический тип `true` или `false`
 - `integer` — Целое число	
 - `string` — Строковый тип
 - `double` — Число с плавающей точкой
+
+### Автоматическое создание таблиц базы данных
+База автоматически создает таблицы по стандарту [APIS-2018](https://github.com/pllano/APIS-2018), структуру и взаимосвязи берет с файла [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json). Для создания индивидуальныой конфигурации таблиц отредактируйте файл [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) перед запуском и скопируйте его в директорию `/_db_/core/` или с создайте самостоятельно выполнив одну из команд ниже.
+
 ### Создать таблицу в базе данных
 ```php
 use jsonDB\Database as jsonDb;

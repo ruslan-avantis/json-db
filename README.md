@@ -139,23 +139,12 @@ jsonDb::table('table_name')->find(10)->delete();
 }
 ```
 
-### RESTful API jsonDB потдерживает запросы:
-- `POST /{table_name}` Создание записи 
-- `POST /{table_name}/{id}` Ошибка
-- `GET /{table_name}` Список всех записей
-- `GET /{table_name}/{id}` Данные конкретной записи
-- `PUT /{table_name}` Обновить данные записей
-- `PUT /{table_name}/{id}` Обновить данные конкретной записи
-- `DELETE /{table_name}` Удалить все записи
-- `DELETE /{table_name}/{id}` Удалить конкретную запись
-
-Для тех кто может отправлять только с `POST` и `GET` запросы мы дублируем тип запроса в параметре `query`
-
 ### URL RESTful API jsonDB
 - `https://example.com/{api_dir}/{table_name}/{id}`
 - `{api_dir}` - папка в которой лежит 
 - `{table_name}` - название таблицы к которой обращаемся. Например price или user.
 - `{id}` - уникальный индефикатор
+- `{param}` - праметры запроса
 
 ### GET запрос к RESTful API jsonDB
 `?offset={offset}&limit={limit}&order={order}&sort={sort}&key={key}`
@@ -165,6 +154,19 @@ jsonDb::table('table_name')->find(10)->delete();
 - `{order}` - Тип сортировки. По умолчанию asc
 - `{sort}` - Поле сортировки. По умолчанию id
 - `{*}` - Любое из полей таблицы
+
+### RESTful API jsonDB потдерживает запросы:
+- `POST /{table_name}` Создание записи 
+- `POST /{table_name}/{id}` Ошибка
+- `GET /{table_name}` Список всех записей
+- `GET /{table_name}?{param}` Список всех записей с фильтром по параметрам
+- `GET /{table_name}/{id}` Данные конкретной записи
+- `PUT /{table_name}` Обновить данные записей
+- `PUT /{table_name}/{id}` Обновить данные конкретной записи
+- `DELETE /{table_name}` Удалить все записи
+- `DELETE /{table_name}/{id}` Удалить конкретную запись
+
+Для тех кто может отправлять только с `POST` и `GET` запросы мы дублируем тип запроса в параметре `query`
 
 [Список всех параметров запроса](doc/query.md)
 

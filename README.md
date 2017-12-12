@@ -32,7 +32,7 @@ $db = new Db($_db);
 $db->setCached(true); // Включаем кеширование true|false
 $db->setCacheLifetime(60); // Время жижни кеша 60 минут
 $db->setTemp(true); // Используем очередь true|false
-$db->setApi(false); // Работаем как основная база true|false
+$db->setApi(false); // Если работаем как основная база устанавливаем false
 $db->setCrypt(true); // Шифруем таблицы true|false
 $db->setKey($_db.'/core/key_db.txt'); // Путь к ключу шифрования
 $db->run();

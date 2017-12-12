@@ -20,7 +20,7 @@
 {
     "status": "OK",
     "code": 200,
-    "message": "db_json_api works!"
+    "message": "RESTfull API json DB works!"
 }
 ```
 ### Автоматическое разворачиваение

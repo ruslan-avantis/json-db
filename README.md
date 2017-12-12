@@ -12,6 +12,8 @@
 	"pllano/api-json-db": "*"
 }
 ```
+[Список зависимостей](https://github.com/pllano/api-json-db/blob/master/composer.json)
+
 ```php
 // Указываем директорию где будет храниться json db
 use jsonDB\Db;

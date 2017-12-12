@@ -78,6 +78,9 @@ class File implements FileInterface {
 		} else {
 			// Если ключ шифрования не установлен не шифруем и расшифровываем все и пересохраняем
 			try {
+			return json_decode($getPath, $assoc);
+			} catch(dbException $e){
+				
 				if (defined('JSON_DB_KEY')){
 					$decrypt = Crypto::decrypt($getPath, Key::loadFromAsciiSafeString(JSON_DB_KEY));
 					file_put_contents($this->getPath(), $decrypt);
@@ -85,8 +88,7 @@ class File implements FileInterface {
 				} else {
 					return json_decode($getPath, $assoc);
 				}
-			} catch(WrongKeyOrModifiedCiphertextException $ex){
-				return json_decode($getPath, $assoc);
+				
 			}
 		}
 		

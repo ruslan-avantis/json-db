@@ -47,7 +47,7 @@ $db->run();
 - `double` — Число с плавающей точкой
 
 ### Автоматическое создание таблиц базы данных
-База автоматически создает таблицы по стандарту [APIS-2018](https://github.com/pllano/APIS-2018), структуру и взаимосвязи берет с файла [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json). Для создания индивидуальныой конфигурации таблиц отредактируйте файл [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) перед запуском и скопируйте его в директорию `/_db_/core/` или с создайте самостоятельно выполнив одну из команд ниже.
+База автоматически создает таблицы по стандарту [APIS-2018](https://github.com/pllano/APIS-2018). Структуру и взаимосвязи берет из файла [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json). Для создания индивидуальныой конфигурации таблиц отредактируйте файл [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) и перед запуском скопируйте его в директорию `/_db_/core/` или с создайте самостоятельно выполнив одну из команд ниже.
 
 ### Создать таблицу в базе данных
 ```php

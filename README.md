@@ -14,7 +14,7 @@
 ### Для установки `RESTful API` выполните следующие действия:
 - В файле [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php) укажите директорию где хранится база, например `/www/_db_/` или `__DIR__ . '/../../_db_/'`.
 - Перенесите файлы [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php) и [.htaccess](https://github.com/pllano/api-json-db/blob/master/api/.htaccess) в директорию доступную через URL. Например: `https://example.com/_12345_/`
-- Запустите `https://example.com/_12345_/`		
+- Запустите API перейдя по ссылке `https://example.com/_12345_/`		
 - Если база работает Вы увидите следующий результат:
 ```json
 {

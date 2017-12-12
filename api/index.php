@@ -97,7 +97,7 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 
 });
 
-$app->get('/{table}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
+$app->get('/{table:[a-zA-Z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
 	
 	$table_name = Db::clean($request->getAttribute('table'));
 	$id = Db::clean($request->getAttribute('id'));
@@ -443,7 +443,7 @@ $app->get('/{table}[/{id:[0-9]+}]', function (Request $request, Response $respon
 	
 });
 
-$app->post('/{table}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
+$app->post('/{table:[a-zA-Z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
 
 	$table_name = Db::clean($request->getAttribute('table'));
 	$id = Db::clean($request->getAttribute('id'));
@@ -548,7 +548,7 @@ $app->post('/{table}[/{id:[0-9]+}]', function (Request $request, Response $respo
 
 });
 
-$app->put('/{table}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
+$app->put('/{table:[a-zA-Z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
 
 	$table_name = Db::clean($request->getAttribute('table'));
 	$id = Db::clean($request->getAttribute('id'));
@@ -708,7 +708,7 @@ $app->put('/{table}[/{id:[0-9]+}]', function (Request $request, Response $respon
 
 });
 
-$app->delete('/{table}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
+$app->delete('/{table:[a-zA-Z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
 
 	$table_name = Db::clean($request->getAttribute('table'));
 	$id = Db::clean($request->getAttribute('id'));

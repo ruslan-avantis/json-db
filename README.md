@@ -136,14 +136,12 @@ jsonDb::table('table_name')->find(10)->delete();
     "message": "db_json_api works!"
 }
 ```
-
 ### URL RESTful API jsonDB
 - `https://example.com/{api_dir}/{table_name}/{id}`
-- `{api_dir}` - папка в которой лежит 
+- `{api_dir}` - папка в которой лежит [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php)
 - `{table_name}` - название таблицы к которой обращаемся. Например price или user.
 - `{id}` - уникальный индефикатор
 - `{param}` - праметры запроса
-
 ### GET запрос к RESTful API jsonDB
 `?offset={offset}&limit={limit}&order={order}&sort={sort}&key={key}`
 - `{key}` - Ключ доступа к RESTful API
@@ -152,7 +150,6 @@ jsonDb::table('table_name')->find(10)->delete();
 - `{order}` - Тип сортировки. По умолчанию asc
 - `{sort}` - Поле сортировки. По умолчанию id
 - `{*}` - Любое из полей таблицы
-
 ### RESTful API jsonDB потдерживает запросы:
 - `POST /{table_name}` Создание записи 
 - `POST /{table_name}/{id}` Ошибка

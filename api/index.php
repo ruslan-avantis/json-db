@@ -51,7 +51,7 @@
 	$db->setCacheLifetime(60);
 	$db->setTemp(true);
 	$db->setApi(true);
-	//$db->setCrypt($config['settings']['db']['access_key']);
+	//$db->setCrypt(true);
 	//$db->setKey($config['settings']['db']['key']);
 	$db->run();
 	

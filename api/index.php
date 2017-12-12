@@ -54,8 +54,8 @@ $db->setCached(true);
 $db->setCacheLifetime(60);
 $db->setTemp(true);
 $db->setApi(true);
-//$db->setCrypt(false);
-//$db->setKey($config['settings']['db']['key']);
+// $db->setCrypt(false);
+// $db->setKey($config['settings']['db']['key']);
 $db->run();
 
 // Подключаем Slim
@@ -93,6 +93,40 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 	return $response->withStatus(200)->withHeader('Content-Type','application/json');
 
 });
+
+$app->get( '/test', function (Request $request, Response $response, array $args) {
+
+	/*
+	$res->with('property');
+	$res->with('product_view');
+	*/
+
+	$res = jsonDb::table("product")->where("id", ">=", 61456)->orderBy('id')->limit(15)->findAll()->asArray();
+
+	/*
+	foreach($res AS $key => $unit){
+		if (isset($key) && isset($unit)) {
+			$item[$key] = $unit;
+			$items["item"] = $item;
+		}
+	}
+	*/
+
+	$resp = array();
+	$resp["headers"]["status"] = "200 OK";
+	$resp["headers"]["code"] = 200;
+	$resp["headers"]["message"] = 'Access is denied';
+
+	$resp["body"]["items"] = $res;
+
+	print_r($resp);
+
+	echo json_encode($resp, JSON_PRETTY_PRINT);
+	
+	return $response->withStatus(200)->withHeader('Content-Type','application/json');
+	
+});
+
 
 $app->get('/{table}[/{id}]', function (Request $request, Response $response, array $args) {
 	
@@ -542,3 +576,18 @@ $app->post('/{table}[/{id}]', function (Request $request, Response $response, ar
 	return $response->withStatus(200)->withHeader('Content-Type','application/json');
 
 });
+
+$app->put('/{table}[/{id}]', function (Request $request, Response $response, array $args) {
+
+// В разработке
+
+});
+
+$app->delete('/{table}[/{id}]', function (Request $request, Response $response, array $args) {
+
+// В разработке
+
+});
+
+// Запускаем Slim
+$app->run();

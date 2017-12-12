@@ -6,14 +6,12 @@
 Основанием для «API json DB» мы выбрали прекрасную работу [Greg0/Lazer-Database](https://github.com/Greg0/Lazer-Database/). Мы полностью изменили структуру оригинала и добавили: шифрование, API роутинг, кеширование, проверку валидности, очередь на запись и другой удобный функционал.
 
 ## Старт
-Подключить пакет с помощью Composer
+Подключить пакет с помощью Composer - [Список зависимостей](https://github.com/pllano/api-json-db/blob/master/composer.json)
 ```json
 "require": {
 	"pllano/api-json-db": "*"
 }
 ```
-[Список зависимостей](https://github.com/pllano/api-json-db/blob/master/composer.json)
-
 ```php
 // Указываем директорию где будет храниться json db
 use jsonDB\Db;

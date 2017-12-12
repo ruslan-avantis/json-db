@@ -34,14 +34,6 @@
 		file_put_contents($_db . 'core/key_db.txt', $key_db);
 	}
 	
-	// Запускаем json db
-	$db = new Db($_db);
-	$db->setCached(true);
-	$db->setCacheLifetime(5);
-	$db->setTemp(true);
-	$db->setApi(true);
-	$db->run();
-	
 	// Конфигурация
 	$config = array();
 	$config['settings']['db']['dir'] = $_db;
@@ -52,6 +44,16 @@
 	$config['settings']['addContentLengthHeader'] = false;
 	$config['settings']['determineRouteBeforeAppMiddleware'] = true;
 	$config['settings']['debug'] = true;
+
+	// Запускаем json db
+	$db = new Db($_db);
+	$db->setCached(true);
+	$db->setCacheLifetime(5);
+	$db->setTemp(true);
+	$db->setApi(true);
+	$db->setCrypt($config['settings']['db']['access_key']);
+	$db->setKey($config['settings']['db']['key']);
+	$db->run();
 	
 	// Подключаем Slim
 	$app = new App($config);

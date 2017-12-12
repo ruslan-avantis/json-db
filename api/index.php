@@ -1,7 +1,7 @@
 <?php 
-//ini_set('error_reporting', E_ALL);
-//ini_set('display_errors', 1);
-//ini_set('display_startup_errors', 1);
+// ini_set('error_reporting', E_ALL);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
 
 if (PHP_SAPI == 'cli-server') {
 $url  = parse_url($_SERVER['REQUEST_URI']);
@@ -52,6 +52,8 @@ $config['settings']['displayErrorDetails'] = false;
 $config['settings']['addContentLengthHeader'] = false;
 $config['settings']['determineRouteBeforeAppMiddleware'] = true;
 $config['settings']['debug'] = true;
+$config['settings']['http-codes'] = "https://github.com/pllano/api-json-db/blob/master/doc/http-codes/";
+
 
 // Запускаем json db
 $db = new Db($_db);
@@ -84,14 +86,17 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 	$param_key = (isset($param['key'])) ? Db::clean($param['key']) : null;
 
 	if ($param_key == $this->get('settings')['db']["key"]) {
-		$resp["status"] = "200 OK";
-		$resp["code"] = 200;
-		$resp["message"] = "RESTfull API json DB works! works! To work, you need a key.";
+		$resp["headers"]["status"] = "200 OK";
+		$resp["headers"]["code"] = 200;
+		$resp["headers"]["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
+		$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["code"].".md";
+		
 		echo json_encode($resp, JSON_PRETTY_PRINT);
 	} else {
-		$resp["status"] = "200 OK";
-		$resp["code"] = 200;
-		$resp["message"] = "RESTfull API json DB works!";
+		$resp["headers"]["status"] = "200 OK";
+		$resp["headers"]["code"] = 200;
+		$resp["headers"]["message"] = "RESTfull API json DB works!";
+		$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 		echo json_encode($resp, JSON_PRETTY_PRINT);
 	}
 
@@ -145,7 +150,7 @@ $app->get('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Response $
 							$resp["headers"]["status"] = "200 OK";
 							$resp["headers"]["code"] = 200;
 							$resp["headers"]["message"] = "OK";
-							$resp["headers"]["message_id"] = 0;
+							$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 							$resp["response"]["source"] = "db";
 							$resp["response"]["total"] = $resCount;
 							$resp["request"]["query"] = "GET";
@@ -165,7 +170,7 @@ $app->get('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Response $
 							$resp["headers"]["status"] = '404 Not Found';
 							$resp["headers"]["code"] = 404;
 							$resp["headers"]["message"] = 'Not Found';
-							$resp["headers"]["message_id"] = 1;
+							$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 							$resp["response"]["source"] = "db";
 							$resp["response"]["total"] = 0;
 							$resp["request"]["query"] = "GET";
@@ -190,7 +195,7 @@ $app->get('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Response $
 							$resp["headers"]["status"] = "200 OK";
 							$resp["headers"]["code"] = 200;
 							$resp["headers"]["message"] = "OK";
-							$resp["headers"]["message_id"] = "";
+							$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 							
 							if (isset($query["JSONPath"]) || isset($query["jsonpath"])) {
 								if (isset($query["JSONPath"])) {$unit = $query["JSONPath"];	}
@@ -446,6 +451,7 @@ $app->get('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Response $
 				$resp["headers"]["status"] = '404 Not Found';
 				$resp["headers"]["code"] = 404;
 				$resp["headers"]["message"] = 'Table Not Found';
+				$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 				$resp["response"]["total"] = 0;
 			}
 			
@@ -455,6 +461,7 @@ $app->get('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Response $
 			$resp["headers"]["status"] = '403';
 			$resp["headers"]["code"] = 403;
 			$resp["headers"]["message"] = 'Access is denied';
+			$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 			$resp["response"]["total"] = 0;
 		}
 		
@@ -464,6 +471,7 @@ $app->get('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Response $
 		$resp["headers"]["status"] = '403';
 		$resp["headers"]["code"] = 403;
 		$resp["headers"]["message"] = 'Access is denied';
+		$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 		$resp["response"]["total"] = 0;
 	}
 	
@@ -484,7 +492,7 @@ $app->post('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Response 
 			$resp["headers"]["status"] = '400 Bad Request';
 			$resp["headers"]["code"] = 400;
 			$resp["headers"]["message"] = 'Bad Request';
-			$resp["headers"]["message_id"] = 400;
+			$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 			$resp["response"]["total"] = 0;
 		} else {
 
@@ -530,7 +538,7 @@ $app->post('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Response 
 						$resp["headers"]["status"] = "201 Created";
 						$resp["headers"]["code"] = 201;
 						$resp["headers"]["message"] = "Created";
-						$resp["headers"]["message_id"] = 201;
+						$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 						$resp["response"]["id"] = $row->id;
 						$resp["request"]["query"] = "POST";
 						$resp["request"]["table"] = $table_name;
@@ -539,7 +547,7 @@ $app->post('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Response 
 						$resp["headers"]["status"] = '501 Not Implemented';
 						$resp["headers"]["code"] = 501;
 						$resp["headers"]["message"] = 'Not Implemented';
-						$resp["headers"]["message_id"] = 501;
+						$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 						$resp["response"]["total"] = 0;
 					}
 
@@ -548,7 +556,7 @@ $app->post('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Response 
 					$resp["headers"]["status"] = '401 Unauthorized';
 					$resp["headers"]["code"] = 401;
 					$resp["headers"]["message"] = 'Access is denied';
-					$resp["headers"]["message_id"] = 401;
+					$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 					$resp["response"]["total"] = 0;
 				}
 
@@ -557,7 +565,7 @@ $app->post('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Response 
 				$resp["headers"]["status"] = '404 Not Found';
 				$resp["headers"]["code"] = 404;
 				$resp["headers"]["message"] = 'Table Not Found';
-				$resp["headers"]["message_id"] = 404;
+				$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 				$resp["response"]["total"] = 0;
 			}
 		}
@@ -567,7 +575,7 @@ $app->post('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Response 
 		$resp["headers"]["status"] = '400 Bad Request';
 		$resp["headers"]["code"] = 400;
 		$resp["headers"]["message"] = 'Bad Request';
-		$resp["headers"]["message_id"] = 400;
+		$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 		$resp["response"]["total"] = 0;
 	}
 
@@ -631,7 +639,7 @@ $app->map(['PUT', 'PATCH'], '/{table:[\w]+}[/{id:[0-9]+}]', function (Request $r
 						$resp["headers"]["status"] = "202 Accepted";
 						$resp["headers"]["code"] = 202;
 						$resp["headers"]["message"] = "Accepted";
-						$resp["headers"]["message_id"] = 202;
+						$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 						$resp["response"]["id"] = $id;
 						$resp["request"]["query"] = "PUT";
 						$resp["request"]["table"] = $table_name;
@@ -642,7 +650,7 @@ $app->map(['PUT', 'PATCH'], '/{table:[\w]+}[/{id:[0-9]+}]', function (Request $r
 						$resp["headers"]["status"] = '501 Not Implemented';
 						$resp["headers"]["code"] = 501;
 						$resp["headers"]["message"] = 'Not Implemented';
-						$resp["headers"]["message_id"] = 501;
+						$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 						$resp["response"]["total"] = 0;
 					}
 
@@ -683,7 +691,7 @@ $app->map(['PUT', 'PATCH'], '/{table:[\w]+}[/{id:[0-9]+}]', function (Request $r
 						$resp["headers"]["status"] = "202 Accepted";
 						$resp["headers"]["code"] = 202;
 						$resp["headers"]["message"] = "Accepted";
-						$resp["headers"]["message_id"] = 202;
+						$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 						$resp["response"]["id"] = '';
 						$resp["request"]["query"] = "PUT";
 						$resp["request"]["table"] = $table_name;
@@ -694,7 +702,7 @@ $app->map(['PUT', 'PATCH'], '/{table:[\w]+}[/{id:[0-9]+}]', function (Request $r
 						$resp["headers"]["status"] = '501 Not Implemented';
 						$resp["headers"]["code"] = 501;
 						$resp["headers"]["message"] = 'Not Implemented';
-						$resp["headers"]["message_id"] = 501;
+						$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 						$resp["response"]["total"] = 0;
 					}
 
@@ -706,7 +714,7 @@ $app->map(['PUT', 'PATCH'], '/{table:[\w]+}[/{id:[0-9]+}]', function (Request $r
 				$resp["headers"]["status"] = '401 Unauthorized';
 				$resp["headers"]["code"] = 401;
 				$resp["headers"]["message"] = 'Access is denied';
-				$resp["headers"]["message_id"] = 401;
+				$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 				$resp["response"]["total"] = 0;
 			}
 
@@ -716,7 +724,7 @@ $app->map(['PUT', 'PATCH'], '/{table:[\w]+}[/{id:[0-9]+}]', function (Request $r
 			$resp["headers"]["status"] = '404 Not Found';
 			$resp["headers"]["code"] = 404;
 			$resp["headers"]["message"] = 'Not Found';
-			$resp["headers"]["message_id"] = 404;
+			$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 			$resp["response"]["total"] = 0;
 
 		}
@@ -727,7 +735,7 @@ $app->map(['PUT', 'PATCH'], '/{table:[\w]+}[/{id:[0-9]+}]', function (Request $r
 		$resp["headers"]["status"] = '400 Bad Request';
 		$resp["headers"]["code"] = 400;
 		$resp["headers"]["message"] = 'Bad Request';
-		$resp["headers"]["message_id"] = 400;
+		$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 		$resp["response"]["total"] = 0;
 	}
 
@@ -771,7 +779,7 @@ $app->delete('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Respons
 						$resp["headers"]["status"] = "200 Removed";
 						$resp["headers"]["code"] = 200;
 						$resp["headers"]["message"] = "Removed";
-						$resp["headers"]["message_id"] = 200;
+						$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 						$resp["response"]["id"] = $id;
 						$resp["request"]["query"] = "DELETE";
 						$resp["request"]["table"] = $table_name;
@@ -782,7 +790,7 @@ $app->delete('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Respons
 						$resp["headers"]["status"] = '501 Not Implemented';
 						$resp["headers"]["code"] = 501;
 						$resp["headers"]["message"] = 'Not Implemented';
-						$resp["headers"]["message_id"] = 501;
+						$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 						$resp["response"]["total"] = 0;
 					}
 
@@ -802,7 +810,7 @@ $app->delete('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Respons
 						$resp["headers"]["status"] = "200 Removed";
 						$resp["headers"]["code"] = 200;
 						$resp["headers"]["message"] = "Deleted all rows";
-						$resp["headers"]["message_id"] = 200;
+						$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 						$resp["response"]["id"] = 'All';
 						$resp["request"]["query"] = "DELETE";
 						$resp["request"]["table"] = $table_name;
@@ -813,7 +821,7 @@ $app->delete('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Respons
 						$resp["headers"]["status"] = '501 Not Implemented';
 						$resp["headers"]["code"] = 501;
 						$resp["headers"]["message"] = 'Not Implemented';
-						$resp["headers"]["message_id"] = 501;
+						$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 						$resp["response"]["total"] = 0;
 					}
 
@@ -825,7 +833,7 @@ $app->delete('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Respons
 				$resp["headers"]["status"] = '401 Unauthorized';
 				$resp["headers"]["code"] = 401;
 				$resp["headers"]["message"] = 'Access is denied';
-				$resp["headers"]["message_id"] = 401;
+				$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 				$resp["response"]["total"] = 0;
 			}
 
@@ -835,7 +843,7 @@ $app->delete('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Respons
 			$resp["headers"]["status"] = '404 Not Found';
 			$resp["headers"]["code"] = 404;
 			$resp["headers"]["message"] = 'Not Found';
-			$resp["headers"]["message_id"] = 404;
+			$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 			$resp["response"]["total"] = 0;
 
 		}
@@ -846,7 +854,7 @@ $app->delete('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Respons
 		$resp["headers"]["status"] = '400 Bad Request';
 		$resp["headers"]["code"] = 400;
 		$resp["headers"]["message"] = 'Bad Request';
-		$resp["headers"]["message_id"] = 400;
+		$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 		$resp["response"]["total"] = 0;
 	}
 
@@ -902,7 +910,7 @@ $app->get('/_get/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Respo
 							$resp["headers"]["status"] = "200 OK";
 							$resp["headers"]["code"] = 200;
 							$resp["headers"]["message"] = "OK";
-							$resp["headers"]["message_id"] = 0;
+							$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 							$resp["response"]["source"] = "db";
 							$resp["response"]["total"] = $resCount;
 							$resp["request"]["query"] = "GET";
@@ -922,7 +930,7 @@ $app->get('/_get/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Respo
 							$resp["headers"]["status"] = '404 Not Found';
 							$resp["headers"]["code"] = 404;
 							$resp["headers"]["message"] = 'Not Found';
-							$resp["headers"]["message_id"] = 1;
+							$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 							$resp["response"]["source"] = "db";
 							$resp["response"]["total"] = 0;
 							$resp["request"]["query"] = "GET";
@@ -947,7 +955,7 @@ $app->get('/_get/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Respo
 							$resp["headers"]["status"] = "200 OK";
 							$resp["headers"]["code"] = 200;
 							$resp["headers"]["message"] = "OK";
-							$resp["headers"]["message_id"] = "";
+							$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 							
 							if (isset($query["JSONPath"]) || isset($query["jsonpath"])) {
 								if (isset($query["JSONPath"])) {$unit = $query["JSONPath"];	}
@@ -1176,6 +1184,7 @@ $app->get('/_get/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Respo
 				$resp["headers"]["status"] = '404 Not Found';
 				$resp["headers"]["code"] = 404;
 				$resp["headers"]["message"] = 'Table Not Found';
+				$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 				$resp["response"]["total"] = 0;
 			}
 			
@@ -1185,6 +1194,7 @@ $app->get('/_get/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Respo
 			$resp["headers"]["status"] = '403';
 			$resp["headers"]["code"] = 403;
 			$resp["headers"]["message"] = 'Access is denied';
+			$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 			$resp["response"]["total"] = 0;
 		}
 		
@@ -1194,6 +1204,7 @@ $app->get('/_get/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Respo
 		$resp["headers"]["status"] = '403';
 		$resp["headers"]["code"] = 403;
 		$resp["headers"]["message"] = 'Access is denied';
+		$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 		$resp["response"]["total"] = 0;
 	}
 	
@@ -1214,8 +1225,8 @@ $app->get('/_post/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Resp
 			// Если указан id даем ошибку: 400 Bad Request «плохой, неверный запрос»
 			$resp["headers"]["status"] = '400 Bad Request';
 			$resp["headers"]["code"] = 400;
-			$resp["headers"]["message"] = 'Bad Request - 2';
-			$resp["headers"]["message_id"] = 400;
+			$resp["headers"]["message"] = 'Bad Request';
+			$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 			$resp["response"]["total"] = 0;
 		} else {
 
@@ -1272,7 +1283,7 @@ $app->get('/_post/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Resp
 							$resp["headers"]["status"] = "201 Created";
 							$resp["headers"]["code"] = 201;
 							$resp["headers"]["message"] = "Created";
-							$resp["headers"]["message_id"] = 201;
+							$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 							$resp["response"]["id"] = $row->id;
 							$resp["request"]["query"] = "POST";
 							$resp["request"]["table"] = $table_name;
@@ -1283,7 +1294,7 @@ $app->get('/_post/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Resp
 							$resp["headers"]["status"] = '501 Not Implemented';
 							$resp["headers"]["code"] = 501;
 							$resp["headers"]["message"] = 'Not Implemented';
-							$resp["headers"]["message_id"] = 501;
+							$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 							$resp["response"]["total"] = 0;
 							
 						}
@@ -1294,7 +1305,7 @@ $app->get('/_post/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Resp
 						$resp["headers"]["status"] = '400 Bad Request';
 						$resp["headers"]["code"] = 400;
 						$resp["headers"]["message"] = 'Bad Request';
-						$resp["headers"]["message_id"] = 400;
+						$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 						$resp["response"]["total"] = 0;
 					}
 
@@ -1303,7 +1314,7 @@ $app->get('/_post/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Resp
 					$resp["headers"]["status"] = '401 Unauthorized';
 					$resp["headers"]["code"] = 401;
 					$resp["headers"]["message"] = 'Access is denied';
-					$resp["headers"]["message_id"] = 401;
+					$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 					$resp["response"]["total"] = 0;
 				}
 
@@ -1312,7 +1323,7 @@ $app->get('/_post/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Resp
 				$resp["headers"]["status"] = '404 Not Found';
 				$resp["headers"]["code"] = 404;
 				$resp["headers"]["message"] = 'Table Not Found - 3';
-				$resp["headers"]["message_id"] = 404;
+				$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 				$resp["response"]["total"] = 0;
 			}
 		}
@@ -1322,7 +1333,7 @@ $app->get('/_post/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Resp
 		$resp["headers"]["status"] = '400 Bad Request';
 		$resp["headers"]["code"] = 400;
 		$resp["headers"]["message"] = 'Bad Request - 1';
-		$resp["headers"]["message_id"] = 400;
+		$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 		$resp["response"]["total"] = 0;
 	}
 
@@ -1367,7 +1378,7 @@ $app->get('/_delete/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Re
 						$resp["headers"]["status"] = "200 Removed";
 						$resp["headers"]["code"] = 200;
 						$resp["headers"]["message"] = "Removed";
-						$resp["headers"]["message_id"] = 200;
+						$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 						$resp["response"]["id"] = $id;
 						$resp["request"]["query"] = "DELETE";
 						$resp["request"]["table"] = $table_name;
@@ -1378,7 +1389,7 @@ $app->get('/_delete/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Re
 						$resp["headers"]["status"] = '501 Not Implemented';
 						$resp["headers"]["code"] = 501;
 						$resp["headers"]["message"] = 'Not Implemented';
-						$resp["headers"]["message_id"] = 501;
+						$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 						$resp["response"]["total"] = 0;
 					}
 
@@ -1399,7 +1410,7 @@ $app->get('/_delete/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Re
 						$resp["headers"]["status"] = "200 Removed";
 						$resp["headers"]["code"] = 200;
 						$resp["headers"]["message"] = "Deleted all rows";
-						$resp["headers"]["message_id"] = 200;
+						$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 						$resp["response"]["id"] = 'All';
 						$resp["request"]["query"] = "DELETE";
 						$resp["request"]["table"] = $table_name;
@@ -1410,7 +1421,7 @@ $app->get('/_delete/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Re
 						$resp["headers"]["status"] = '501 Not Implemented';
 						$resp["headers"]["code"] = 501;
 						$resp["headers"]["message"] = 'Not Implemented';
-						$resp["headers"]["message_id"] = 501;
+						$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 						$resp["response"]["total"] = 0;
 					}
 
@@ -1422,7 +1433,7 @@ $app->get('/_delete/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Re
 				$resp["headers"]["status"] = '401 Unauthorized';
 				$resp["headers"]["code"] = 401;
 				$resp["headers"]["message"] = 'Access is denied';
-				$resp["headers"]["message_id"] = 401;
+				$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 				$resp["response"]["total"] = 0;
 			}
 
@@ -1432,7 +1443,7 @@ $app->get('/_delete/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Re
 			$resp["headers"]["status"] = '404 Not Found';
 			$resp["headers"]["code"] = 404;
 			$resp["headers"]["message"] = 'Not Found';
-			$resp["headers"]["message_id"] = 404;
+			$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 			$resp["response"]["total"] = 0;
 
 		}
@@ -1443,7 +1454,7 @@ $app->get('/_delete/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Re
 		$resp["headers"]["status"] = '400 Bad Request';
 		$resp["headers"]["code"] = 400;
 		$resp["headers"]["message"] = 'Bad Request';
-		$resp["headers"]["message_id"] = 400;
+		$resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
 		$resp["response"]["total"] = 0;
 	}
 

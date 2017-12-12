@@ -10,7 +10,7 @@
 Подключить пакет с помощью Composer - [Список зависимостей](https://github.com/pllano/api-json-db/blob/master/composer.json)
 ```json
 "require": {
-	"pllano/api-json-db": "*"
+	"pllano/api-json-db": "^1.0"
 }
 ```
 ## RESTful API роутинг для cURL запросов

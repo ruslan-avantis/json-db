@@ -82,7 +82,7 @@ use jsonDB\dbException;
 
 try{
     Validate::table('table_name')->exists();
-} catch(jsonDbException $e){
+} catch(dbException $e){
     // Таблица не существует
 }
 ```

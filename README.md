@@ -217,7 +217,7 @@ if ($records['headers']['code'] == '200') {
 [Коды ошибок HTTP](doc/errors.md)
 
 ### Прямое подключение к DB
-Если вам не нужен API роутинг Вы можете работать с базой данных напрямую без REST API интерфейса - [Документация](https://github.com/pllano/api-json-db/blob/master/db.md) или использовать оригинальный пакет [Lazer-Database](https://github.com/Greg0/Lazer-Database/).
+Если вам не нужен API роутинг Вы можете работать с базой данных напрямую без REST API интерфейса - [Документация - работа с DB напрямую](https://github.com/pllano/api-json-db/blob/master/doc/db.md) или использовать оригинальный пакет [Lazer-Database](https://github.com/Greg0/Lazer-Database/).
 
 <a name="feedback"></a>
 ## Поддержка, обратная связь, новости

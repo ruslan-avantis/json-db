@@ -160,7 +160,15 @@ jsonDb::table('table_name')->find(10)->delete();
 - `DELETE /{table_name}` Удалить все записи
 - `DELETE /{table_name}/{id}` Удалить конкретную запись
 
-Для тех кто может отправлять только с `POST` и `GET` запросы мы дублируем тип запроса в параметре `query`
+### Вы можете отправлять только GET запросы:
+- `GET /_post/{table_name}?{param}` Создание записи 
+- `GET /_post/{table_name}/{id}` Ошибка
+- `GET /_get/{table_name}?{param}` Список всех записей с фильтром по параметрам
+- `GET /_get/{table_name}/{id}` Данные конкретной записи
+- `GET /_put/{table_name}?{param}` Обновить данные записей
+- `GET /_put/{table_name}/{id}?{param}` Обновить данные конкретной записи
+- `GET /_delete/{table_name}?{param}` Удалить все записи
+- `GET /_delete/{table_name}/{id}` Удалить конкретную запись
 
 [Список всех параметров запроса](doc/query.md)
 

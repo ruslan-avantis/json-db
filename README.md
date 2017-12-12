@@ -18,7 +18,7 @@
 - Если база работает Вы увидите следующий результат:
 ```json
 {
-    "status": "OK",
+    "status": "200 OK",
     "code": 200,
     "message": "RESTfull API json DB works!"
 }

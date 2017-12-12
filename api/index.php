@@ -548,7 +548,7 @@ $app->post('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Response 
 
 });
 
-$app->put('/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
+$app->map(['PUT', 'PATCH'], '/{table:[\w]+}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
 
 	$table_name = Db::clean($request->getAttribute('table'));
 	$id = Db::clean($request->getAttribute('id'));

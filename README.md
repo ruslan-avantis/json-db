@@ -12,21 +12,15 @@
 	"pllano/api-json-db": "*"
 }
 ```
-```php
-// Указываем директорию где будет храниться json db
-use jsonDB\Db;
-
-$_db = __DIR__ . '/../../_db_/';
-$db = new Db($_db);
-$db->run();
-```
-или одной строчкой
+### Запуск одной строчкой кода
 ```php
 (new \jsonDB\Db(__DIR__ . '/../../_db_/'))->run();
 ```
 или с популярными настройками
 ```php
-$db = new jsonDB\Db(__DIR__ . '/../../_db_/');
+use jsonDB\Db;
+$_db = __DIR__ . '/../../_db_/'; // Указываем директорию где будет храниться json db
+$db = new Db($_db);
 $db->setCached(true); // Включаем кеширование true|false
 $db->setCacheLifetime(60); // Время жижни кеша 60 минут
 $db->setTemp(true); // Используем очередь true|false

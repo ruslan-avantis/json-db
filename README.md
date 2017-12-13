@@ -18,9 +18,12 @@
 - Если база работает Вы увидите следующий результат:
 ```json
 {
-    "status": "200 OK",
-    "code": 200,
-    "message": "RESTfull API json DB works!"
+    "headers": {
+        "status": "200 OK",
+        "code": 200,
+        "message": "RESTfull API json DB works!",
+        "message_id": "https:\/\/github.com\/pllano\/api-json-db\/blob\/master\/doc\/http-codes\/200.md"
+    }
 }
 ```
 ### Автоматическое разворачиваение

@@ -143,9 +143,8 @@ if ($records['headers']['code'] == '200') {
 use jsonDB\Db;
 $_db = __DIR__ . '/../../_db_/'; // Указываем директорию где будет храниться json db
 $db = new Db($_db);
-$db->setPrefixDb("_jhbg_"); // Установить префикс базы
-$db->setPrefixTable("_sf_"); // Установить префикс таблиц
-$db->setPrefixColumn("_jhbg5r_"); // Установить префикс полей
+$db->setPrefixTable("sf"); // Установить префикс таблиц
+$db->setPrefixColumn("jhbg5r"); // Установить префикс полей
 $db->setCached(true); // Включаем кеширование true|false
 $db->setCacheLifetime(60); // Время жижни кеша 60 минут
 $db->setTemp(true); // Используем очередь true|false

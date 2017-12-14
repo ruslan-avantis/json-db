@@ -77,9 +77,13 @@ JSON база данных с открытым исходным кодом. На
 - `GET /_patch/{table_name}/{id}?{param}` Обновить данные конкретной записи
 - `GET /_delete/{table_name}` Удалить все записи
 - `GET /_delete/{table_name}/{id}` Удалить конкретную запись
-
+### Инструменты для тестирования API
+- [Postman](https://www.getpostman.com/postman)
+- [SOAPUI](https://www.soapui.org/rest-testing/getting-started.html)
+### Инструменты для работы с API
+- Клиентская библиотека PHP работы с URL [cURL](http://php.net/manual/ru/book.curl.php)
+- HTTP-клиент PHP [Guzzle](https://github.com/guzzle/guzzle)
 ### Пример использования с HTTP клиентом Guzzle
-
 ``` php	
 $key = $config['settings']['db']['key']; // Взять key из конфигурации `https://example.com/_12345_/index.php`
 

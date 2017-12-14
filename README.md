@@ -7,6 +7,12 @@ JSON база данных с открытым исходным кодом. На
 	"pllano/api-json-db": "^1.0"
 }
 ```
+### Инструменты для тестирования API
+- [Postman](https://www.getpostman.com/postman) - это мощный набор инструментов тестирования API
+- [SOAPUI](https://www.soapui.org/rest-testing/getting-started.html) - приложение для тестирования, мониторинга и проверки функциональности REST API.
+### Инструменты для работы с API
+- [cURL](http://php.net/manual/ru/book.curl.php) - Клиентская библиотека PHP работы с URL
+- [Guzzle](https://github.com/guzzle/guzzle) - HTTP-клиент PHP
 ## RESTful API роутинг для cURL запросов
 «API json DB» имеет свой RESTfull API роутинг для cURL запросов который написан на PHP с использованием [Micro Framework Slim](https://github.com/slimphp), что позволяет использовать «API json DB» с любым другим языком программирования. Для унификации обмена данными и структуры базы данных используется наш собственный стандарт [APIS-2018](https://github.com/pllano/APIS-2018/).
 ### RESTfull API состоит всего из двух файлов:
@@ -77,12 +83,6 @@ JSON база данных с открытым исходным кодом. На
 - `GET /_patch/{table_name}/{id}?{param}` Обновить данные конкретной записи
 - `GET /_delete/{table_name}` Удалить все записи
 - `GET /_delete/{table_name}/{id}` Удалить конкретную запись
-### Инструменты для тестирования API
-- [Postman](https://www.getpostman.com/postman)
-- [SOAPUI](https://www.soapui.org/rest-testing/getting-started.html)
-### Инструменты для работы с API
-- Клиентская библиотека PHP работы с URL [cURL](http://php.net/manual/ru/book.curl.php)
-- HTTP-клиент PHP [Guzzle](https://github.com/guzzle/guzzle)
 ### Пример использования с HTTP клиентом Guzzle
 ``` php	
 $key = $config['settings']['db']['key']; // Взять key из конфигурации `https://example.com/_12345_/index.php`

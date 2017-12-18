@@ -48,21 +48,21 @@ class Validate {
     }
 
     /**
-     * Checking that types from array matching with [boolean, integer, string, double]
+     * Checking that types from array matching with [boolean, integer, string, double, text, datetime]
      * @param array $types Indexed array
      * @return bool
      * @throws dbException
      */
     public static function types(array $types)
     {
-        $defined = array('boolean', 'integer', 'string', 'double');
+        $defined = array('boolean', 'integer', 'double', 'string', 'text', 'datetime');
         $diff    = array_diff($types, $defined);
 
         if (empty($diff))
         {
             return TRUE;
         }
-        throw new dbException('Wrong types: "' . implode(', ', $diff) . '". Available "boolean, integer, string, double"');
+        throw new dbException('Wrong types: "' . implode(', ', $diff) . '". Available "boolean, integer, double, string, text, datetime"');
     }
 
     /**

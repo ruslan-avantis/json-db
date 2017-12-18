@@ -41,11 +41,15 @@ JSON база данных с открытым исходным кодом. На
 - В директорию `core` скачает этот [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) файл структуры если его там нет.
 ### Автоматическое создание таблиц
 База автоматически создаст все таблицы и взаимосвязи указанные в файле [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json). Для создания индивидуальной конфигурации таблиц отредактируйте файл [db.json](https://github.com/pllano/api-json-db/blob/master/_db_/core/db.json) и перед запуском скопируйте его в директорию `/_db_/core/`.
-### Поддерживаемые типы данных в DB
+### Поддерживаемые типы данных в db.json
 - `boolean` — Логический тип `true` или `false`
-- `integer` — Целое число	
-- `string` — Строковый тип
+- `integer` — Целое число
 - `double` — Число с плавающей точкой
+- `string` — Строка
+- `text` — Текст (Строка в которой разрешены символы `html`)
+- `datetime` — Дата (Строка с проверкой на соответствие формату: `0000-00-00 00:00`)
+### Структура базы данных для интернет-магазина
+Структура базы данных [db.json](https://github.com/pllano/db.json) выведена в отдельный репозиторий
 ### URL запросов к RESTful API jsonDB
 - `https://example.com/{api_dir}/{table_name}/{id}`
 - `{api_dir}` - папка в которой лежит [index.php](https://github.com/pllano/api-json-db/blob/master/api/index.php)

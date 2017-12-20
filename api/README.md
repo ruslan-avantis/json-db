@@ -13,7 +13,7 @@
         "status": "200 OK",
         "code": 200,
         "message": "RESTfull API json DB works!",
-        "message_id": "https:\/\/github.com\/pllano\/api-json-db\/blob\/master\/doc\/http-codes\/200.md"
+        "message_id": "https:\/\/github.com\/pllano\/APIS-2018\/tree\/master\/http-codes\/200.md"
     }
 }
 ```
@@ -76,26 +76,30 @@
 - [Guzzle](https://github.com/guzzle/guzzle) - HTTP-клиент PHP
 ### Пример использования с HTTP клиентом Guzzle
 ``` php	
-$key = $config['settings']['db']['key']; // Взять key из конфигурации `https://example.com/_12345_/index.php`
+use GuzzleHttp\Client as Guzzle;
 
+// Взять public_key из конфигурации в файле `https://example.com/_12345_/index.php`
+$public_key = $config['settings']['db']['public_key'];
+// Название таблицы
 $table_name = 'db';
+// id записи
 $id = '1';
 
-// $uri = 'https://example.com/_12345_/api.php?key='.$key;
-// $uri = 'https://example.com/_12345_/'.$table_name.'?key='.$key;
-$uri = 'https://example.com/_12345_/'.$table_name.'/'.$id.'?key='.$key;
+// Формируем URL запроса
+// $uri = 'https://example.com/_12345_/api.php?public_key='.$public_key;
+// $uri = 'https://example.com/_12345_/'.$table_name.'?public_key='.$public_key;
+$uri = 'https://example.com/_12345_/'.$table_name.'/'.$id.'?public_key='.$public_key;
 
-$client = new \GuzzleHttp\Client();
-$response = $client->request('GET', $uri);
+// Подключаем Guzzle
+$guzzle = new Guzzle();
+// Отправляем запрос
+$response = $guzzle->request('GET', $uri);
+// Получаем тело ответа
 $output = $response->getBody();
-
-// Чистим все что не нужно, иначе json_decode не сможет конвертировать json в массив
-for ($i = 0; $i <= 31; ++$i) {$output = str_replace(chr($i), "", $output);}
-$output = str_replace(chr(127), "", $output);
-if (0 === strpos(bin2hex($output), 'efbbbf')) {$output = substr($output, 3);}
-
+// json в массив
 $records = json_decode($output, true);
 
+// Работаем с массивом
 if (isset($records['headers']['code'])) {
 if ($records['headers']['code'] == '200') {
 	$count = count($records['body']['items']);
@@ -108,7 +112,10 @@ if ($records['headers']['code'] == '200') {
 }
 }
 ```
-
+``` php
+// Вывести на экран json
+print_r($records);
+```
 ### RESTful API jsonDB - Всегда возвращает код 200 даже при логических ошибках !
 
 `HTTP/1.1 200 OK`
@@ -117,7 +124,7 @@ if ($records['headers']['code'] == '200') {
 
 ### В теле ответа RESTful API jsonDB вернет код состояния HTTP, статус и описание.
 
-[Коды состояния HTTP](https://github.com/pllano/api-json-db/tree/master/doc/http-codes)
+[Коды состояния HTTP](https://github.com/pllano/APIS-2018/tree/master/http-codes)
 
 ## Безопасность
 [Советы по увеличению безопасности API json DB](https://github.com/pllano/api-json-db/blob/master/doc/security.md)

@@ -130,7 +130,7 @@ if ($records['headers']['code'] == '200') {
 
 ### В теле ответа RESTful API jsonDB вернет код состояния HTTP, статус и описание.
 
-[Коды состояния HTTP](https://github.com/pllano/api-json-db/tree/master/doc/http-codes)
+[Коды состояния HTTP](https://github.com/pllano/APIS-2018/tree/master/http-codes)
 
 ## Безопасность
 [Советы по увеличению безопасности API json DB](https://github.com/pllano/api-json-db/blob/master/doc/security.md)

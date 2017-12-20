@@ -89,6 +89,8 @@ JSON база данных с открытым исходным кодом. На
 - `GET /_delete/{table_name}/{id}` Удалить конкретную запись
 ### Пример использования с HTTP клиентом Guzzle
 ``` php	
+use GuzzleHttp\Client as Guzzle;
+
 $key = $config['settings']['db']['key']; // Взять key из конфигурации `https://example.com/_12345_/index.php`
 
 $table_name = 'db';
@@ -98,7 +100,7 @@ $id = '1';
 // $uri = 'https://example.com/_12345_/'.$table_name.'?key='.$key;
 $uri = 'https://example.com/_12345_/'.$table_name.'/'.$id.'?key='.$key;
 
-$client = new \GuzzleHttp\Client();
+$client = new Guzzle();
 $response = $client->request('GET', $uri);
 $output = $response->getBody();
 

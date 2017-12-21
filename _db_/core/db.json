@@ -1,5 +1,16 @@
-[
-	{
+[{
+		"table": "feedback",
+		"action": "create",
+		"schema": {
+			"feedback_id": "integer",
+			"title": "string",
+			"description": "string",
+			"uri": "string",
+			"type": "string",
+			"param": "string",
+			"created": "datatime"
+		}
+	}, {
 		"table": "language",
 		"action": "create",
 		"schema": {
@@ -280,40 +291,15 @@
 			"email": "string",
 			"phone": "string",
 			"language": "string",
+			"ticketed": "integer",
+			"admin_access": "integer",
+			"iname": "string",
+			"fname": "string",
+			"oname": "string",
 			"cookie": "string",
 			"alias": "string",
 			"state": "integer",
 			"score": "integer"
-		},
-		"relations": {
-			"user_data": {
-				"type": "hasMany",
-				"keys": {
-					"local": "role_id",
-					"foreign": "role_id"
-				}
-			}
-		}
-	}, {
-		"table": "user_data",
-		"action": "create",
-		"schema": {
-			"user_data_id": "integer",
-			"user_id": "integer",
-			"ticketed": "integer",
-			"admin_access": "integer",
-			"alias": "string",
-			"state": "integer",
-			"score": "integer"
-		},
-		"relations": {
-			"user": {
-				"type": "belongsTo",
-				"keys": {
-					"local": "user_id",
-					"foreign": "user_id"
-				}
-			}
 		}
 	}, {
 		"table": "contact",
@@ -601,4 +587,3 @@
 		}
 	}
 ]
- 

@@ -32,7 +32,5 @@
 - cookie="1234324325"
 - created="2017-12-30 17:01"
 - alias="1234324325"
-- state=1
-- score=1
 
-Нажмите на ссылку: [post/user](https://pllano.eu/json-db/_post/user?role_id=1&password=12345&email='user@example.com'&phone='380671002001'&language='ru'&iname='ru'&fname='ru'&oname='ru'&alias='1234324325'&cookie='1234324325'&created='2017-12-30%2017:01'&state=1&score=1)
+Нажмите на ссылку: [post/user](https://pllano.eu/json-db/_post/user?role_id=1&password=12345&email="user@example.com"&phone="380671002001"&language="ru"&iname="Anna"&fname="Ivanova"&oname="Ivanovna"&alias="1234324325"&cookie="1234324325"&created="2017-12-30%2017:01")

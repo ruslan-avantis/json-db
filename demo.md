@@ -42,4 +42,8 @@
 }
 ```
 
-Нажмите на ссылку: https://pllano.eu/json-db/_post/user
+Список всех пользователей
+https://pllano.eu/json-db/user
+
+Список пользователей с именем Anna
+https://pllano.eu/json-db/user?iname=Anna

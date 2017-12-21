@@ -28,7 +28,7 @@ JSON база данных с открытым исходным кодом. На
         "status": "200 OK",
         "code": 200,
         "message": "RESTfull API json DB works!",
-        "message_id": "https:\/\/github.com\/pllano\/json-db\/blob\/master\/doc\/http-codes\/200.md"
+        "message_id": "https:\/\/github.com\/pllano\/APIS-2018\/tree\/master\/http-codes\/200.md"
     }
 }
 ```

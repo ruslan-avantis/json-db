@@ -42,8 +42,8 @@ JSON база данных с открытым исходным кодом. На
 - Директории: `cached` `core` `log` `request` `temp`
 - В директории `core` сгенерирует файл с ключем для http запросов key_db.txt если его там еще нет.
 - В директорию `core` скачает этот [db.json](https://github.com/pllano/db.json/blob/master/db.json) файл структуры если его там еще нет.
-### Автоматическое создание таблиц
-База автоматически создаст все таблицы и взаимосвязи указанные в файле [db.json](https://github.com/pllano/json-db/blob/master/_db_/core/db.json). Для создания индивидуальной конфигурации таблиц отредактируйте файл [db.json](https://github.com/pllano/json-db/blob/master/_db_/core/db.json) и перед запуском скопируйте его в директорию `/_db_/core/`.
+### Автоматическое создание ресурсов
+База автоматически создаст все ресурсы и связи указанные в файле [db.json](https://github.com/pllano/json-db/blob/master/_db_/core/db.json). Для создания индивидуальной конфигурации ресурсов отредактируйте файл [db.json](https://github.com/pllano/json-db/blob/master/_db_/core/db.json) и перед запуском скопируйте его в директорию `/_db_/core/`.
 ### Поддерживаемые типы данных в db.json
 - `boolean` — Логический тип `true` или `false`
 - `integer` — Целое число

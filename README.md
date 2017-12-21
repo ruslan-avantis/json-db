@@ -56,7 +56,7 @@ JSON база данных с открытым исходным кодом. На
 ### URL запросов к RESTful API jsonDB
 - `https://example.com/{api_dir}/{table_name}/{id}`
 - `{api_dir}` - папка в которой лежит [index.php](https://github.com/pllano/json-db/blob/master/api/index.php)
-- `{table_name}` - название таблицы к которой обращаемся. Например price или user.
+- `{resource}` - название ресурса к которому обращаемся. Например price или user.
 - `{id}` - уникальный индефикатор
 - `{param}` - праметры запроса
 ### GET запрос к RESTful API jsonDB
@@ -68,28 +68,28 @@ JSON база данных с открытым исходным кодом. На
 - `{sort}` - Поле сортировки. По умолчанию id
 - `{*}` - Любое из полей таблицы
 ### RESTful API jsonDB потдерживает `POST` `GET` `PUT` `PATCH` `DELETE` запросы:
-- `POST /{table_name}` Создание записи 
-- `POST /{table_name}/{id}` Ошибка
-- `GET /{table_name}` Список всех записей
-- `GET /{table_name}?{param}` Список всех записей с фильтром по параметрам
-- `GET /{table_name}/{id}` Данные конкретной записи
-- `PUT /{table_name}` Обновить данные записей
-- `PUT /{table_name}/{id}` Обновить данные конкретной записи
-- `PATCH /{table_name}` Обновить данные записей
-- `PATCH /{table_name}/{id}` Обновить данные конкретной записи
-- `DELETE /{table_name}` Удалить все записи
-- `DELETE /{table_name}/{id}` Удалить конкретную запись
+- `POST /{resource}` Создание записи 
+- `POST /{resource}/{id}` Ошибка
+- `GET /{resource}` Список всех записей
+- `GET /{resource}?{param}` Список всех записей с фильтром по параметрам
+- `GET /{resource}/{id}` Данные конкретной записи
+- `PUT /{resource}` Обновить данные записей
+- `PUT /{resource}/{id}` Обновить данные конкретной записи
+- `PATCH /{resource}` Обновить данные записей
+- `PATCH /{resource}/{id}` Обновить данные конкретной записи
+- `DELETE /{resource}` Удалить все записи
+- `DELETE /{resource}/{id}` Удалить конкретную запись
 ### При желании Вы можете использовать только `GET` запросы:
-- `GET /_post/{table_name}?{param}` Создание записи 
-- `GET /_post/{table_name}/{id}` Ошибка
-- `GET /_get/{table_name}?{param}` Список всех записей с фильтром по параметрам
-- `GET /_get/{table_name}/{id}` Данные конкретной записи
-- `GET /_put/{table_name}?{param}` Обновить данные записей
-- `GET /_put/{table_name}/{id}?{param}` Обновить данные конкретной записи
-- `GET /_patch/{table_name}?{param}` Обновить данные записей
-- `GET /_patch/{table_name}/{id}?{param}` Обновить данные конкретной записи
-- `GET /_delete/{table_name}` Удалить все записи
-- `GET /_delete/{table_name}/{id}` Удалить конкретную запись
+- `GET /_post/{resource}?{param}` Создание записи 
+- `GET /_post/{resource}/{id}` Ошибка
+- `GET /_get/{resource}?{param}` Список всех записей с фильтром по параметрам
+- `GET /_get/{resource}/{id}` Данные конкретной записи
+- `GET /_put/{resource}?{param}` Обновить данные записей
+- `GET /_put/{resource}/{id}?{param}` Обновить данные конкретной записи
+- `GET /_patch/{resource}?{param}` Обновить данные записей
+- `GET /_patch/{resource}/{id}?{param}` Обновить данные конкретной записи
+- `GET /_delete/{resource}` Удалить все записи
+- `GET /_delete/{resource}/{id}` Удалить конкретную запись
 ### Пример использования с HTTP клиентом Guzzle
 ``` php	
 use GuzzleHttp\Client as Guzzle;

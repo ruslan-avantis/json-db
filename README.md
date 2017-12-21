@@ -96,12 +96,11 @@ use GuzzleHttp\Client as Guzzle;
 
 $key = $config['settings']['db']['key']; // Взять key из конфигурации `https://example.com/_12345_/index.php`
 
-$table_name = 'db';
+$resource = 'db';
 $id = '1';
 
-// $uri = 'https://example.com/_12345_/api.php?key='.$key;
-// $uri = 'https://example.com/_12345_/'.$table_name.'?key='.$key;
-$uri = 'https://example.com/_12345_/'.$table_name.'/'.$id.'?key='.$key;
+// $uri = 'https://example.com/_12345_/'.$resource.'?key='.$key;
+$uri = 'https://example.com/_12345_/'.$resource.'/'.$id.'?key='.$key;
 
 $client = new Guzzle();
 $response = $client->request('GET', $uri);
@@ -164,7 +163,7 @@ $db->run();
 ```
 Примечание: Если вы будете пользоваться RESTful API роутингом для cURL запросов, вам не нужно выполнять запуск базы, роутер [index.php](https://github.com/pllano/json-db/blob/master/api/index.php) сделает все сам. Вам достаточно установить пакет с помощью Composer и выпонить дейсвия с настройкой API роутинга описаны выше.
 
-#### Создать таблицу в базе данных
+#### Создать ресурс в базе данных
 ```php
 use jsonDB\Database as jsonDb;
 
@@ -174,52 +173,52 @@ $arr = array(
     'название_поля' => 'тип данных'
 );
 
-jsonDb::create('table_name', $arr);
+jsonDb::create('resource_name', $arr);
 ```	
-#### Удалить таблицу в базе данных
+#### Удалить ресурс в базе данных
 ```php
 use jsonDB\Database as jsonDb;
 
-jsonDb::remove('table_name');
+jsonDb::remove('resource_name');
 ```
-#### Очистить таблицу
+#### Очистить ресурс
 ```php
 use jsonDB\Database as jsonDb;
 
-jsonDb::table('table_name')->delete();
+jsonDb::table('resource_name')->delete();
 ```
-#### Проверьте, существует ли таблица в базе данных
+#### Проверьте, существует ли ресурс в базе данных
 ```php
 use jsonDB\Validate;
 use jsonDB\dbException;
 
 try{
-    Validate::table('table_name')->exists();
+    Validate::table('resource_name')->exists();
 } catch(dbException $e){
-    // Таблица не существует
+    // Ресурс не существует
 }
 ```
-#### Создать запись в таблице
+#### Создать запись
 ```php
 use jsonDB\Database as jsonDb;
 
-$row = jsonDb::table('table_name');
+$row = jsonDb::table('resource_name');
 $row->name = 'Ivan';
 $row->save();
 ```
-#### Получить данные с таблицы
+#### Получить данные
 ```php
 use jsonDB\Database as jsonDb;
 
-echo jsonDb::table('table_name')->where('name', '=', 'Ivan')->findAll();
+echo jsonDb::table('resource_name')->where('name', '=', 'Ivan')->findAll();
 // или по id
-echo jsonDb::table('table_name')->where('id', '=', '10')->findAll();
+echo jsonDb::table('resource_name')->where('id', '=', '10')->findAll();
 ```
 #### Обновить данные
 ```php
 use jsonDB\Database as jsonDb;
 
-$row = jsonDb::table('table_name')->find(10);
+$row = jsonDb::table('resource_name')->find(10);
 $row->name = 'Andrey';
 $row->save();
 ```
@@ -227,7 +226,7 @@ $row->save();
 ```php
 use jsonDB\Database as jsonDb;
 
-jsonDb::table('table_name')->find(10)->delete();
+jsonDb::table('resource_name')->find(10)->delete();
 ```
 
 <a name="feedback"></a>

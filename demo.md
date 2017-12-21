@@ -53,3 +53,7 @@ https://pllano.eu/json-db/user?iname=Anna
 Первые два пользователя с именем Anna 
 
 https://pllano.eu/json-db/user?iname=Anna&limit=2&offset=0
+
+### json-db потдерживает стандарт [APIS-2018](https://github.com/pllano/APIS-2018)
+Все поддерживаемые json-db типы запросов и ресурсов вы можете найти в документации [APIS-2018](https://github.com/pllano/APIS-2018)
+

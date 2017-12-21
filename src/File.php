@@ -1,5 +1,5 @@
 <?php
-
+ 
 namespace jsonDB;
 
 use jsonDB\dbException;
@@ -58,56 +58,56 @@ class File implements FileInterface {
 
     public final function get($assoc = false)
     {
-	
-		$getPath = file_get_contents($this->getPath());
-		
-		//	Если ключ шифрования установлен расшифровываем
-		if (defined('JSON_DB_KEY') && JSON_DB_CRYPT == true){
+    
+        $getPath = file_get_contents($this->getPath());
+        
+        //    Если ключ шифрования установлен расшифровываем
+        if (defined('JSON_DB_KEY') && JSON_DB_CRYPT == true){
 
-			try {
-			$decrypt = Crypto::decrypt($getPath, Key::loadFromAsciiSafeString(JSON_DB_KEY));
-			} catch(WrongKeyOrModifiedCiphertextException $ex){
-			// Если файл еще не закодирован кодируем
-			$data = json_decode($getPath, $assoc);
-			file_put_contents($this->getPath(), Crypto::encrypt(json_encode($data), Key::loadFromAsciiSafeString(JSON_DB_KEY)));
-			$newPath = Crypto::decrypt(file_get_contents($this->getPath()), Key::loadFromAsciiSafeString(JSON_DB_KEY));
-			$decrypt = $newPath;
-			}
-			return json_decode($decrypt, $assoc);
-	
-		} else {
-			// Если ключ шифрования не установлен не шифруем и расшифровываем все и пересохраняем
-			try {
-			return json_decode($getPath, $assoc);
-			} catch(dbException $e){
-				
-				if (defined('JSON_DB_KEY')){
-					$decrypt = Crypto::decrypt($getPath, Key::loadFromAsciiSafeString(JSON_DB_KEY));
-					file_put_contents($this->getPath(), $decrypt);
-					return json_decode($decrypt, $assoc);
-				} else {
-					return json_decode($getPath, $assoc);
-				}
-				
-			}
-		}
-		
+            try {
+            $decrypt = Crypto::decrypt($getPath, Key::loadFromAsciiSafeString(JSON_DB_KEY));
+            } catch(WrongKeyOrModifiedCiphertextException $ex){
+            // Если файл еще не закодирован кодируем
+            $data = json_decode($getPath, $assoc);
+            file_put_contents($this->getPath(), Crypto::encrypt(json_encode($data), Key::loadFromAsciiSafeString(JSON_DB_KEY)));
+            $newPath = Crypto::decrypt(file_get_contents($this->getPath()), Key::loadFromAsciiSafeString(JSON_DB_KEY));
+            $decrypt = $newPath;
+            }
+            return json_decode($decrypt, $assoc);
+    
+        } else {
+            // Если ключ шифрования не установлен не шифруем и расшифровываем все и пересохраняем
+            try {
+            return json_decode($getPath, $assoc);
+            } catch(dbException $e){
+                
+                if (defined('JSON_DB_KEY')){
+                    $decrypt = Crypto::decrypt($getPath, Key::loadFromAsciiSafeString(JSON_DB_KEY));
+                    file_put_contents($this->getPath(), $decrypt);
+                    return json_decode($decrypt, $assoc);
+                } else {
+                    return json_decode($getPath, $assoc);
+                }
+                
+            }
+        }
+        
     }
 
     public final function put($data)
     {
-		//	Если ключ шифрования установлен шифруем
-		if (defined('JSON_DB_KEY') && JSON_DB_CRYPT == true){
-			try {
-				$getPath = Crypto::encrypt(json_encode($data), Key::loadFromAsciiSafeString(JSON_DB_KEY));
-			} catch(WrongKeyOrModifiedCiphertextException $ex){
-				$getPath = json_encode($data);
-			}
-		} else {
-			$getPath = json_encode($data);
-		}
-		
-		return file_put_contents($this->getPath(), $getPath);
+        //    Если ключ шифрования установлен шифруем
+        if (defined('JSON_DB_KEY') && JSON_DB_CRYPT == true){
+            try {
+                $getPath = Crypto::encrypt(json_encode($data), Key::loadFromAsciiSafeString(JSON_DB_KEY));
+            } catch(WrongKeyOrModifiedCiphertextException $ex){
+                $getPath = json_encode($data);
+            }
+        } else {
+            $getPath = json_encode($data);
+        }
+        
+        return file_put_contents($this->getPath(), $getPath);
     }
 
     public final function exists()

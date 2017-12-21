@@ -48,7 +48,7 @@ class Validate {
     }
 
     /**
-     * Checking that types from array matching with [boolean, integer, string, double, text, datetime]
+     * Checking that types from array matching with [boolean, integer, string, double, datetime, text]
      * @param array $types Indexed array
      * @return bool
      * @throws dbException

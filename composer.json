@@ -1,10 +1,10 @@
 {
-	"name":"pllano/api-json-db",
+	"name":"pllano/json-db",
 	"type": "library",
 	"description": "API json DB",
 	"keywords": ["json", "db"],
 	"license": "MIT",
-	"homepage": "https://github.com/pllano/api-json-db",
+	"homepage": "https://github.com/pllano/json-db",
 	"authors": [
 		{
 			"name": "pllano",

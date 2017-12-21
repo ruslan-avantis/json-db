@@ -1,15 +1,15 @@
 # Демонстрация работы json-db
 
 ### Для демонстрации работы мы выбрали режим `GET` запросов
-- `GET /_post/{table_name}?{param}` Создание записи
-- `GET /_post/{table_name}/{id}` Ошибка
-- `GET /_put/{table_name}?{param}` Обновить данные записей
-- `GET /_put/{table_name}/{id}?{param}` Обновить данные конкретной записи
-- `GET /_delete/{table_name}` Удалить все записи
-- `GET /_delete/{table_name}/{id}` Удалить конкретную запись
+- `GET /_post/{resource}?{param}` Создание записи
+- `GET /_post/{resource}/{id}` Ошибка
+- `GET /_put/{resource}?{param}` Обновить данные записей
+- `GET /_put/{resource}/{id}?{param}` Обновить данные конкретной записи
+- `GET /_delete/{resource}` Удалить все записи
+- `GET /_delete/{resource}/{id}` Удалить конкретную запись
 ### Обычные `GET` запросы вы можете пускать по стандартному пути
-- `GET /{table_name}?{param}` Список всех записей с фильтром по параметрам
-- `GET /{table_name}/{id}` Данные конкретной записи
+- `GET /{resource}?{param}` Список всех записей с фильтром по параметрам
+- `GET /{resource}/{id}` Данные конкретной записи
 
 ### Демо база данных `https://pllano.eu/json-db/`
 

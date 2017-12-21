@@ -43,10 +43,13 @@
 ```
 
 Список всех пользователей 
+
 https://pllano.eu/json-db/user
 
 Список пользователей с именем Anna 
+
 https://pllano.eu/json-db/user?iname=Anna
 
 Первые два пользователя с именем Anna 
+
 https://pllano.eu/json-db/user?iname=Anna&limit=2&offset=0

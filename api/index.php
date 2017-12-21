@@ -52,7 +52,7 @@ $config['settings']['displayErrorDetails'] = false;
 $config['settings']['addContentLengthHeader'] = false;
 $config['settings']['determineRouteBeforeAppMiddleware'] = true;
 $config['settings']['debug'] = true;
-$config['settings']['http-codes'] = "https://github.com/pllano/api-json-db/blob/master/doc/http-codes/";
+$config['settings']['http-codes'] = "https://github.com/pllano/APIS-2018/tree/master/http-codes/";
 
 
 // Запускаем json db

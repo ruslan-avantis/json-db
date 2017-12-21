@@ -19,7 +19,7 @@
 Струтктура ресурса [`user`](https://github.com/pllano/db.json/blob/master/db/user.md)
 
 Создадим пользователя с следующими данными:
-- ``role_id=1`
+- ``role_id=1``
 - `password=12345`
 - `email=user@example.com`
 - `phone="380671002001"`

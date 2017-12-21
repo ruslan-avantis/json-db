@@ -3,14 +3,13 @@
 ### Для демонстрации работы мы выбрали режим `GET` запросов
 - `GET /_post/{table_name}?{param}` Создание записи
 - `GET /_post/{table_name}/{id}` Ошибка
-- `GET /_get/{table_name}?{param}` Список всех записей с фильтром по параметрам
-- `GET /_get/{table_name}/{id}` Данные конкретной записи
 - `GET /_put/{table_name}?{param}` Обновить данные записей
 - `GET /_put/{table_name}/{id}?{param}` Обновить данные конкретной записи
-- `GET /_patch/{table_name}?{param}` Обновить данные записей
-- `GET /_patch/{table_name}/{id}?{param}` Обновить данные конкретной записи
 - `GET /_delete/{table_name}` Удалить все записи
 - `GET /_delete/{table_name}/{id}` Удалить конкретную запись
+### Обычные `GET` запросы вы можете пускать по стандартному пути
+- `GET /{table_name}?{param}` Список всех записей с фильтром по параметрам
+- `GET /{table_name}/{id}` Данные конкретной записи
 
 ### Демо база данных `https://pllano.eu/json-db/`
 

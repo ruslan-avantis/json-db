@@ -7,7 +7,7 @@ JSON база данных с открытым исходным кодом. На
 Подключить пакет с помощью Composer - [Список зависимостей](https://github.com/pllano/json-db/blob/master/composer.json)
 ```json
 "require": {
-	"pllano/json-db": "^1.0"
+	"pllano/json-db": "^1.0.5"
 }
 ```
 ### Инструменты для тестирования API

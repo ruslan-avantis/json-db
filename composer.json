@@ -20,9 +20,7 @@
 		"phpunit/phpunit": "^6.4",
 		"guzzlehttp/guzzle": "^6.3",
 		"monolog/monolog": "^1.23",
-		"defuse/php-encryption": "^v2.1",
-		"flow/jsonpath": "^0.3",
-		"mtdowling/jmespath.php": "^2.4"
+		"defuse/php-encryption": "^v2.1"
 	},
 	"autoload": {
 		"psr-4": {

@@ -34,3 +34,21 @@
 - alias="1234324325"
 
 Нажмите на ссылку: [post/user](https://pllano.eu/json-db/_post/user?role_id=1&password=12345&email="user@example.com"&phone="380671002001"&language="ru"&iname="Anna"&fname="Ivanova"&oname="Ivanovna"&alias="1234324325"&cookie="1234324325"&created="2017-12-30%2017:01")
+
+```json
+{
+    "headers": {
+        "status": "201 Created",
+        "code": 201,
+        "message": "Created",
+        "message_id": "https:\/\/github.com\/pllano\/APIS-2018\/tree\/master\/http-codes\/201.md"
+    },
+    "response": {
+        "id": 22
+    },
+    "request": {
+        "query": "POST",
+        "table": "user"
+    }
+}
+```

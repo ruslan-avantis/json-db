@@ -206,6 +206,18 @@ $row = jsonDb::table('resource_name');
 $row->name = 'Ivan';
 $row->save();
 ```
+Примичание: Если тип поля `integer` а вы передаете число в кавычках, будет ошибка: `неверный тип данных`.
+Для того чтобы избежать ошибки, добавляйте проверку и передавайте число без кавычек как в примере ниже.
+```php
+use jsonDB\Database as jsonDb;
+
+$row = jsonDb::table('resource_name');
+// is_numeric проверяем что значение число, а intval уберет кавычки
+if (is_numeric($num)){$num = intval($num);}
+$row->num = $num;
+$row->save();
+
+```
 #### Получить данные
 ```php
 use jsonDB\Database as jsonDb;

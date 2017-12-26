@@ -1,11 +1,11 @@
 <?php
-
+ 
 namespace jsonDB;
-
+ 
 use jsonDB\dbException;
 use jsonDB\Relation;
 use jsonDB;
-
+ 
 /**
  * Core class of jsonDB.
  *
@@ -15,37 +15,37 @@ use jsonDB;
  *
  */
 class Database implements \IteratorAggregate, \Countable {
-
+ 
     /**
      * Contain returned data from file as object or array of objects
      * @var mixed Data from table
      */
     protected $data;
-
+ 
     /**
      * Name of file (table)
      * @var string Name of table
      */
     protected $name;
-
+ 
     /**
      * Object with setted data
      * @var object Setted data
      */
     protected $set;
-
+ 
     /**
      * ID of current row if setted
      * @var integer Current ID
      */
     protected $currentId;
-
+ 
     /**
      * Key if current row if setted
      * @var integer Current key
      */
     protected $currentKey;
-
+ 
     /**
      * Pending functions with values
      * @see \jsonDB\Database::setPending()
@@ -130,7 +130,7 @@ class Database implements \IteratorAggregate, \Countable {
     protected function setFields()
     {
         $this->set = new \stdClass();
-        $schema    = $this->schema();
+        $schema = $this->schema();
 
         foreach ($schema as $field => $type)
         {
@@ -177,11 +177,22 @@ class Database implements \IteratorAggregate, \Countable {
      */
     public function __set($name, $value)
     {
+        /*      
         if (Validate::table($this->name)->field($name) && Validate::table($this->name)->type($name, $value))
         {
             $this->set->{$name} = $value;
+        } 
+        */   
+        try {
+            Validate::table($this->name)->field($name);
+            Validate::table($this->name)->type($name, $value);
+            $this->set->{$name} = $value;
+        } catch(dbException $error) {
+            echo $error;
         }
+        
     }
+    
 
     /**
      * Returning variable from Object
@@ -521,7 +532,7 @@ class Database implements \IteratorAggregate, \Countable {
                 elseif (!is_array($value) && in_array($op, array('LIKE', 'like')))
                 {
 
-					//$specials = '.\+*?[^]$(){}=!<>|:-';
+                    //$specials = '.\+*?[^]$(){}=!<>|:-';
                     $regex = "/^" . str_replace('%', '(.*?)', preg_quote($value)) . "$/si";
                     $value = preg_match($regex, $row->{$field});
                     $op    = '==';
@@ -794,13 +805,13 @@ class Database implements \IteratorAggregate, \Countable {
         }
         else
         {
-            $this->set->id           = $this->currentId;
+            $this->set->id = $this->currentId;
             $data[$this->currentKey] = $this->set;
         }
 
         Data::table($this->name)->put($data);
 
-//         $this->setFields();
+//      $this->setFields();
     }
 
     /**
@@ -856,8 +867,8 @@ class Database implements \IteratorAggregate, \Countable {
     {
         if ($id !== NULL)
         {
-            $data             = $this->getData();
-            $this->currentId  = $id;
+            $data = $this->getData();
+            $this->currentId = $id;
             $this->currentKey = $this->getRowKey($id);
             foreach ($data[$this->currentKey] as $field => $value)
             {
@@ -907,7 +918,7 @@ class Database implements \IteratorAggregate, \Countable {
      */
     public function debug()
     {
-        $print = "jsonDB::table(" . $this->name . ")\n";
+        $print = "jsonDB::table(".$this->name.")\n";
         foreach ($this->pending as $function => $values)
         {
             if (!empty($values))

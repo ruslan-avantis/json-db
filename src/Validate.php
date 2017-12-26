@@ -1,10 +1,10 @@
 <?php
-
+    
 namespace jsonDB;
-
+ 
 use jsonDB\dbException;
 use jsonDB\Relation;
-
+ 
 /**
  * Validation for tables
  *
@@ -37,7 +37,7 @@ class Validate {
      */
     public static function isNumeric($type)
     {
-        $defined = array('integer', 'double');
+        $defined = array("integer", "double");
 
         if (in_array($type, $defined))
         {
@@ -56,7 +56,7 @@ class Validate {
     public static function types(array $types)
     {
         $defined = array('boolean', 'integer', 'double', 'string', 'text', 'datetime');
-        $diff    = array_diff($types, $defined);
+        $diff = array_diff($types, $defined);
 
         if (empty($diff))
         {
@@ -162,7 +162,6 @@ class Validate {
         {
             return TRUE;
         }
-
         throw new dbException('Wrong data type');
     }
 

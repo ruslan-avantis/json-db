@@ -61,7 +61,7 @@ class File implements FileInterface {
     
         $getPath = file_get_contents($this->getPath());
         
-        //    Если ключ шифрования установлен расшифровываем
+        // Если ключ шифрования установлен расшифровываем
         if (defined('JSON_DB_KEY') && JSON_DB_CRYPT == true){
 
             try {
@@ -96,7 +96,7 @@ class File implements FileInterface {
 
     public final function put($data)
     {
-        //    Если ключ шифрования установлен шифруем
+        // Если ключ шифрования установлен шифруем
         if (defined('JSON_DB_KEY') && JSON_DB_CRYPT == true){
             try {
                 $getPath = Crypto::encrypt(json_encode($data), Key::loadFromAsciiSafeString(JSON_DB_KEY));

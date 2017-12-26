@@ -1,4 +1,4 @@
-<?php
+<?php 
  
 if (PHP_SAPI == 'cli-server') {
 $url  = parse_url($_SERVER['REQUEST_URI']);
@@ -8,26 +8,26 @@ if (is_file($file)) {return false;}
  
 // !!! Указываем директорию где будет храниться json db !!!
 $_db = __DIR__ . '/_db_/';
-
+ 
 // Composer
 require __DIR__ . '/../../vendor/autoload.php';
-
+     
 use Slim\App;
 use Slim\Http\Request;
 use Slim\Http\Response;
-
+ 
 use Monolog\Logger;
 use Monolog\Processor\UidProcessor;
 use Monolog\Handler\StreamHandler;
-
+ 
 use Defuse\Crypto\Key;
 use Flow\JSONPath\JSONPath;
-
+ 
 use jsonDB\Db;
 use jsonDB\Database as jsonDb;
 use jsonDB\Validate;
 use jsonDB\dbException;
-
+ 
 // Проверяем папки DB, если нет создаем
 if (!file_exists($_db)){mkdir($_db);}
 if (!file_exists($_db . 'core')){mkdir($_db . 'core');}
@@ -43,10 +43,10 @@ if (!file_exists($_db . 'core/key_db.txt')){
 $config = array();
 $config['settings']['db']['dir'] = $_db;
 $config['settings']['db']['key_cryp'] = Key::loadFromAsciiSafeString(file_get_contents($_db . 'core/key_db.txt', true));
-$config['settings']['db']['key'] = file_get_contents($_db . 'core/key_db.txt', true);
+$config['settings']['db']['public_key'] = file_get_contents($_db . 'core/key_db.txt', true);
 $config['settings']['db']['access_key'] = false;
 $config['settings']['determineRouteBeforeAppMiddleware'] = true;
-$config['settings']['displayErrorDetails'] = false;
+$config['settings']['displayErrorDetails'] = true;
 $config['settings']['addContentLengthHeader'] = true;
 $config['settings']['debug'] = true;
 $config['settings']['http-codes'] = "https://github.com/pllano/APIS-2018/tree/master/http-codes/";
@@ -58,7 +58,7 @@ $db->setCacheLifetime(60);
 $db->setTemp(false);
 $db->setApi(false);
 $db->setCrypt(false);
-$db->setKey($config['settings']['db']['key']);
+$db->setKey($config['settings']['db']['public_key']);
 $db->run();
 
 // Подключаем Slim
@@ -104,30 +104,25 @@ $app->get('/', function (Request $request, Response $response, array $args) {
 
 });
 
-$app->get('/{table:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
+$app->get('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
     
-    $table_name = $request->getAttribute('table');
+    $resource = $request->getAttribute('resource');
     $id = intval($request->getAttribute('id'));
     $getParams = $request->getQueryParams();
     $getUri = $request->getUri();
-    
+    // Если авторизация по ключу
     if ($this->get('settings')['db']["access_key"] == true){
-        $param_key = (isset($getParams['key'])) ? Db::clean($getParams['key']) : "none";
+        $param_key = (isset($getParams['public_key'])) ? Db::clean($getParams['public_key']) : "none";
         } else {
-        $param_key = $this->get('settings')['db']["key"];
+        $param_key = $this->get('settings')['db']["public_key"];
     }
-    
-    if ($this->get('settings')['db']["key"] == $param_key) {
-        
-        $resp = array();
-        
-        if (isset($table_name)) {
-            
+    if ($this->get('settings')['db']["public_key"] == $param_key) {
+        if (isset($resource)) {
             // Проверяем наличие главной базы если нет даем ошибку
             try {
-                Validate::table($table_name)->exists();
+                Validate::table($resource)->exists();
                 
-                $table_config = json_decode(file_get_contents($this->get('settings')['db']["dir"].'/'.$table_name.'.config.json'), true);
+                $table_config = json_decode(file_get_contents($this->get('settings')['db']["dir"].'/'.$resource.'.config.json'), true);
                 
                 if (parse_url($getUri, PHP_URL_QUERY)) {$url_query = '?'.parse_url($getUri, PHP_URL_QUERY);} else {$url_query = '';}
                 $url_path = parse_url($getUri, PHP_URL_PATH);
@@ -140,9 +135,7 @@ $app->get('/{table:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Respo
                 if ($cacheReader == null) { // Начало
                     
                     if ($id >= 1) {
-                        $res = jsonDb::table($table_name)->where('id', '=', $id)->findAll();
-                        
-                        //print_r($res);
+                        $res = jsonDb::table($resource)->where('id', '=', $id)->findAll();
                         
                         $resCount = count($res);
                         if ($resCount == 1) {
@@ -154,16 +147,19 @@ $app->get('/{table:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Respo
                             $resp["response"]["source"] = "db";
                             $resp["response"]["total"] = $resCount;
                             $resp["request"]["query"] = "GET";
-                            $resp["request"]["table"] = $table_name;
+                            $resp["request"]["resource"] = $resource;
                             $resp["request"]["id"] = $id;
                             
-                            foreach($res AS $key => $unit){
-                                if (isset($key) && isset($unit)) {
-                                    $item[$key] = $unit;
+                            foreach($res as $key => $value){
+                                if (isset($key) && isset($value)) {
+                                    $array = array($key, $value);
+                                    unset($array["0"]);
+                                    $array = $array["1"];
+                                    $item["item"] = $array;
+                                    $items['items'][] = $item;
                                 }
                             }
-                            
-                            $resp["body"]["items"]["item"] = $item;
+                            $resp['body'] = $items;
                             
                         }
                         else {
@@ -174,7 +170,7 @@ $app->get('/{table:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Respo
                             $resp["response"]["source"] = "db";
                             $resp["response"]["total"] = 0;
                             $resp["request"]["query"] = "GET";
-                            $resp["request"]["table"] = $table_name;
+                            $resp["request"]["resource"] = $resource;
                             $resp["request"]["id"] = $id;
                             $resp["body"]["items"]["item"] = "[]";
                         }
@@ -183,8 +179,8 @@ $app->get('/{table:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Respo
                     else {
                         
                         // Указываем таблицу
-                        $count = jsonDb::table($table_name);
-                        $res = jsonDb::table($table_name);
+                        $count = jsonDb::table($resource);
+                        $res = jsonDb::table($resource);
                         
                         parse_str(parse_url($getUri, PHP_URL_QUERY), $query);
                         
@@ -201,18 +197,18 @@ $app->get('/{table:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Respo
                                 if (isset($query["JSONPath"])) {$unit = $query["JSONPath"];    }
                                 if (isset($query["jsonpath"])) {$unit = $query["jsonpath"];    }
                                 $unit = str_replace('"', '', $unit);
-                                $file = $this->get('settings')['db']["dir"].''.$table_name.'.data.json';
+                                $file = $this->get('settings')['db']["dir"].''.$resource.'.data.json';
                                 $data = json_decode(file_get_contents($file));
-                                $resp["items"] = (new JSONPath($data))->find($unit);
+                                $resp["items"][] = (new JSONPath($data))->find($unit);
                             }
                             
                             if (isset($query["JmesPath"]) || isset($query["jmespath"])) {
                                 if (isset($query["JmesPath"])) {$unit = $query["JmesPath"];}
                                 if (isset($query["jmespath"])) {$unit = $query["jmespath"];    }
                                 $unit = str_replace('"', '', $unit);
-                                $file = $this->get('settings')['db']["dir"].''.$table_name.'.data.json';
+                                $file = $this->get('settings')['db']["dir"].''.$resource.'.data.json';
                                 $data = json_decode(file_get_contents($file));
-                                $resp["items"] = \JmesPath\search($unit, $data);
+                                $resp["items"][] = \JmesPath\search($unit, $data);
                                 /*
                                     $resp = new JmesPath\CompilerRuntime($data);
                                     $resp($querty);
@@ -386,8 +382,6 @@ $app->get('/{table:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Respo
                                 
                             }
                             
-                            //print_r($res);
-                            
                             $resCount = count($res);
                             if ($resCount >= 1) {
                             
@@ -398,15 +392,17 @@ $app->get('/{table:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Respo
                                 $resp["response"]["source"] = "db";
                                 $resp["response"]["total"] = $newCount;
                                 $resp["request"]["query"] = "GET";
-                                $resp["request"]["table"] = $table_name;
-                                foreach($res AS $key => $unit){
-                                    if (isset($key) && isset($unit)) {
-                                        $item[$key] = $unit;
-                                        $items["item"] = $item;
+                                $resp["request"]["resource"] = $resource;
+                                foreach($res as $key => $value){
+                                    if (isset($key) && isset($value)) {
+                                        $array = array($key, $value);
+                                        unset($array["0"]);
+                                        $array = $array["1"];
+                                        $item["item"] = $array;
+                                        $items['items'][] = $item;
                                     }
                                 }
-                                
-                                $resp["body"]["items"] = $items;
+                                $resp['body'] = $items;
                                 
                             }
                             else {
@@ -418,17 +414,15 @@ $app->get('/{table:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Respo
                                 $resp["response"]["source"] = "db";
                                 $resp["response"]["total"] = 0;
                                 $resp["request"]["query"] = "GET";
-                                $resp["request"]["table"] = $table_name;
+                                $resp["request"]["resource"] = $resource;
                             }
                             
                             // Записываем данные в кеш
                             Db::cacheWriter($cacheUri, $resp);
                             
                         } else {
-                        // Параметров нет отдаем все записи
-                        
-                        $res = jsonDb::table($table_name)->findAll();
-                        
+                            // Параметров нет отдаем все записи
+                            $res = jsonDb::table($resource)->findAll();
                             $resCount = count($res);
                             if ($resCount >= 1) {
                                 $resp["headers"]["status"] = "200 OK";
@@ -438,16 +432,19 @@ $app->get('/{table:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Respo
                                 $resp["response"]["source"] = "db";
                                 $resp["response"]["total"] = $resCount;
                                 $resp["request"]["query"] = "GET";
-                                $resp["request"]["table"] = $table_name;
-                                foreach($res AS $key => $unit){
-                                    if (isset($key) && isset($unit)) {
-                                        $item[$key] = $unit;
-                                        $items["item"] = $item;
+                                $resp["request"]["resource"] = $resource;
+
+                                foreach($res as $key => $value){
+                                    if (isset($key) && isset($value)) {
+                                        $array = array($key, $value);
+                                        unset($array["0"]);
+                                        $array = $array["1"];
+                                        $item["item"] = $array;
+                                        $items['items'][] = $item;
                                     }
                                 }
-                                
-                                $resp["body"]["items"] = $items;
-                                
+                                //print_r($items);
+                                $resp['body'] = $items;
                             }
                             else {
                                 $resp["headers"]["status"] = "404 Not Found";
@@ -458,13 +455,11 @@ $app->get('/{table:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Respo
                                 // База вернула 0 записей или null
                                 $resp["response"]["total"] = 0;
                                 $resp["request"]["query"] = "GET";
-                                $resp["request"]["table"] = $table_name;
+                                $resp["request"]["resource"] = $resource;
                             }
                             
                             // Записываем данные в кеш
                             Db::cacheWriter($cacheUri, $resp);
-                            
-                            
                         }
                     }
                     
@@ -479,11 +474,11 @@ $app->get('/{table:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Respo
                 // Доступ запрещен. Такой таблицы не существует.
                 $resp["headers"]["status"] = '404 Not Found';
                 $resp["headers"]["code"] = 404;
-                $resp["headers"]["message"] = 'Table Not Found';
+                $resp["headers"]["message"] = 'resource Not Found';
                 $resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
                 $resp["response"]["total"] = 0;
                 $resp["request"]["query"] = "GET";
-                $resp["request"]["table"] = '';
+                $resp["request"]["resource"] = '';
             }
             
         }
@@ -495,7 +490,7 @@ $app->get('/{table:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Respo
             $resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
             $resp["response"]["total"] = 0;
             $resp["request"]["query"] = "GET";
-            $resp["request"]["table"] = '';
+            $resp["request"]["resource"] = '';
         }
         
     }
@@ -507,7 +502,7 @@ $app->get('/{table:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Respo
         $resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
         $resp["response"]["total"] = 0;
         $resp["request"]["query"] = "GET";
-        $resp["request"]["table"] = '';
+        $resp["request"]["resource"] = '';
     }
     
     echo json_encode($resp, JSON_PRETTY_PRINT);

@@ -506,6 +506,7 @@ $app->get('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Re
     }
     
     echo json_encode($resp, JSON_PRETTY_PRINT);
+ 
     return $response->withStatus(200)->withHeader('Content-Type','application/json');
     
 });
@@ -1780,4 +1781,4 @@ $app->get('/_patch/{table:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request
 
 // Запускаем Slim
 $app->run();
- 
+     

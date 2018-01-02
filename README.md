@@ -6,6 +6,8 @@ JSON база данных с открытым исходным кодом. На
 
 Примеры демо запросов: [demo](https://github.com/pllano/json-db/blob/master/demo.md)
 
+Демо сайт работающий на «jsonDB» - https://xti.com.ua/
+
 ## Старт за несколько минут
 Подключить пакет с помощью Composer - [Список зависимостей](https://github.com/pllano/json-db/blob/master/composer.json)
 ```json

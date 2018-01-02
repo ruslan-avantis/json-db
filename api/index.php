@@ -67,26 +67,20 @@ $app = new App($config);
 $container = $app->getContainer();
 
 $container['logger'] = function ($logger) {
-    
     $logger = new Logger("db_json_api");
     $logger->pushProcessor(new UidProcessor());
     $logger->pushHandler(new StreamHandler(isset($_ENV['docker']) ? 'php://stdout' : $_db . 'log/_monolog/app.log', Logger::DEBUG));
-
     return $logger;
-    
 };
 
 $app->get('/', function (Request $request, Response $response, array $args) {
-
     $param = $request->getQueryParams();
-    $param_key = (isset($param['key'])) ? Db::clean($param['key']) : null;
-
-    if ($param_key == $this->get('settings')['db']["key"]) {
+    $param_key = (isset($param['public_key'])) ? Db::clean($param['public_key']) : null;
+    if ($param_key == $this->get('settings')['db']["public_key"]) {
         $resp["headers"]["status"] = "200 OK";
         $resp["headers"]["code"] = 200;
         $resp["headers"]["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
         $resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["code"].".md";
-        
         echo json_encode($resp, JSON_PRETTY_PRINT);
     } else {
         $resp["headers"]["status"] = "200 OK";
@@ -95,17 +89,10 @@ $app->get('/', function (Request $request, Response $response, array $args) {
         $resp["headers"]["message_id"] = $this->get('settings')['http-codes']."".$resp["headers"]["code"].".md";
         echo json_encode($resp, JSON_PRETTY_PRINT);
     }
-
-    //$response->withStatus(200);
-    //$response->withHeader('Content-type', 'application/json');
-    //return $response;
-        
     return $response->withStatus(200)->withHeader('Content-Type','application/json');
-
 });
 
 $app->get('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
-    
     $resource = $request->getAttribute('resource');
     $id = intval($request->getAttribute('id'));
     $getParams = $request->getQueryParams();
@@ -113,27 +100,25 @@ $app->get('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Re
     // Если авторизация по ключу
     if ($this->get('settings')['db']["access_key"] == true){
         $param_key = (isset($getParams['public_key'])) ? Db::clean($getParams['public_key']) : "none";
-        } else {
+    } else {
         $param_key = $this->get('settings')['db']["public_key"];
     }
     if ($this->get('settings')['db']["public_key"] == $param_key) {
         if (isset($resource)) {
-            // Проверяем наличие главной базы если нет даем ошибку
-            try {
-                Validate::table($resource)->exists();
-                
+            // Проверяем наличие главной базы
+            try {Validate::table($resource)->exists();
+                // Конфигурация таблицы
                 $table_config = json_decode(file_get_contents($this->get('settings')['db']["dir"].'/'.$resource.'.config.json'), true);
-                
+                // Парсим URL
                 if (parse_url($getUri, PHP_URL_QUERY)) {$url_query = '?'.parse_url($getUri, PHP_URL_QUERY);} else {$url_query = '';}
                 $url_path = parse_url($getUri, PHP_URL_PATH);
-                
                 // Формируем url для работы с кешем
                 $cacheUri = $url_path.''.$url_query;
-                
                 // Читаем данные в кеше
                 $cacheReader = Db::cacheReader($cacheUri);
-                if ($cacheReader == null) { // Начало
-                    
+				// Если кеш отдал null, формируем запрос к базе
+                if ($cacheReader == null) {
+					// Если указан id
                     if ($id >= 1) {
                         $res = jsonDb::table($resource)->where('id', '=', $id)->findAll();
                         
@@ -149,20 +134,137 @@ $app->get('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Re
                             $resp["request"]["query"] = "GET";
                             $resp["request"]["resource"] = $resource;
                             $resp["request"]["id"] = $id;
+							
+							parse_str(parse_url($getUri, PHP_URL_QUERY), $query);
                             
-                            foreach($res as $key => $value){
-                                if (isset($key) && isset($value)) {
-                                    $array = array($key, $value);
-                                    unset($array["0"]);
-                                    $array = $array["1"];
-                                    $item["item"] = $array;
-                                    $items['items'][] = $item;
+                                if (isset($query["relation"])) {
+                                    $id = null;
+                                    $resource_id = $resource.'_id';
+                                    $relation = null;
+                                    $foreach = 0;
+                                    if (base64_decode($query["relation"], true) != false){
+                                        $relation = base64_decode($query["relation"]);
+                                        if (json_decode($relation, true) != null){
+                                            $relation = json_decode($relation, true);
+                                            $foreach = 1;
+                                        } else {
+                                            $relation = $query["relation"];
+                                        }
+                                    } else {
+                                        $relation = $query["relation"];
+                                    }
+                                    $resp["request"]["relation"] = $relation;
+ 
+                                    foreach($res as $key => $arr){
+                                        if (isset($key) && isset($arr)) {
+                                            $id = $arr->{$resource_id};
+                                            $newArr = (array)$arr;
+                                            //print_r($newdArr);
+                                            if (isset($id)) {
+                                                if ($foreach == 1) {
+                                                    foreach($relation as $key => $value) {
+                                                        $rel = jsonDb::table($key)->where($resource_id, '=', $id)->findAll();
+                                                        foreach($rel as $k => $v) {
+                                                            if (in_array($k, $value)) {
+                                                                $a = array($k, $v);
+                                                                unset($a["0"]);
+                                                                $a = $a["1"];
+                                                                $r[$key][] = $a;
+                                                            }
+                                                        }
+                                                        $newArr = array_merge($newArr, $r);
+                                                    }
+                                                } else {
+                                                    $rel = null;
+                                                    $ex = explode(",", $relation);
+                                                    foreach($ex as $ex_keys => $ex_val) {
+                                                        $ex_pos = strripos($ex_val, ":");
+                                                        $new_ex = [];
+                                                        if ($ex_pos === false) {
+                                                            $val = $ex_val;
+                                                            $c = 0;
+                                                        } else {
+                                                            $ex_new = explode(":", $ex_val);
+                                                            $val = $ex_new["0"];
+                                                            unset($ex_new["0"]);
+                                                            //print_r($ex_new);
+                                                            //print("<br>");
+                                                            $new_ex = array_flip($ex_new);
+                                                            $c = 1;
+                                                        }
+
+                                                        $val_name = $val.'_id';
+                                                        if (isset($newArr[$val_name])) {
+                                                            $val_id = $newArr[$val_name];
+                                                        }
+                                                        
+                                                        $rel_table_config = json_decode(file_get_contents($this->get('settings')['db']["dir"].'/'.$val.'.config.json'), true);
+
+                                                        if (array_key_exists($resource_id, $rel_table_config["schema"]) && isset($id)) {
+                                                            
+                                                            $rel = jsonDb::table($val)->where($resource_id, '=', $id)->findAll();
+                                                            if ($c == 1){
+                                                                $control = $new_ex;
+                                                            } else {
+                                                                $control = $rel_table_config["schema"];
+                                                            }
+                                                            
+                                                        } elseif(array_key_exists($val_name, $table_config["schema"]) && isset($val_id)) {
+                                                        
+                                                            $rel = jsonDb::table($val)->where($val_name, '=', $val_id)->findAll();
+                                                            if ($c == 1){
+                                                                $control = $new_ex;
+                                                            } else {
+                                                                $control = $rel_table_config["schema"];
+                                                            }
+                                                        }
+
+                                                        if (count($rel) >= 1) {
+                                                            $r = array();
+                                                            foreach($rel as $k => $v) {
+                                                                $vv = (array)$v;
+                                                                $ar = array();
+                                                                foreach($vv as $key => $va) {
+                                                                    if (array_key_exists($key, $control) && $key != "password" && $key != "cookie") {
+                                                                        $ar[$key] = $va;
+                                                                    }
+                                                                }
+                                                            //$arr = 
+                                                            //print_r($v);
+                                                            //print("<br>");
+                                                                $a = array($k, $ar);
+                                                                unset($a["0"]);
+                                                                $a = $a["1"];
+                                                                $r[$val][] = $a;
+                                                            }
+                                                            $newArr = array_merge($newArr, $r);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            $newArr = (object)$newArr;
+                                        }
+                                        $array = array($key, $newArr);
+                                        unset($array["0"]);
+                                        $array = $array["1"];
+                                        $item["item"] = $array;
+                                        $items['items'][] = $item;
+                                    }
+                                    $resp['body'] = $items;
+                                } else {
+                                    foreach($res as $key => $arr){
+                                        if (isset($key) && isset($arr)) {
+                                            $array = array($key, $arr);
+                                            unset($array["0"]);
+                                            $array = $array["1"];
+                                            $item["item"] = $array;
+                                            $items['items'][] = $item;
+                                        }
+                                    }
+                                    $resp['body'] = $items;
                                 }
-                            }
-                            $resp['body'] = $items;
                             
-                        }
-                        else {
+                        } else {
                             $resp["headers"]["status"] = '404 Not Found';
                             $resp["headers"]["code"] = 404;
                             $resp["headers"]["message"] = 'Not Found';
@@ -175,19 +277,16 @@ $app->get('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Re
                             $resp["body"]["items"]["item"] = "[]";
                         }
                         
-                    }
-                    else {
-                        
+                    } else {
+                        // id не указан, формируем запрос списка
                         // Указываем таблицу
                         $count = jsonDb::table($resource);
                         $res = jsonDb::table($resource);
-                        
+						// Парсим URL
                         parse_str(parse_url($getUri, PHP_URL_QUERY), $query);
-                        
-                        //print_r($query);
+						// Если есть параметры
                         $quertyCount = count($query);
                         if ($quertyCount >= 1) {
-                            
                             $resp["headers"]["status"] = "200 OK";
                             $resp["headers"]["code"] = 200;
                             $resp["headers"]["message"] = "OK";
@@ -215,16 +314,10 @@ $app->get('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Re
                                 */
                             }
                             
-                            if (
-                            isset($query["JSONPath"]) == false
-                            && isset($query["jsonpath"]) == false
-                            && isset($query["JmesPath"]) == false
-                            && isset($query["jmespath"]) == false
-                            ) {
+                            if (isset($query["JSONPath"]) == false && isset($query["jsonpath"]) == false && isset($query["JmesPath"]) == false && isset($query["jmespath"]) == false) {
                                 
                                 foreach($query as $key => $value){
-                                    if(!in_array($key, array(
-                                    'andWhere',
+                                    if(!in_array($key, ['andWhere',
                                     'orWhere',
                                     'asArray',
                                     'LIKE',
@@ -237,10 +330,9 @@ $app->get('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Re
                                     'jsonpath',
                                     'JmesPath',
                                     'jmespath'
-                                    ), true)){
+									], true)){
                                         
                                         if (isset($key) && isset($value)) {
-                                            
                                             if (array_key_exists($key, $table_config["schema"])) {
                                                 // Убираем пробелы и одинарные кавычки
                                                 $key = str_replace(array(" ", "'", "%", "%27", "%20"), "", $key);
@@ -305,35 +397,6 @@ $app->get('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Re
                                     $resp["request"]["LIKE"] = $query["LIKE"];
                                 }
                                 
-                                // Если ключ команда
-                                if (isset($query["relation"])) {
-                                    
-                                    // Убираем пробелы и одинарные кавычки
-                                    $relation = str_replace(array(" ", "'", "%", "%27", "%20"), "", $query["relation"]);
-                                    // Ищем разделитель , запятую
-                                    $pos = strripos($relation, ",");
-                                    if ($pos === false) {
-                                        // , запятая не найдена
-                                        $count->with($relation);
-                                        $res->with($relation);
-                                        $resp["request"]["relation"] = $relation;
-                                        } else {
-                                        $explode = explode(",", $relation);
-                                        // , запятая найдена
-                                        
-                                        // Здесь не работает !!!
-                                        foreach($explode as $key => $relation){
-                                            if (isset($relation)) {
-                                                $count->with($relation);
-                                                $res->with($relation);
-                                                $resp["request"]["relation"] = $relation;
-                                            }
-                                        }
-                                        
-                                    }
-                                    
-                                }
-                                
                                 if (isset($query["order"]) || isset($query["sort"])) {
                                     
                                     $order = "DESC";
@@ -379,12 +442,10 @@ $app->get('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Re
                                 
                                 $count->findAll()->count();
                                 $newCount = count($count);
-                                
                             }
                             
                             $resCount = count($res);
                             if ($resCount >= 1) {
-                            
                                 $resp["headers"]["status"] = "200 OK";
                                 $resp["headers"]["code"] = 200;
                                 $resp["headers"]["message"] = "OK";
@@ -393,19 +454,123 @@ $app->get('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Re
                                 $resp["response"]["total"] = $newCount;
                                 $resp["request"]["query"] = "GET";
                                 $resp["request"]["resource"] = $resource;
-                                foreach($res as $key => $value){
-                                    if (isset($key) && isset($value)) {
-                                        $array = array($key, $value);
+                                if (isset($query["relation"])) {
+                                    $id = null;
+                                    $resource_id = $resource.'_id';
+                                    $relation = null;
+                                    $foreach = 0;
+                                    if (base64_decode($query["relation"], true) != false){
+                                        $relation = base64_decode($query["relation"]);
+                                        if (json_decode($relation, true) != null){
+                                            $relation = json_decode($relation, true);
+                                            $foreach = 1;
+                                        } else {
+                                            $relation = $query["relation"];
+                                        }
+                                    } else {
+                                        $relation = $query["relation"];
+                                    }
+                                    $resp["request"]["relation"] = $relation;
+                                    foreach($res as $key => $arr){
+                                        if (isset($key) && isset($arr)) {
+                                            $id = $arr->{$resource_id};
+                                            $newArr = (array)$arr;
+                                            if (isset($id)) {
+                                                if ($foreach == 1) {
+                                                    foreach($relation as $key => $value) {
+                                                        $rel = jsonDb::table($key)->where($resource_id, '=', $id)->findAll();
+                                                        foreach($rel as $k => $v) {
+                                                            if (in_array($k, $value)) {
+                                                                $a = array($k, $v);
+                                                                unset($a["0"]);
+                                                                $a = $a["1"];
+                                                                $r[$key][] = $a;
+                                                            }
+                                                        }
+                                                        $newArr = array_merge($newArr, $r);
+                                                    }
+                                                } else {
+                                                    $rel = null;
+                                                    $ex = explode(",", $relation);
+                                                    foreach($ex as $ex_keys => $ex_val) {
+                                                        $ex_pos = strripos($ex_val, ":");
+                                                        $new_ex = [];
+                                                        if ($ex_pos === false) {
+                                                            $val = $ex_val;
+                                                            $c = 0;
+                                                        } else {
+                                                            $ex_new = explode(":", $ex_val);
+                                                            $val = $ex_new["0"];
+                                                            unset($ex_new["0"]);
+                                                            $new_ex = array_flip($ex_new);
+                                                            $c = 1;
+                                                        }
+                                                        $val_name = $val.'_id';
+                                                        if (isset($newArr[$val_name])) {
+                                                            $val_id = $newArr[$val_name];
+                                                        }
+                                                        $rel_table_config = json_decode(file_get_contents($this->get('settings')['db']["dir"].'/'.$val.'.config.json'), true);
+                                                        if (array_key_exists($resource_id, $rel_table_config["schema"]) && isset($id)) {
+                                                            
+                                                            $rel = jsonDb::table($val)->where($resource_id, '=', $id)->findAll();
+                                                            if ($c == 1){
+                                                                $control = $new_ex;
+                                                            } else {
+                                                                $control = $rel_table_config["schema"];
+                                                            }
+                                                        } elseif(array_key_exists($val_name, $table_config["schema"]) && isset($val_id)) {
+                                                            $rel = jsonDb::table($val)->where($val_name, '=', $val_id)->findAll();
+                                                            if ($c == 1){
+                                                                $control = $new_ex;
+                                                            } else {
+                                                                $control = $rel_table_config["schema"];
+                                                            }
+                                                        }
+                                                        if (count($rel) >= 1) {
+                                                            $r = array();
+                                                            foreach($rel as $k => $v) {
+                                                                $vv = (array)$v;
+                                                                $ar = array();
+                                                                foreach($vv as $key => $va) {
+                                                                    if (array_key_exists($key, $control) && $key != "password" && $key != "cookie") {
+                                                                        $ar[$key] = $va;
+                                                                    }
+                                                                }
+                                                            //$arr = 
+                                                            //print_r($v);
+                                                            //print("<br>");
+                                                                $a = array($k, $ar);
+                                                                unset($a["0"]);
+                                                                $a = $a["1"];
+                                                                $r[$val][] = $a;
+                                                            }
+                                                            $newArr = array_merge($newArr, $r);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                            $newArr = (object)$newArr;
+                                        }
+                                        $array = array($key, $newArr);
                                         unset($array["0"]);
                                         $array = $array["1"];
                                         $item["item"] = $array;
                                         $items['items'][] = $item;
                                     }
+                                    $resp['body'] = $items;
+                                } else {
+                                    foreach($res as $key => $arr){
+                                        if (isset($key) && isset($arr)) {
+                                            $array = array($key, $arr);
+                                            unset($array["0"]);
+                                            $array = $array["1"];
+                                            $item["item"] = $array;
+                                            $items['items'][] = $item;
+                                        }
+                                    }
+                                    $resp['body'] = $items;
                                 }
-                                $resp['body'] = $items;
-                                
-                            }
-                            else {
+                            } else {
                                 // База вернула 0 записей или null
                                 $resp["headers"]["status"] = "404 Not Found";
                                 $resp["headers"]["code"] = 404;
@@ -443,10 +608,8 @@ $app->get('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Re
                                         $items['items'][] = $item;
                                     }
                                 }
-                                //print_r($items);
                                 $resp['body'] = $items;
-                            }
-                            else {
+                            } else {
                                 $resp["headers"]["status"] = "404 Not Found";
                                 $resp["headers"]["code"] = 404;
                                 $resp["headers"]["message"] = "Not Found";
@@ -463,15 +626,12 @@ $app->get('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Re
                         }
                     }
                     
-                } // Конец
-                else {
-                    // Отдаем с кеша
+                } else {
+                    // Если нашли в кеше отдаем с кеша
                     $resp = $cacheReader;
                 }
-                
-            }
-            catch(dbException $e){
-                // Доступ запрещен. Такой таблицы не существует.
+            } catch(dbException $e) {
+                // Такой таблицы не существует
                 $resp["headers"]["status"] = '404 Not Found';
                 $resp["headers"]["code"] = 404;
                 $resp["headers"]["message"] = 'resource Not Found';
@@ -480,10 +640,8 @@ $app->get('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Re
                 $resp["request"]["query"] = "GET";
                 $resp["request"]["resource"] = '';
             }
-            
-        }
-        else {
-            // Доступ запрещен. Название таблицы не задано.
+        } else {
+            // Название таблицы не задано.
             $resp["headers"]["status"] = '403 Access is denied';
             $resp["headers"]["code"] = 403;
             $resp["headers"]["message"] = 'Access is denied';
@@ -492,10 +650,8 @@ $app->get('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Re
             $resp["request"]["query"] = "GET";
             $resp["request"]["resource"] = '';
         }
-        
-    }
-    else {
-        // Доступ запрещен. Ключ доступа не совпадает.
+    } else {
+        // Ключ доступа не совпадает.
         $resp["headers"]["status"] = '403 Access is denied';
         $resp["headers"]["code"] = 403;
         $resp["headers"]["message"] = 'Access is denied';
@@ -504,11 +660,11 @@ $app->get('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Re
         $resp["request"]["query"] = "GET";
         $resp["request"]["resource"] = '';
     }
-    
-    echo json_encode($resp, JSON_PRETTY_PRINT);
  
+	// Выводим результат
+    echo json_encode($resp, JSON_PRETTY_PRINT);
     return $response->withStatus(200)->withHeader('Content-Type','application/json');
-    
+ 
 });
 
 $app->post('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
@@ -562,10 +718,12 @@ $app->post('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, R
                                         }
                                     }
                                     if ($table_config["schema"][$key] == "double") {
-                                        if (is_float($value)) {
-                                            $value = floatval($value);
+                                        if (is_float($value * 1)) {
+                                            //$value = floatval($value);
+                                            $value = (float)$value;
                                         } else {
-                                            $value = 0.00;
+                                            $value = (float)$value;
+                                            //$value = number_format($value, 2, '.', '');
                                         }
                                     }
                                     if ($table_config["schema"][$key] == "boolean") {
@@ -651,8 +809,8 @@ $app->post('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, R
 
 });
 
-//$app->map(['PUT', 'PATCH'], '/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
-$app->put('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
+$app->map(['PUT', 'PATCH'], '/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
+//$app->put('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Response $response, array $args) {
     $resource = $request->getAttribute('resource');
     $id = intval($request->getAttribute('id'));
     $put = $request->getParsedBody();
@@ -693,10 +851,10 @@ $app->put('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Re
                                         }
                                     }
                                     if ($table_config["schema"][$key] == "double") {
-                                        if (is_float($value)) {
-                                            $value = floatval($value);
+                                        if (is_float($value * 1)) {
+                                            $value = (float)$value;
                                         } else {
-                                            $value = 0.00;
+                                            $value = (float)$value;
                                         }
                                     }
                                     if ($table_config["schema"][$key] == "boolean") {
@@ -1385,10 +1543,10 @@ $app->get('/_post/{table:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request,
                                             }
                                         }
                                         if ($table_config["schema"][$key] == "double") {
-                                            if (is_float($value)) {
-                                                $value = floatval($value);
+                                            if (is_float($value * 1)) {
+                                                $value = (float)$value;
                                             } else {
-                                                $value = 0.00;
+                                                $value = (float)$value;
                                             }
                                         }
                                         if ($table_config["schema"][$key] == "boolean") {
@@ -1626,10 +1784,10 @@ $app->get('/_put/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $reques
                                         }
                                     }
                                     if ($table_config["schema"][$key] == "double") {
-                                        if (is_float($value)) {
-                                            $value = floatval($value);
+                                        if (is_float($value * 1)) {
+                                            $value = (float)$value;
                                         } else {
-                                            $value = 0.00;
+                                            $value = (float)$value;
                                         }
                                     }
                                     if ($table_config["schema"][$key] == "boolean") {
@@ -1929,4 +2087,4 @@ $app->get('/_patch/{table:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request
 
 // Запускаем Slim
 $app->run();
-     
+ 

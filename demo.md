@@ -19,9 +19,9 @@
 
 https://xti.com.ua/json-db/order/4
 
-Список заказов с параметром `relation`
+Список первых 5 заказов с параметром `relation`
 
-https://xti.com.ua/json-db/order?relation=cart,user:phone:email:fname:iname,address
+https://xti.com.ua/json-db/order?relation=cart,user:phone:email:fname:iname,address&limit=5&offset=0
 
 Первые два заказа пользователя `user_id` = 2
 

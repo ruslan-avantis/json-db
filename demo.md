@@ -20,6 +20,10 @@
 
 https://xti.com.ua/json-db/order/4
 
+Удалить заказ с `order_id` = 8
+
+https://xti.com.ua/json-db/_delete/order/8
+
 Список первых 5 заказов с параметром `relation`
 
 https://xti.com.ua/json-db/order?relation=cart,user:phone:email:fname:iname,address&limit=5&offset=0

@@ -24,7 +24,7 @@ https://xti.com.ua/json-db/order/4
 
 https://xti.com.ua/json-db/_delete/order/8
 
-Список первых 5 заказов с параметром `relation`
+Список первых 5 заказов с данными из других ресурсов заданные через параметр [`relation`](https://github.com/pllano/APIS-2018/blob/master/structure/relations.md)
 
 https://xti.com.ua/json-db/order?relation=cart,user:phone:email:fname:iname,address&limit=5&offset=0
 

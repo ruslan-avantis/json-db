@@ -11,45 +11,29 @@
 - `GET /{resource}?{param}` Список всех записей с фильтром по параметрам
 - `GET /{resource}/{id}` Данные конкретной записи
 
-### Демо база данных `https://pllano.eu/json-db/`
+### Демо база данных `https://xti.com.ua/json-db/`
 
-Переходя по ссылкам вы будете создавать, обновлять  или запрашивать данные.
+Переходя по ссылкам вы будете создавать, обновлять или запрашивать данные
 
-Для демонстрации мы выбрали ресурс `user` - струтктура ресурса [`user`](https://github.com/pllano/db.json/blob/master/db/user.md)
+Заказ с `order_id` = 4
 
-Создадим пользователя с следующими данными
+https://xti.com.ua/json-db/order/4
 
-`role_id=1` `password=12345` `email=user@example.com` `phone="380671002001"` `language="ru"` `ticketed=1` `admin_access=0` `fname="Ivanova"` `iname="Anna"` `oname="Ivanovna"` `cookie="1234324325"` `created="2017-12-30 17:01"` `alias="1234324325"`
+Список заказов с параметром `relation`
 
-```json
-{
-    "headers": {
-        "status": "201 Created",
-        "code": 201,
-        "message": "Created",
-        "message_id": "https:\/\/github.com\/pllano\/APIS-2018\/tree\/master\/http-codes\/201.md"
-    },
-    "response": {
-        "id": "В ответе будет id созданного пользователя"
-    },
-    "request": {
-        "query": "POST",
-        "table": "user"
-    }
-}
-```
+https://xti.com.ua/json-db/order/4?relation=cart,user:phone:email:fname:iname,address
 
-Список всех пользователей 
+Первые два заказа пользователя `user_id` = 2
 
-https://pllano.eu/json-db/user
+https://xti.com.ua/json-db/order?user_id=2&limit=2&offset=0
 
-Список пользователей с именем Anna 
+Список всех пользователей
 
-https://pllano.eu/json-db/user?iname=Anna
+https://xti.com.ua/json-db/user
 
-Первые два пользователя с именем Anna 
+Список пользователей с именем Admin 
 
-https://pllano.eu/json-db/user?iname=Anna&limit=2&offset=0
+https://xti.com.ua/json-db/user?iname=Admin
 
 ### json-db потдерживает стандарт [APIS-2018](https://github.com/pllano/APIS-2018)
 Все поддерживаемые json-db типы запросов и ресурсов вы можете найти в документации [APIS-2018](https://github.com/pllano/APIS-2018)

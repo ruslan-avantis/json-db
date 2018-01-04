@@ -125,6 +125,19 @@ class Db {
         ));
 
     }
+    
+    // Проверяем наличие таблицы queue
+    try {Validate::table('queue')->exists();} catch(dbException $e){
+
+        // Создаем таблицу queue
+        jsonDb::create('queue', array(
+        'resource' => 'string',
+        'resource_id' => 'integer',
+        'request' => 'string',
+        'request_body' => 'string'
+        ));
+
+    }
 
     try {jsonDb::table('db')->find(1);} catch(dbException $e){
 
@@ -232,8 +245,8 @@ class Db {
             }
 
             } catch(dbException $e){
-					
-					try {Validate::table($unit["table"])->exists();}  catch(dbException $e){
+                    
+                    try {Validate::table($unit["table"])->exists();}  catch(dbException $e){
 
             if ($unit["action"] == 'create') {
 
@@ -254,7 +267,7 @@ class Db {
                 }
             }
 
-					}
+                    }
 
             }
 
@@ -492,3 +505,4 @@ class Db {
     }
 
 }
+ 

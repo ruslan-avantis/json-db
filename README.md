@@ -254,7 +254,7 @@ jsonDb::table('resource_name')->find(10)->delete();
 [коммитам](https://github.com/pllano/json-db/commits/master) в этом репозитории.
 [RSS](https://github.com/pllano/json-db/commits/master.atom).
 
-Лицензия API json DB
+Лицензия
 -------
 
 The MIT License (MIT). Please see [LICENSE](https://github.com/pllano/json-db/blob/master/LICENSE) for more information.

@@ -131,6 +131,7 @@ class Db {
 
         // Создаем таблицу queue
         jsonDb::create('queue', array(
+		'db' => 'string',
         'resource' => 'string',
         'resource_id' => 'integer',
         'request' => 'string',

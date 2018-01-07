@@ -485,6 +485,14 @@ class Db {
     {
         $this->structure = $structure;
     }
+ 
+    /**
+    * @param structure
+    */
+    public function setPublicKey($public_key)
+    {
+        $this->public_key = $public_key;
+    }
 
     // Генерация uid
     // По умолчанию длина 32 символа, если количество символов не передано в параметре $length

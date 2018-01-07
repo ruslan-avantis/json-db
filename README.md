@@ -152,6 +152,11 @@ if (isset($response["headers"]["code"])) {
 ### Запуск одной строчкой кода
 ```php
 (new \jsonDB\Db(__DIR__ . '/../../_db_/'))->run();
+
+// Или так
+$_db = __DIR__ . '/../../_db_/';
+$db = new Db($_db);
+$db->run();
 ```
 Запуск с параметрами
 ```php
@@ -161,12 +166,13 @@ $_db = __DIR__ . '/../../_db_/'; // Указываем директорию гд
 $db = new Db($_db);
 $db->setPrefixTable("sf"); // Установить префикс таблиц
 $db->setPrefixColumn("jhbg5r"); // Установить префикс полей
-$db->setCached(true); // Включаем кеширование true|false
-$db->setCacheLifetime(60); // Время жижни кеша 60 минут
-$db->setTemp(true); // Используем очередь true|false
+$db->setCached(false); // Включаем кеширование true|false
+$db->setCacheLifetime(60); // Время жизни кеша 60 минут
+$db->setTemp(false); // Используем очередь true|false
 $db->setApi(false); // Если работаем как основная база устанавливаем false
-$db->setPublicKey("public_key"); // Установить public_key (Не обезательно)
-$db->setCrypt(true); // Шифруем таблицы true|false
+$db->setStructure(""); // URL к файлу структуры db.json (Не обезательно)
+$db->setPublicKey(""); // Установить public_key (Не обезательно)
+$db->setCrypt(false); // Шифруем таблицы true|false
 $db->setCryptKey(file_get_contents($_db . 'core/key_db.txt', true)); // Загружаем ключ шифрования
 $db->run();
 ```

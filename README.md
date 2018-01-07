@@ -64,8 +64,8 @@ JSON база данных с открытым исходным кодом. На
 - `{id}` - уникальный индефикатор
 - `{param}` - праметры запроса
 ### GET запрос к RESTful API jsonDB
-`?offset={offset}&limit={limit}&order={order}&sort={sort}&key={key}`
-- `{key}` - Ключ доступа к RESTful API
+`?offset={offset}&limit={limit}&order={order}&sort={sort}&public_key={public_key}`
+- `{public_key}` - Ключ доступа к RESTful API
 - `{limit}` - Записей на страницу. По умолчанию 10
 - `{offset}` - Страница. По умолчанию 0
 - `{order}` - Тип сортировки. По умолчанию asc
@@ -98,13 +98,13 @@ JSON база данных с открытым исходным кодом. На
 ``` php	
 use GuzzleHttp\Client as Guzzle;
 
-$key = $config['settings']['db']['key']; // Взять key из конфигурации `https://example.com/_12345_/index.php`
+$public_key = $config['settings']['db']['public_key']; // Взять key из конфигурации `https://example.com/_12345_/index.php`
 
 $resource = 'db';
 $id = '1';
 
-// $uri = 'https://example.com/_12345_/'.$resource.'?key='.$key;
-$uri = 'https://example.com/_12345_/'.$resource.'/'.$id.'?key='.$key;
+// $uri = 'https://example.com/_12345_/'.$resource.'?public_key='.$public_key;
+$uri = 'https://example.com/_12345_/'.$resource.'/'.$id.'?public_key='.$public_key;
 
 $client = new Guzzle();
 $resp = $client->request('GET', $uri);
@@ -157,9 +157,11 @@ if (isset($response["headers"]["code"])) {
 ```php
 use jsonDB\Db;
 $_db = __DIR__ . '/../../_db_/'; // Указываем директорию где будет храниться json db
+
 $db = new Db($_db);
 $db->setPrefixTable("sf"); // Установить префикс таблиц
 $db->setPrefixColumn("jhbg5r"); // Установить префикс полей
+$db->setPublicKey("public_key"); // Установить public_key
 $db->setCached(true); // Включаем кеширование true|false
 $db->setCacheLifetime(60); // Время жижни кеша 60 минут
 $db->setTemp(true); // Используем очередь true|false

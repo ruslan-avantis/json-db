@@ -107,26 +107,29 @@ $id = '1';
 $uri = 'https://example.com/_12345_/'.$resource.'/'.$id.'?key='.$key;
 
 $client = new Guzzle();
-$response = $client->request('GET', $uri);
-$output = $response->getBody();
+$resp = $client->request('GET', $uri);
+$get_body = $resp->getBody();
 
 // Чистим все что не нужно, иначе json_decode не сможет конвертировать json в массив
-for ($i = 0; $i <= 31; ++$i) {$output = str_replace(chr($i), "", $output);}
-$output = str_replace(chr(127), "", $output);
-if (0 === strpos(bin2hex($output), 'efbbbf')) {$output = substr($output, 3);}
+for ($i = 0; $i <= 31; ++$i) {$get_body = str_replace(chr($i), "", $get_body);}
+$get_body = str_replace(chr(127), "", $get_body);
+if (0 === strpos(bin2hex($get_body), 'efbbbf')) {$get_body = substr($get_body, 3);}
 
-$records = json_decode($output, true);
+$response = json_decode($get_body, true);
 
-if (isset($records['headers']['code'])) {
-if ($records['headers']['code'] == '200') {
-	$count = count($records['body']['items']);
-	if ($count >= 1) {
-		foreach($records['body']['items'] as $item)
-		{
-			print_r($item['item']);
-		}
-	}
-}
+if (isset($response["headers"]["code"])) {
+    if ($response["headers"]["code"] == 200) {
+        $count = count($response["body"]["items"]);
+        if ($count >= 1) {
+            foreach($response["body"]["items"] as $item)
+            {
+                // Если $value object переводим в array
+                $item = is_array($value["item"]) ? $item["item"] : (array)$value["item"];
+                // Получаем данные
+                print_r($item["name"]);
+            }
+        }
+    }
 }
 ```
 

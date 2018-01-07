@@ -161,13 +161,13 @@ $_db = __DIR__ . '/../../_db_/'; // Указываем директорию гд
 $db = new Db($_db);
 $db->setPrefixTable("sf"); // Установить префикс таблиц
 $db->setPrefixColumn("jhbg5r"); // Установить префикс полей
-$db->setPublicKey("public_key"); // Установить public_key
 $db->setCached(true); // Включаем кеширование true|false
 $db->setCacheLifetime(60); // Время жижни кеша 60 минут
 $db->setTemp(true); // Используем очередь true|false
 $db->setApi(false); // Если работаем как основная база устанавливаем false
+$db->setPublicKey("public_key"); // Установить public_key (Не обезательно)
 $db->setCrypt(true); // Шифруем таблицы true|false
-$db->setKey(file_get_contents($_db . 'core/key_db.txt', true)); // Загружаем ключ шифрования
+$db->setCryptKey(file_get_contents($_db . 'core/key_db.txt', true)); // Загружаем ключ шифрования
 $db->run();
 ```
 Примечание: Если вы будете пользоваться RESTful API роутингом для cURL запросов, вам не нужно выполнять запуск базы, роутер [index.php](https://github.com/pllano/json-db/blob/master/api/index.php) сделает все сам. Вам достаточно установить пакет с помощью Composer и выпонить дейсвия с настройкой API роутинга описаны выше.

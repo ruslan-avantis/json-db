@@ -9,12 +9,26 @@ JSON база данных с открытым исходным кодом. На
 Демо сайт работающий на «jsonDB» - https://xti.com.ua/
 
 ## Старт за несколько минут
-Подключить пакет с помощью Composer - [Список зависимостей](https://github.com/pllano/json-db/blob/master/composer.json)
+Подключить с помощью [Composer](https://getcomposer.org/)
 ```json
 "require": {
 	"pllano/json-db": "^1.0.5"
 }
 ```
+Подключить с помощью [AutoRequire](https://github.com/pllano/auto-require)
+```json
+"require" [
+    {
+        "namespace": "jsonDB",
+        "dir": "/pllano/json-db/src",
+        "link": "https://github.com/pllano/json-db/archive/master.zip",
+        "name": "json-db",
+        "version": "master",
+        "vendor": "pllano"
+    }
+]
+```
+
 ### Инструменты для тестирования API
 - [Postman](https://www.getpostman.com/postman) - это мощный набор инструментов тестирования API
 - [SOAPUI](https://www.soapui.org/rest-testing/getting-started.html) - приложение для тестирования, мониторинга и проверки функциональности REST API.

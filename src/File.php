@@ -109,6 +109,8 @@ class File implements FileInterface {
         
         if ($getPath != null && $getPath != "") {
             return file_put_contents($this->getPath(), $getPath);
+        } else {
+            return null;
         }
     }
 

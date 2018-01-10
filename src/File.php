@@ -107,7 +107,9 @@ class File implements FileInterface {
             $getPath = json_encode($data);
         }
         
-        return file_put_contents($this->getPath(), $getPath);
+        if ($getPath != null && $getPath != "") {
+            return file_put_contents($this->getPath(), $getPath);
+        }
     }
 
     public final function exists()
@@ -130,3 +132,4 @@ class File implements FileInterface {
     }
 
 }
+ 

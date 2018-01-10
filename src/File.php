@@ -107,7 +107,7 @@ class File implements FileInterface {
             $getPath = json_encode($data);
         }
         
-        if ($getPath != null && $getPath != "") {
+        if ($getPath != null || $getPath != "") {
             return file_put_contents($this->getPath(), $getPath);
         } else {
             return null;

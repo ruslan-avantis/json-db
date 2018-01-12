@@ -41,10 +41,10 @@ class Validate {
 
         if (in_array($type, $defined))
         {
-            return TRUE;
+            return true;
         }
 
-        return FALSE;
+        return false;
     }
 
     /**
@@ -60,7 +60,7 @@ class Validate {
 
         if (empty($diff))
         {
-            return TRUE;
+            return true;
         }
         throw new dbException('Wrong types: "' . implode(', ', $diff) . '". Available "boolean, integer, double, string, array, object"');
     }
@@ -112,7 +112,7 @@ class Validate {
 
         if (empty($diff))
         {
-            return TRUE;
+            return true;
         }
         throw new dbException('Field(s) "' . implode(', ', $diff) . '" does not exists in table "' . $this->name . '"');
     }
@@ -127,7 +127,7 @@ class Validate {
     {
         if (in_array($name, Config::table($this->name)->fields()))
         {
-            return TRUE;
+            return true;
         }
         throw new dbException('Field ' . $name . ' does not exists in table "' . $this->name . '"');
     }
@@ -145,7 +145,7 @@ class Validate {
         if (!Config::table($this->name)->exists())
             throw new dbException('Config "' . $this->name . '" does not exists');
 
-        return TRUE;
+        return true;
     }
 
     /**
@@ -160,7 +160,7 @@ class Validate {
         $schema = Config::table($this->name)->schema();
         if (array_key_exists($name, $schema) && $schema[$name] == gettype($value))
         {
-            return TRUE;
+            return true;
         }
         throw new dbException('Wrong data type');
     }
@@ -177,7 +177,7 @@ class Validate {
         $relations = Config::table($local)->relations();
         if (isset($relations->{$foreign}))
         {
-            return TRUE;
+            return true;
         }
 
         throw new dbException('Relation "' . $local . '" to "' . $foreign . '" doesn\'t exist');

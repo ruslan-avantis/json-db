@@ -284,9 +284,9 @@ class Database implements \IteratorAggregate, \Countable {
             $fields = array('id' => 'integer') + $fields;
         }
 
-        $data            = new \stdClass();
-        $data->last_id   = 0;
-        $data->schema    = $fields;
+        $data = new \stdClass();
+        $data->last_id = 0;
+        $data->schema = $fields;
         $data->relations = new \stdClass();
 
         Data::table($name)->put(array());
@@ -962,3 +962,4 @@ class Database implements \IteratorAggregate, \Countable {
     }
 
 }
+ 

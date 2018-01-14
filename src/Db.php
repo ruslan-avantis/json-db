@@ -12,9 +12,9 @@ class Db {
  
     /**
     * global dir db
-    * @var string bd_path
+    * @var string db_path
     */
-    protected $bd_path;
+    protected $db_path;
 
     /**
     * global param db
@@ -33,9 +33,9 @@ class Db {
     private $dir_cached = 'db.cached';
     private $structure = null;
 
-    public function __construct($bd_path)
+    public function __construct($db_path)
     {
-        $this->bd_path = $bd_path; // Директория в которой будет находится база данных
+        $this->db_path = $db_path; // Директория в которой будет находится база данных
     }
 
     public function run()
@@ -44,33 +44,33 @@ class Db {
         $date = date("Y-m-d H:i:s");
 
         // Устанавливаем константу - Каталог базы данных
-        define('JSON_DB_PATH', $this->bd_path);
+        define('JSON_DB_PATH', $this->db_path);
         define('JSON_DB_KEY', $this->key);
         define('JSON_DB_CRYPT', $this->crypt);
         define('JSON_DB_TEMP', $this->temp);
         define('JSON_DB_API', $this->api);
-        define('JSON_DB_CACHET', $this->cached);
+        define('JSON_DB_CACHED', $this->cached);
         define('JSON_DB_EXPORT', $this->export);
         define('JSON_DB_SIZE', $this->size);
         define('JSON_DB_MAX_SIZE', $this->max_size);
         define('JSON_DB_CACHE_LIFE_TIME', $this->cache_lifetime);
-        define('JSON_DB_bd_path', $this->bd_path);
-        define('JSON_DB_DIR_CORE', str_replace('db.', $this->bd_path, $this->dir_core));
-        define('JSON_DB_DIR_LOG', str_replace('db.', $this->bd_path, $this->dir_log));
-        define('JSON_DB_DIR_CACHET', str_replace('db.', $this->bd_path, $this->dir_cached));
+        define('JSON_DB_DB_PATH', $this->db_path);
+        define('JSON_DB_DIR_CORE', str_replace('db.', $this->db_path, $this->dir_core));
+        define('JSON_DB_DIR_LOG', str_replace('db.', $this->db_path, $this->dir_log));
+        define('JSON_DB_DIR_CACHED', str_replace('db.', $this->db_path, $this->dir_cached));
 
 // Проверяем наличие каталога базы данных, если нет создаем
-        if (!file_exists($this->bd_path)){mkdir($this->bd_path);}
+        if (!file_exists($this->db_path)){mkdir($this->db_path);}
 
         // Проверяем наличие главной таблицы если нет создаем
         try {
             \jsonDB\Validate::table('db')->exists();
 
-            // Обновляем таблицу конфигурации db из параметров (new Db($bd_path, $temp, $api, $cached))->run();
+            // Обновляем таблицу конфигурации db из параметров (new Db($db_path, $temp, $api, $cached))->run();
             $update = jsonDb::table('db')->find(1); // Edit with ID 1
  
-            if (isset($this->bd_path)) {
-                $update->bd_path = $this->bd_path;
+            if (isset($this->db_path)) {
+                $update->db_path = $this->db_path;
             }
             if (isset($this->cached)) {
                 $update->cached = $this->cached;
@@ -125,7 +125,7 @@ class Db {
                 'export' => 'string',
                 'size' => 'integer',
                 'max_size' => 'integer',
-                'bd_path' => 'string',
+                'db_path' => 'string',
                 'dir_core' => 'string',
                 'dir_log' => 'string',
                 'dir_cached' => 'string'
@@ -181,14 +181,11 @@ class Db {
             $row->export = $this->export;
             $row->size = $this->size;
             $row->max_size = $this->max_size;
-            $row->bd_path = $this->bd_path;
+            $row->db_path = $this->db_path;
             $row->dir_core = $this->dir_core;
             $row->dir_log = $this->dir_log;
             $row->dir_cached = $this->dir_cached;
             $row->save();
-
-            // $row->user->name = $this->api;
-            // Добавление записи в связанную таблицу user с автоматической привязкой id
         }
 
         // Читаем главную таблицу
@@ -197,10 +194,10 @@ class Db {
         define('JSON_DB_PASSWORD', $table->password);
 
         // Проверяем существуют ли необходимые каталоги, если нет создаем
-        if (!file_exists(JSON_DB_bd_path)){mkdir(JSON_DB_bd_path);}
+        if (!file_exists(JSON_DB_DB_PATH)){mkdir(JSON_DB_DB_PATH);}
         if (!file_exists(JSON_DB_DIR_CORE)){mkdir(JSON_DB_DIR_CORE);}
         if (!file_exists(JSON_DB_DIR_LOG)){mkdir(JSON_DB_DIR_LOG);}
-        if (!file_exists(JSON_DB_DIR_CACHET)){mkdir(JSON_DB_DIR_CACHET);}
+        if (!file_exists(JSON_DB_DIR_CACHED)){mkdir(JSON_DB_DIR_CACHED);}
 
         // Если файла структуры базы данных нет, скачиваем его с github
         if (!file_exists(JSON_DB_DIR_CORE.'/db.json')){
@@ -303,7 +300,7 @@ class Db {
 
     public static function cacheReader($uri) // Читает кеш или удаляет кеш если время жизни просрочено
     {
-        if (JSON_DB_CACHET == true) {
+        if (JSON_DB_CACHED === true) {
 
             $row = jsonDb::table('cached')->where('cached_uri', '=', $uri)->find();
 
@@ -355,12 +352,12 @@ class Db {
     {
         $file_name = \jsonDB\Db::randomUid();
  
-        file_put_contents(JSON_DB_DIR_CACHET.'/'.$file_name.'.json', json_encode($arr));
+        file_put_contents(JSON_DB_DIR_CACHED.'/'.$file_name.'.json', json_encode($arr));
  
         $row = jsonDb::table('cached');
         $row->cached_count = 0;
         $row->cached_uri = $uri;
-        $row->cached_file = JSON_DB_DIR_CACHET.'/'.$file_name.'.json';
+        $row->cached_file = JSON_DB_DIR_CACHED.'/'.$file_name.'.json';
         $row->cached_time = date("Y-m-d H:i:s");
         $row->save();
  

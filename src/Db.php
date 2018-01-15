@@ -59,77 +59,85 @@ class Db {
         define('JSON_DB_DIR_LOG', str_replace('db.', $this->db_path, $this->dir_log));
         define('JSON_DB_DIR_CACHED', str_replace('db.', $this->db_path, $this->dir_cached));
 
-// Проверяем наличие каталога базы данных, если нет создаем
+        // Проверяем наличие каталога базы данных, если нет создаем
         if (!file_exists($this->db_path)){mkdir($this->db_path);}
+        
+        if (file_exists($this->db_path.'db.data.json')) {
+            // Резервная копия основной таблицы
+            $db_data = json_decode(file_get_contents($this->db_path.'db.data.json'), true);
+            if (isset($db_data["0"]["id"])) {
+                if ($db_data["0"]["id"] == 1) {
+                    file_put_contents(JSON_DB_DIR_CACHED.'/db.json', json_encode($db_data));
+                }
+            } else {
+                if (file_exists(JSON_DB_DIR_CACHED.'/db.json')) {
+                    // Если таблица повреждена востанавливаем из резервной копии
+                    $db_data = json_decode(file_get_contents(JSON_DB_DIR_CACHED.'/db.json'), true);
+                    if (isset($db_data["0"]["id"])) {
+                        if ($db_data["0"]["id"] == 1) {
+                            file_put_contents($this->db_path.'db.data.json', json_encode($db_data));
+                        }
+                    }
+                } else {
+                    // Если резервного файла нет
+                    // Удаляем оба файла, для стандартного востановления
+                    unlink($this->db_path.'db.config.json');
+                    unlink($this->db_path.'db.data.json');
+                }
+            }
+        }
 
         // Проверяем наличие главной таблицы если нет создаем
         try {
             \jsonDB\Validate::table('db')->exists();
-
+ 
             // Обновляем таблицу конфигурации db из параметров (new Db($db_path, $temp, $api, $cached))->run();
             $update = jsonDb::table('db')->find(1); // Edit with ID 1
- 
-            if (isset($this->db_path)) {
-                $update->db_path = $this->db_path;
-            }
-            if (isset($this->cached)) {
-                $update->cached = $this->cached;
-            }
-            if (isset($this->temp)) {
-                $update->temp = $this->temp;
-            }
-            if (isset($this->api)) {
-                $update->api = $this->api;
-            }
-            if (isset($this->cache_lifetime)) {
-                $update->cache_lifetime = $this->cache_lifetime;
-            }
-            if (isset($this->export)) {
-                $update->export = $this->export;
-            }
-            if (isset($this->size)) {
-                $update->size = $this->size;
-            }
-            if (isset($this->max_size)) {
-                $update->max_size = $this->max_size;
-            }
-            if (isset($this->dir_core)) {
-                $update->dir_core = $this->dir_core;
-            }
-            if (isset($this->dir_log)) {
-                $update->dir_log = $this->dir_log;
-            }
-            if (isset($this->dir_cached)) {
-                $update->dir_cached = $this->dir_cached;
-            }
- 
+            $update->db_path = $this->db_path;
+            $update->cached = $this->cached;
+            $update->temp = $this->temp;
+            $update->api = $this->api;
+            $update->cache_lifetime = $this->cache_lifetime;
+            $update->export = $this->export;
+            $update->size = $this->size;
+            $update->max_size = $this->max_size;
+            $update->dir_core = $this->dir_core;
+            $update->dir_log = $this->dir_log;
+            $update->dir_cached = $this->dir_cached;
             $update->save();
 
         } catch(dbException $e) {
 
-            // Создаем главную таблицу конфигурации db
-            jsonDb::create('db', array(
-                'id' => 'integer',
-                'type' => 'string',
-                'table' => 'string',
-                'version' => 'string',
-                'time' => 'string',
-                'user_key' => 'string',
-                'password' => 'string',
-                'public_key' => 'string',
-                'template' => 'string',
-                'temp' => 'boolean',
-                'api' => 'boolean',
-                'cached' => 'boolean',
-                'cache_lifetime' => 'integer',
-                'export' => 'string',
-                'size' => 'integer',
-                'max_size' => 'integer',
-                'db_path' => 'string',
-                'dir_core' => 'string',
-                'dir_log' => 'string',
-                'dir_cached' => 'string'
-            ));
+            try {
+                // Создаем главную таблицу конфигурации db
+                jsonDb::create('db', array(
+                    'db_id' => 'integer',
+                    'type' => 'string',
+                    'table' => 'string',
+                    'version' => 'string',
+                    'time' => 'string',
+                    'user_key' => 'string',
+                    'password' => 'string',
+                    'public_key' => 'string',
+                    'template' => 'string',
+                    'temp' => 'boolean',
+                    'api' => 'boolean',
+                    'cached' => 'boolean',
+                    'cache_lifetime' => 'integer',
+                    'export' => 'string',
+                    'size' => 'integer',
+                    'max_size' => 'integer',
+                    'db_path' => 'string',
+                    'dir_core' => 'string',
+                    'dir_log' => 'string',
+                    'dir_cached' => 'string'
+                ));
+            
+            } catch(dbException $e) {
+            // Возникла ошибка при создании таблицы
+            // Это означает что балица обнулена
+            
+            }
 
         }
 
@@ -186,21 +194,23 @@ class Db {
             $row->dir_log = $this->dir_log;
             $row->dir_cached = $this->dir_cached;
             $row->save();
+            
+            
         }
 
         // Читаем главную таблицу
         $table = jsonDb::table('db')->find(1);
         define('JSON_DB_USER_KEY', $table->user_key);
         define('JSON_DB_PASSWORD', $table->password);
-
+ 
         // Проверяем существуют ли необходимые каталоги, если нет создаем
         if (!file_exists(JSON_DB_DB_PATH)){mkdir(JSON_DB_DB_PATH);}
         if (!file_exists(JSON_DB_DIR_CORE)){mkdir(JSON_DB_DIR_CORE);}
         if (!file_exists(JSON_DB_DIR_LOG)){mkdir(JSON_DB_DIR_LOG);}
         if (!file_exists(JSON_DB_DIR_CACHED)){mkdir(JSON_DB_DIR_CACHED);}
-
+ 
         // Если файла структуры базы данных нет, скачиваем его с github
-        if (!file_exists(JSON_DB_DIR_CORE.'/db.json')){
+        if (!file_exists(JSON_DB_DIR_CORE.'/db.json')) {
             if (isset($this->structure)) {
                 file_put_contents(JSON_DB_DIR_CORE.'/db.json', file_get_contents($this->structure));
             } else {
@@ -279,7 +289,6 @@ class Db {
                                     if ($unitCount >= 1) {
 
                                         $row = array();
-
                                         foreach($unit["schema"] as $key => $value)
                                         {
                                             if (isset($key) && isset($value)) {

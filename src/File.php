@@ -62,7 +62,7 @@ class File implements FileInterface {
         $getPath = file_get_contents($this->getPath());
         
         // Если ключ шифрования установлен расшифровываем
-        if (defined('JSON_DB_KEY') && JSON_DB_CRYPT == true){
+        if (defined('JSON_DB_KEY') && JSON_DB_CRYPT === true){
 
             try {
             $decrypt = Crypto::decrypt($getPath, Key::loadFromAsciiSafeString(JSON_DB_KEY));
@@ -78,9 +78,8 @@ class File implements FileInterface {
         } else {
             // Если ключ шифрования не установлен не шифруем и расшифровываем все и пересохраняем
             try {
-            return json_decode($getPath, $assoc);
+                return json_decode($getPath, $assoc);
             } catch(dbException $e){
-                
                 if (defined('JSON_DB_KEY')){
                     $decrypt = Crypto::decrypt($getPath, Key::loadFromAsciiSafeString(JSON_DB_KEY));
                     file_put_contents($this->getPath(), $decrypt);
@@ -88,7 +87,6 @@ class File implements FileInterface {
                 } else {
                     return json_decode($getPath, $assoc);
                 }
-                
             }
         }
         
@@ -97,7 +95,7 @@ class File implements FileInterface {
     public final function put($data)
     {
         // Если ключ шифрования установлен шифруем
-        if (defined('JSON_DB_KEY') && JSON_DB_CRYPT == true){
+        if (defined('JSON_DB_KEY') && JSON_DB_CRYPT === true){
             try {
                 $getPath = Crypto::encrypt(json_encode($data), Key::loadFromAsciiSafeString(JSON_DB_KEY));
             } catch(WrongKeyOrModifiedCiphertextException $ex){

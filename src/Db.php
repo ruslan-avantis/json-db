@@ -21,9 +21,9 @@ class Db {
     */
     private $key = false; // Передаем ключ шифрования файлов
     private $crypt = false; // true|false Шифруем или нет
-    private $temp = true; // Очередь на запись. true|false
-    private $api = true; // true|false Если установить false база будет работать как основное хранилище
-    private $cached = true; // Кеширование. true|false
+    private $temp = false; // Очередь на запись. true|false
+    private $api = false; // true|false Если установить false база будет работать как основное хранилище
+    private $cached = false; // Кеширование. true|false
     private $cache_lifetime = 30; // Min
     private $export = 'false';
     private $size = 50000;

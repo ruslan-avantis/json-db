@@ -19,11 +19,11 @@ class Db {
     /**
     * global param db
     */
-    private $key = false; // Передаем ключ шифрования файлов
-    private $crypt = false; // true|false Шифруем или нет
-    private $temp = false; // Очередь на запись. true|false
-    private $api = false; // true|false Если установить false база будет работать как основное хранилище
-    private $cached = false; // Кеширование. true|false
+    private $key = null; // Передаем ключ шифрования файлов
+    private $crypt = null; // true|false Шифруем или нет
+    private $temp = null; // Очередь на запись. true|false
+    private $api = null; // true|false Если установить false база будет работать как основное хранилище
+    private $cached = null; // Кеширование. true|false
     private $cache_lifetime = 30; // Min
     private $export = 'false';
     private $size = 50000;
@@ -91,7 +91,7 @@ class Db {
         try {
             \jsonDB\Validate::table('db')->exists();
  
-            // Обновляем таблицу конфигурации db из параметров (new Db($db_path, $temp, $api, $cached))->run();
+            // Обновляем таблицу конфигурации db из параметров
             $update = jsonDb::table('db')->find(1); // Edit with ID 1
             $update->db_path = $this->db_path;
             $update->cached = $this->cached;
@@ -120,9 +120,9 @@ class Db {
                     'password' => 'string',
                     'public_key' => 'string',
                     'template' => 'string',
-                    'temp' => 'boolean',
-                    'api' => 'boolean',
-                    'cached' => 'boolean',
+                    'temp' => 'integer',
+                    'api' => 'integer',
+                    'cached' => 'integer',
                     'cache_lifetime' => 'integer',
                     'export' => 'string',
                     'size' => 'integer',
@@ -309,7 +309,7 @@ class Db {
 
     public static function cacheReader($uri) // Читает кеш или удаляет кеш если время жизни просрочено
     {
-        if (JSON_DB_CACHED === true) {
+        if (JSON_DB_CACHED === 1) {
 
             $row = jsonDb::table('cached')->where('cached_uri', '=', $uri)->find();
 
@@ -392,7 +392,9 @@ class Db {
     */
     public function setTemp($temp)
     {
-        $this->temp = $temp;
+        if (is_numeric($temp)) {$temp = intval($temp);}
+		if (is_float($temp)) {$temp = float($temp);}
+		$this->temp = $temp;
     }
 
     /**
@@ -400,7 +402,9 @@ class Db {
     */
     public function setApi($api)
     {
-        $this->api = $api;
+        if (is_numeric($api)) {$api = intval($api);}
+		if (is_float($api)) {$api = float($api);}
+		$this->api = $api;
     }
 
     /**
@@ -408,7 +412,9 @@ class Db {
     */
     public function setCached($cached)
     {
-        $this->cached = $cached;
+        if (is_numeric($cached)) {$cached = intval($cached);}
+		if (is_float($cached)) {$cached = float($cached);}
+		$this->cached = $cached;
     }
 
     /**
@@ -416,7 +422,9 @@ class Db {
     */
     public function setCacheLifetime($cache_lifetime)
     {
-        $this->cache_lifetime = $cache_lifetime;
+        if (is_numeric($cache_lifetime)) {$cache_lifetime = intval($cache_lifetime);}
+		if (is_float($cache_lifetime)) {$cache_lifetime = float($cache_lifetime);}
+		$this->cache_lifetime = $cache_lifetime;
     }
 
     /**
@@ -432,7 +440,9 @@ class Db {
     */
     public function setSize($size)
     {
-        $this->size = $size;
+        if (is_numeric($size)) {$size = intval($size);}
+		if (is_float($size)) {$size = float($size);}
+		$this->size = $size;
     }
 
     /**
@@ -440,7 +450,9 @@ class Db {
     */
     public function setMaxSize($max_size)
     {
-        $this->max_size = $max_size;
+        if (is_numeric($max_size)) {$max_size = intval($max_size);}
+		if (is_float($max_size)) {$max_size = float($max_size);}
+		$this->max_size = $max_size;
     }
 
     /**
@@ -496,7 +508,9 @@ class Db {
     */
     public function setCrypt($crypt)
     {
-        $this->crypt = $crypt;
+        if (is_numeric($crypt)) {$crypt = intval($crypt);}
+		if (is_float($crypt)) {$crypt = float($crypt);}
+		$this->crypt = $crypt;
     }
  
     /**

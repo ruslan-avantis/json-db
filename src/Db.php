@@ -19,19 +19,19 @@ class Db {
     /**
     * global param db
     */
-    private $key = null; // Передаем ключ шифрования файлов
-    private $crypt = null; // true|false Шифруем или нет
-    private $temp = null; // Очередь на запись. true|false
-    private $api = null; // true|false Если установить false база будет работать как основное хранилище
-    private $cached = null; // Кеширование. true|false
-    private $cache_lifetime = 30; // Min
+    private $key = '0'; // Передаем ключ шифрования файлов
+    private $crypt = '0'; // true|false Шифруем или нет
+    private $temp = '0'; // Очередь на запись. true|false
+    private $api = '0'; // true|false Если установить false база будет работать как основное хранилище
+    private $cached = '0'; // Кеширование. true|false
+    private $cache_lifetime = '30'; // Min
     private $export = 'false';
-    private $size = 50000;
-    private $max_size = 1000000;
+    private $size = '50000';
+    private $max_size = '1000000';
     private $dir_core = 'db.core';
     private $dir_log = 'db.log';
     private $dir_cached = 'db.cached';
-    private $structure = null;
+    private $structure = '0';
 
     public function __construct($db_path)
     {
@@ -61,86 +61,7 @@ class Db {
 
         // Проверяем наличие каталога базы данных, если нет создаем
         if (!file_exists($this->db_path)){mkdir($this->db_path);}
-        
-        if (file_exists($this->db_path.'db.data.json')) {
-            // Резервная копия основной таблицы
-            $db_data = json_decode(file_get_contents($this->db_path.'db.data.json'), true);
-            if (isset($db_data["0"]["id"])) {
-                if ($db_data["0"]["id"] == 1) {
-                    file_put_contents(JSON_DB_DIR_CACHED.'/db.json', json_encode($db_data));
-                }
-            } else {
-                if (file_exists(JSON_DB_DIR_CACHED.'/db.json')) {
-                    // Если таблица повреждена востанавливаем из резервной копии
-                    $db_data = json_decode(file_get_contents(JSON_DB_DIR_CACHED.'/db.json'), true);
-                    if (isset($db_data["0"]["id"])) {
-                        if ($db_data["0"]["id"] == 1) {
-                            file_put_contents($this->db_path.'db.data.json', json_encode($db_data));
-                        }
-                    }
-                } else {
-                    // Если резервного файла нет
-                    // Удаляем оба файла, для стандартного востановления
-                    unlink($this->db_path.'db.config.json');
-                    unlink($this->db_path.'db.data.json');
-                }
-            }
-        }
-
-        // Проверяем наличие главной таблицы если нет создаем
-        try {
-            \jsonDB\Validate::table('db')->exists();
  
-            // Обновляем таблицу конфигурации db из параметров
-            $update = jsonDb::table('db')->find(1); // Edit with ID 1
-            $update->db_path = $this->db_path;
-            $update->cached = $this->cached;
-            $update->temp = $this->temp;
-            $update->api = $this->api;
-            $update->cache_lifetime = $this->cache_lifetime;
-            $update->export = $this->export;
-            $update->size = $this->size;
-            $update->max_size = $this->max_size;
-            $update->dir_core = $this->dir_core;
-            $update->dir_log = $this->dir_log;
-            $update->dir_cached = $this->dir_cached;
-            $update->save();
-
-        } catch(dbException $e) {
-
-            try {
-                // Создаем главную таблицу конфигурации db
-                jsonDb::create('db', array(
-                    'db_id' => 'integer',
-                    'type' => 'string',
-                    'table' => 'string',
-                    'version' => 'string',
-                    'time' => 'string',
-                    'user_key' => 'string',
-                    'password' => 'string',
-                    'public_key' => 'string',
-                    'template' => 'string',
-                    'temp' => 'integer',
-                    'api' => 'integer',
-                    'cached' => 'integer',
-                    'cache_lifetime' => 'integer',
-                    'export' => 'string',
-                    'size' => 'integer',
-                    'max_size' => 'integer',
-                    'db_path' => 'string',
-                    'dir_core' => 'string',
-                    'dir_log' => 'string',
-                    'dir_cached' => 'string'
-                ));
-            
-            } catch(dbException $e) {
-            // Возникла ошибка при создании таблицы
-            // Это означает что балица обнулена
-            
-            }
-
-        }
-
         // Проверяем наличие таблицы cached
         try {
             Validate::table('cached')->exists();} catch(dbException $e){
@@ -169,39 +90,6 @@ class Db {
             ));
 
         }
-
-        try {
-            jsonDb::table('db')->find(1);
-        } catch(dbException $e){
-
-            // Создаем основную запись в главной таблице
-            $row = jsonDb::table('db');
-            $row->type = 'root';
-            $row->table = 'root';
-            $row->version = '1.0.1';
-            $row->time = $date;
-            $row->user_key = $this->randomUid();
-            $row->password = $this->randomUid();
-            $row->temp = $this->temp;
-            $row->api = $this->api;
-            $row->cached = $this->cached;
-            $row->cache_lifetime = $this->cache_lifetime;
-            $row->export = $this->export;
-            $row->size = $this->size;
-            $row->max_size = $this->max_size;
-            $row->db_path = $this->db_path;
-            $row->dir_core = $this->dir_core;
-            $row->dir_log = $this->dir_log;
-            $row->dir_cached = $this->dir_cached;
-            $row->save();
-            
-            
-        }
-
-        // Читаем главную таблицу
-        $table = jsonDb::table('db')->find(1);
-        define('JSON_DB_USER_KEY', $table->user_key);
-        define('JSON_DB_PASSWORD', $table->password);
  
         // Проверяем существуют ли необходимые каталоги, если нет создаем
         if (!file_exists(JSON_DB_DB_PATH)){mkdir(JSON_DB_DB_PATH);}
@@ -309,7 +197,7 @@ class Db {
 
     public static function cacheReader($uri) // Читает кеш или удаляет кеш если время жизни просрочено
     {
-        if (JSON_DB_CACHED === 1) {
+        if (JSON_DB_CACHED == '1') {
 
             $row = jsonDb::table('cached')->where('cached_uri', '=', $uri)->find();
 

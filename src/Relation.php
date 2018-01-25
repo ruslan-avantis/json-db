@@ -142,7 +142,7 @@ class Relation {
     {
         $this->setTable('foreign', $table);
         $this->setRelationType(__FUNCTION__);
-		
+        
         return $this;
     }
 

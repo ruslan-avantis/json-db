@@ -24,7 +24,7 @@ interface FileInterface {
      * @return string Path to file
      * @throws dbException You must specify the type of file
      */
-	
+    
     public function getPath();
 
     /**
@@ -46,7 +46,7 @@ interface FileInterface {
      * @return boolean
      */
     public function exists();
-	
+    
     /**
      * Removing file
      * @return boolean

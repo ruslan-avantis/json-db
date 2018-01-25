@@ -281,8 +281,8 @@ class Db {
     public function setTemp($temp)
     {
         if (is_numeric($temp)) {$temp = intval($temp);}
-		if (is_float($temp)) {$temp = float($temp);}
-		$this->temp = $temp;
+        if (is_float($temp)) {$temp = float($temp);}
+        $this->temp = $temp;
     }
 
     /**
@@ -291,8 +291,8 @@ class Db {
     public function setApi($api)
     {
         if (is_numeric($api)) {$api = intval($api);}
-		if (is_float($api)) {$api = float($api);}
-		$this->api = $api;
+        if (is_float($api)) {$api = float($api);}
+        $this->api = $api;
     }
 
     /**
@@ -301,8 +301,8 @@ class Db {
     public function setCached($cached)
     {
         if (is_numeric($cached)) {$cached = intval($cached);}
-		if (is_float($cached)) {$cached = float($cached);}
-		$this->cached = $cached;
+        if (is_float($cached)) {$cached = float($cached);}
+        $this->cached = $cached;
     }
 
     /**
@@ -311,8 +311,8 @@ class Db {
     public function setCacheLifetime($cache_lifetime)
     {
         if (is_numeric($cache_lifetime)) {$cache_lifetime = intval($cache_lifetime);}
-		if (is_float($cache_lifetime)) {$cache_lifetime = float($cache_lifetime);}
-		$this->cache_lifetime = $cache_lifetime;
+        if (is_float($cache_lifetime)) {$cache_lifetime = float($cache_lifetime);}
+        $this->cache_lifetime = $cache_lifetime;
     }
 
     /**
@@ -329,8 +329,8 @@ class Db {
     public function setSize($size)
     {
         if (is_numeric($size)) {$size = intval($size);}
-		if (is_float($size)) {$size = float($size);}
-		$this->size = $size;
+        if (is_float($size)) {$size = float($size);}
+        $this->size = $size;
     }
 
     /**
@@ -339,8 +339,8 @@ class Db {
     public function setMaxSize($max_size)
     {
         if (is_numeric($max_size)) {$max_size = intval($max_size);}
-		if (is_float($max_size)) {$max_size = float($max_size);}
-		$this->max_size = $max_size;
+        if (is_float($max_size)) {$max_size = float($max_size);}
+        $this->max_size = $max_size;
     }
 
     /**
@@ -397,8 +397,8 @@ class Db {
     public function setCrypt($crypt)
     {
         if (is_numeric($crypt)) {$crypt = intval($crypt);}
-		if (is_float($crypt)) {$crypt = float($crypt);}
-		$this->crypt = $crypt;
+        if (is_float($crypt)) {$crypt = float($crypt);}
+        $this->crypt = $crypt;
     }
  
     /**

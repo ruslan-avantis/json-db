@@ -1,5 +1,5 @@
 <?php
-    
+ 
 namespace jsonDB;
  
 use jsonDB\dbException;
@@ -19,7 +19,7 @@ class Validate {
     private $name;
 
     /**
-     * Table name
+        * Table name
      * @param string $name
      * @return Validate
      */
@@ -200,3 +200,4 @@ class Validate {
     }
 
 }
+ 

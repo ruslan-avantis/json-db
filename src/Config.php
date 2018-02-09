@@ -1,7 +1,7 @@
 <?php
-
+ 
 namespace jsonDB;
-
+ 
 /**
  * Config managing class
  *

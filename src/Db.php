@@ -23,16 +23,14 @@ class Db {
     private $crypt = '0'; // true|false Шифруем или нет
     private $temp = '0'; // Очередь на запись. true|false
     private $api = '0'; // true|false Если установить false база будет работать как основное хранилище
-    private $cached = '0'; // Кеширование. true|false
-    private $cache_lifetime = '30'; // Min
     private $export = 'false';
     private $size = '50000';
     private $max_size = '1000000';
     private $dir_core = 'db.core';
     private $dir_log = 'db.log';
-    private $dir_cached = 'db.cached';
     private $structure = '0';
-
+    private $auto_create = null;
+ 
     public function __construct($db_path)
     {
         $this->db_path = $db_path; // Директория в которой будет находится база данных
@@ -49,33 +47,16 @@ class Db {
         define('JSON_DB_CRYPT', $this->crypt);
         define('JSON_DB_TEMP', $this->temp);
         define('JSON_DB_API', $this->api);
-        define('JSON_DB_CACHED', $this->cached);
         define('JSON_DB_EXPORT', $this->export);
         define('JSON_DB_SIZE', $this->size);
         define('JSON_DB_MAX_SIZE', $this->max_size);
-        define('JSON_DB_CACHE_LIFE_TIME', $this->cache_lifetime);
         define('JSON_DB_DB_PATH', $this->db_path);
         define('JSON_DB_DIR_CORE', str_replace('db.', $this->db_path, $this->dir_core));
         define('JSON_DB_DIR_LOG', str_replace('db.', $this->db_path, $this->dir_log));
-        define('JSON_DB_DIR_CACHED', str_replace('db.', $this->db_path, $this->dir_cached));
 
         // Проверяем наличие каталога базы данных, если нет создаем
         if (!file_exists($this->db_path)){mkdir($this->db_path);}
  
-        // Проверяем наличие таблицы cached
-        try {
-            Validate::table('cached')->exists();} catch(dbException $e){
-
-            // Создаем таблицу cached
-            jsonDb::create('cached', array(
-                'cached_count' => 'integer',
-                'cached_uri' => 'string',
-                'cached_file' => 'string',
-                'cached_time' => 'string'
-            ));
-
-        }
-    
         // Проверяем наличие таблицы queue
         try {
             Validate::table('queue')->exists();} catch(dbException $e){
@@ -95,7 +76,6 @@ class Db {
         if (!file_exists(JSON_DB_DB_PATH)){mkdir(JSON_DB_DB_PATH);}
         if (!file_exists(JSON_DB_DIR_CORE)){mkdir(JSON_DB_DIR_CORE);}
         if (!file_exists(JSON_DB_DIR_LOG)){mkdir(JSON_DB_DIR_LOG);}
-        if (!file_exists(JSON_DB_DIR_CACHED)){mkdir(JSON_DB_DIR_CACHED);}
  
         // Если файла структуры базы данных нет, скачиваем его с github
         if (!file_exists(JSON_DB_DIR_CORE.'/db.json')) {
@@ -106,6 +86,7 @@ class Db {
             }
         }
  
+        if($this->auto_create == 1) {
         // Проверяем наличие файла повторно
         // Автоматически создает таблицы указанные в файле db.json если их нет
         if (file_exists(JSON_DB_DIR_CORE.'/db.json')) {
@@ -193,82 +174,10 @@ class Db {
                 }
             }
         }
-    }
-
-    public static function cacheReader($uri) // Читает кеш или удаляет кеш если время жизни просрочено
-    {
-        if (JSON_DB_CACHED == '1') {
-
-            $row = jsonDb::table('cached')->where('cached_uri', '=', $uri)->find();
-
-            $rowCount = count($row);
-            if ($rowCount >= 1) {
-
-                $time = JSON_DB_CACHE_LIFE_TIME * 60; // minutes * sec
-                $cached_time = date('Y-m-d h:i:s', $row->cached_time + $time);
-
-                if (strtotime($cached_time) <= strtotime(date("Y-m-d H:i:s"))) {
- 
-                    return json_decode(file_get_contents($row->cached_file), true);
- 
-                } else {
- 
-                    unlink($row->cached_file);
-                    jsonDb::table('cached')->find($row->id)->delete();
- 
-                    return null;
- 
-                }
- 
-            } else {
- 
-            return null;
- 
-            }
- 
-        } else {
- 
-            $table = jsonDb::table('cached')->findAll();
-            $tableCount = count($table);
- 
-            if ($tableCount >= 1) {
-                foreach($table as $row)
-                {
-                    unlink($row->cached_file);
-                }
-            }
- 
-            jsonDb::table('cached')->delete();
- 
-            return null;
- 
         }
+    
     }
-
-    public static function cacheWriter($uri, $arr) // Создает кеш
-    {
-        $file_name = \jsonDB\Db::randomUid();
  
-        file_put_contents(JSON_DB_DIR_CACHED.'/'.$file_name.'.json', json_encode($arr));
- 
-        $row = jsonDb::table('cached');
-        $row->cached_count = 0;
-        $row->cached_uri = $uri;
-        $row->cached_file = JSON_DB_DIR_CACHED.'/'.$file_name.'.json';
-        $row->cached_time = date("Y-m-d H:i:s");
-        $row->save();
- 
-        return $row;
- 
-    }
-
-    public static function dbReader() // Управляет записью в базу
-    {
-        // Если в настройки $this->temp передано true при записи в базу будет использоваться очередь на запись
-        // Когда файл таблицы заблокирован для записи база создаст файл в папке temp и запишет в таблицу при первой возможности
-        // Это компромис между скоростью работы и актальностью данных
-    }
-
     public function runApi() // Управление получением данных через API
     {
         // Если в настройки $this->api передано true база будет работать в режиме синхронизации
@@ -294,27 +203,7 @@ class Db {
         if (is_float($api)) {$api = float($api);}
         $this->api = $api;
     }
-
-    /**
-    * @param true|false $cached
-    */
-    public function setCached($cached)
-    {
-        if (is_numeric($cached)) {$cached = intval($cached);}
-        if (is_float($cached)) {$cached = float($cached);}
-        $this->cached = $cached;
-    }
-
-    /**
-    * @param Min $cache_lifetime
-    */
-    public function setCacheLifetime($cache_lifetime)
-    {
-        if (is_numeric($cache_lifetime)) {$cache_lifetime = intval($cache_lifetime);}
-        if (is_float($cache_lifetime)) {$cache_lifetime = float($cache_lifetime);}
-        $this->cache_lifetime = $cache_lifetime;
-    }
-
+ 
     /**
     * @param false|uri $export
     */
@@ -366,15 +255,7 @@ class Db {
     {
         $this->dir_log = $dir_log;
     }
-
-    /**
-    * @param 'db.cached' or uri
-    */
-    public function setDirCached($dir_cached)
-    {
-        $this->dir_cached = $dir_cached;
-    }
-
+ 
     /**
     * @param 'db.request' or uri
     */
@@ -390,7 +271,15 @@ class Db {
     {
         $this->key = $key;
     }
-
+ 
+    /**
+    * @param key
+    */
+    public function setAutoCreate($auto_create)
+    {
+        $this->auto_create = (int)$auto_create;
+    }
+ 
     /**
     * @param crypt
     */

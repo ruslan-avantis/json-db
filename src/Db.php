@@ -28,7 +28,7 @@ class Db {
     private $max_size = '1000000';
     private $dir_core = 'db.core';
     private $dir_log = 'db.log';
-    private $structure = '0';
+    private $structure = null;
     private $auto_create = null;
  
     public function __construct($db_path)

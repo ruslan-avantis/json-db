@@ -40,7 +40,7 @@ if (!file_exists($_db . 'core/key_db.txt')){
 }
 
 // Конфигурация
-$config = array();
+$config = [];
 $config['settings']['db']['dir'] = $_db;
 $config['settings']['db']['key_cryp'] = Key::loadFromAsciiSafeString(file_get_contents($_db . 'core/key_db.txt', true));
 $config['settings']['db']['public_key'] = file_get_contents($_db . 'core/key_db.txt', true);
@@ -220,10 +220,10 @@ $app->get('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Re
                                                         }
 
                                                         if (count($rel) >= 1) {
-                                                            $r = array();
+                                                            $r = [];
                                                             foreach($rel as $k => $v) {
                                                                 $vv = (array)$v;
-                                                                $ar = array();
+                                                                $ar = [];
                                                                 foreach($vv as $key => $va) {
                                                                     if (array_key_exists($key, $control) && $key != "password" && $key != "cookie") {
                                                                         $ar[$key] = $va;
@@ -527,10 +527,10 @@ $app->get('/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $request, Re
                                                             }
                                                         }
                                                         if (count($rel) >= 1) {
-                                                            $r = array();
+                                                            $r = [];
                                                             foreach($rel as $k => $v) {
                                                                 $vv = (array)$v;
-                                                                $ar = array();
+                                                                $ar = [];
                                                                 foreach($vv as $key => $va) {
                                                                     if (array_key_exists($key, $control) && $key != "password" && $key != "cookie") {
                                                                         $ar[$key] = $va;
@@ -1157,7 +1157,7 @@ $app->get('/_get/{resource:[a-z0-9_]+}[/{id:[0-9]+}]', function (Request $reques
     
     if ($this->get('settings')['db']["public_key"] == $public_key) {
         
-        $resp = array();
+        $resp = [];
         
         if (isset($resource)) {
             

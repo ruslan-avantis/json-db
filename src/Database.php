@@ -151,11 +151,11 @@ class Database implements \IteratorAggregate, \Countable {
     protected function setPending()
     {
         $this->pending = array(
-            'where'   => array(),
-            'orderBy' => array(),
-            'limit'   => array(),
-            'with'    => array(),
-            'groupBy' => array(),
+            'where'   => [],
+            'orderBy' => [],
+            'limit'   => [],
+            'with'    => [],
+            'groupBy' => [],
         );
     }
 
@@ -333,7 +333,7 @@ class Database implements \IteratorAggregate, \Countable {
     {
         $column = $this->pending['groupBy'];
 
-        $grouped = array();
+        $grouped = [];
         foreach ($this->data as $object)
         {
             $grouped[$object->{$column}][] = $object;
@@ -581,7 +581,7 @@ class Database implements \IteratorAggregate, \Countable {
             Validate::table($this->name)->field($value);
         }
 
-        $datas = array();
+        $datas = [];
         if (!$this->resetKeys)
         {
             if (is_null($key) && is_null($value))
@@ -592,7 +592,7 @@ class Database implements \IteratorAggregate, \Countable {
             {
                 foreach ($this->data as $rowKey => $data)
                 {
-                    $datas[$rowKey] = array();
+                    $datas[$rowKey] = [];
                     foreach ($data as $row)
                     {
                         if (is_null($key))
@@ -844,7 +844,7 @@ class Database implements \IteratorAggregate, \Countable {
     {
         if (!$this->resetKeys)
         {
-            $count = array();
+            $count = [];
             foreach ($this->data as $group => $data)
             {
                 $count[$group] = count($data);

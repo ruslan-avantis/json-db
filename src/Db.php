@@ -127,7 +127,7 @@ class Db {
                                 $unitCount = count($unit["schema"]);
  
                                 if ($unitCount >= 1) {
-                                    $row = array();
+                                    $row = [];
 
                                     foreach($unit["schema"] as $key => $value)
                                     {
@@ -157,7 +157,7 @@ class Db {
 
                                     if ($unitCount >= 1) {
 
-                                        $row = array();
+                                        $row = [];
                                         foreach($unit["schema"] as $key => $value)
                                         {
                                             if (isset($key) && isset($value)) {

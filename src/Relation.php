@@ -318,7 +318,7 @@ class Relation {
 
 
             if (empty($join))
-                return array();
+                return [];
 
             return Database::table($this->tables['foreign'])
                             ->where($keys['foreign'], 'IN', $join[$row->{$keys['local']}]);
@@ -336,7 +336,7 @@ class Relation {
      */
     public function build(array $array, $part)
     {
-        $return = array();
+        $return = [];
         foreach ($array as $key => $row)
         {
             if (is_object($row))

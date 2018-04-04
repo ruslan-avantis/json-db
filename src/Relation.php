@@ -194,13 +194,10 @@ class Relation {
      */
     public function setRelation()
     {
-        if (!in_array(null, $this->tables) && !in_array(null, $this->keys))
-        {
+        if (!in_array(null, $this->tables) && !in_array(null, $this->keys)) {
             $this->addRelation();
             return true;
-        }
-        else
-        {
+        } else {
             throw new dbException('Tables names or keys missing');
         }
     }
@@ -248,20 +245,20 @@ class Relation {
             }
             catch (dbException $e)
             {
-                Database::create($junction, array(
+                Database::create($junction, [
                     $this->tables['local'] . '_id'   => 'integer',
                     $this->tables['foreign'] . '_id' => 'integer',
-                ));
+                ]);
 
-                $this->insertRelationData($junction, $this->tables['local'], 'hasMany', array(
+                $this->insertRelationData($junction, $this->tables['local'], 'hasMany', [
                     'local'   => $this->tables['local'] . '_id',
                     'foreign' => $this->keys['local']
-                ));
+                ]);
 
-                $this->insertRelationData($junction, $this->tables['foreign'], 'hasMany', array(
+                $this->insertRelationData($junction, $this->tables['foreign'], 'hasMany', [
                     'local'   => $this->tables['foreign'] . '_id',
                     'foreign' => $this->keys['foreign']
-                ));
+                ]);
             }
         }
         $this->insertRelationData($this->tables['local'], $this->tables['foreign'], $this->relationType, $this->keys);
@@ -278,10 +275,10 @@ class Relation {
     {
         $config                    = Config::table($from);
         $content                   = $config->get();
-        $content->relations->{$to} = array(
+        $content->relations->{$to} = [
             'type' => $type,
             'keys' => $keys,
-        );
+        ];
         $config->put($content);
     }
 

@@ -1,12 +1,5 @@
 # «jsonDB» - JSON база данных
-JSON база данных с открытым исходным кодом. Написана на PHP. Распространяется по лицензии [MIT](https://opensource.org/licenses/MIT). Подключается через Composer как обычный пакет PHP, после подключения сама настраивается за несколько секунд. Имеет свой RESTful API интерфейс работающий по стандарту обмена информацией сервер-сервер «[APIS-2018](https://github.com/pllano/APIS-2018)», что позволяет использовать ее с любым другим языком программирования. «API json DB» это продвинутый менеджер json файлов с возможностью кеширования популярных запросов, шифрования файлов db, проверкой валидности файлов и очередью на запись при блокировке таблиц (файлов db) на запись другими процессами. Основанием для «API json DB» мы выбрали прекрасную работу [Greg0/Lazer-Database](https://github.com/Greg0/Lazer-Database/). Мы полностью изменили структуру оригинала и добавили: шифрование, API роутинг, кеширование, проверку валидности, очередь на запись и другой удобный функционал.
-
-### Демо база данных [`https://xti.com.ua/json-db/`](https://xti.com.ua/json-db/) через RESTful API интерфейс
-Для удобства мы отключили авторизацию через `public_key`
-
-Примеры демо запросов: [demo](https://github.com/pllano/json-db/blob/master/demo.md)
-
-Демо сайт работающий на «jsonDB» - https://xti.com.ua/
+JSON база данных с открытым исходным кодом. Написана на PHP. Распространяется по лицензии [MIT](https://opensource.org/licenses/MIT). Подключается через Composer как обычный пакет PHP, после подключения сама настраивается за несколько секунд. Имеет свой RESTful API интерфейс работающий по стандарту обмена информацией сервер-сервер «[APIS-2018](https://github.com/ruslan-avantis/APIS-2018)», что позволяет использовать ее с любым другим языком программирования. «API json DB» это продвинутый менеджер json файлов с возможностью кеширования популярных запросов, шифрования файлов db, проверкой валидности файлов и очередью на запись при блокировке таблиц (файлов db) на запись другими процессами. Основанием для «API json DB» мы выбрали прекрасную работу [Greg0/Lazer-Database](https://github.com/Greg0/Lazer-Database/). Мы полностью изменили структуру оригинала и добавили: шифрование, API роутинг, кеширование, проверку валидности, очередь на запись и другой удобный функционал.
 
 ## Старт за несколько минут
 Подключить с помощью [Composer](https://getcomposer.org/)
@@ -15,13 +8,13 @@ JSON база данных с открытым исходным кодом. На
 	"pllano/json-db": "^1.0.5"
 }
 ```
-Подключить с помощью [AutoRequire](https://github.com/pllano/auto-require)
+Подключить с помощью [AutoRequire](https://github.com/ruslan-avantis/auto-require)
 ```json
 "require" [
     {
         "namespace": "jsonDB",
-        "dir": "/pllano/json-db/src",
-        "link": "https://github.com/pllano/json-db/archive/master.zip",
+        "dir": "/ruslan-avantis/json-db/src",
+        "link": "https://github.com/ruslan-avantis/json-db/archive/master.zip",
         "name": "json-db",
         "version": "master",
         "vendor": "pllano"
@@ -36,12 +29,12 @@ JSON база данных с открытым исходным кодом. На
 - [cURL](http://php.net/manual/ru/book.curl.php) - Клиентская библиотека PHP работы с URL
 - [Guzzle](https://github.com/guzzle/guzzle) - HTTP-клиент PHP
 ## RESTful API роутинг для cURL запросов
-«API json DB» имеет свой RESTfull API роутинг для cURL запросов который написан на PHP с использованием [Micro Framework Slim](https://github.com/slimphp), что позволяет использовать «API json DB» с любым другим языком программирования. Для унификации обмена данными и структуры базы данных используется наш собственный стандарт [APIS-2018](https://github.com/pllano/APIS-2018/).
+«API json DB» имеет свой RESTfull API роутинг для cURL запросов который написан на PHP с использованием [Micro Framework Slim](https://github.com/slimphp), что позволяет использовать «API json DB» с любым другим языком программирования. Для унификации обмена данными и структуры базы данных используется наш собственный стандарт [APIS-2018](https://github.com/ruslan-avantis/APIS-2018/).
 ### RESTfull API состоит всего из двух файлов:
-- [index.php](https://github.com/pllano/json-db/blob/master/api/index.php) и [.htaccess](https://github.com/pllano/json-db/blob/master/api/.htaccess)
+- [index.php](https://github.com/ruslan-avantis/json-db/blob/master/api/index.php) и [.htaccess](https://github.com/ruslan-avantis/json-db/blob/master/api/.htaccess)
 ### Для установки `RESTful API` выполните следующие действия:
-- В файле [index.php](https://github.com/pllano/json-db/blob/master/api/index.php) укажите директорию где хранится база, например `/www/_db_/` или `__DIR__ . '/../../_db_/'`.
-- Перенесите файлы [index.php](https://github.com/pllano/json-db/blob/master/api/index.php) и [.htaccess](https://github.com/pllano/json-db/blob/master/api/.htaccess) в директорию доступную через URL. Например: `https://example.com/_12345_/`
+- В файле [index.php](https://github.com/ruslan-avantis/json-db/blob/master/api/index.php) укажите директорию где хранится база, например `/www/_db_/` или `__DIR__ . '/../../_db_/'`.
+- Перенесите файлы [index.php](https://github.com/ruslan-avantis/json-db/blob/master/api/index.php) и [.htaccess](https://github.com/ruslan-avantis/json-db/blob/master/api/.htaccess) в директорию доступную через URL. Например: `https://example.com/_12345_/`
 - Запустите API перейдя по ссылке `https://example.com/_12345_/`		
 - Если база работает Вы увидите следующий результат:
 ```json
@@ -61,19 +54,19 @@ JSON база данных с открытым исходным кодом. На
 - Таблицу для очереди запросов `queue.data.json` и `queue.config.json`
 - Директории: `cached` `core` `log`
 - В директории `core` сгенерирует файл с ключем для http запросов key_db.txt если его там еще нет.
-- В директорию `core` скачает этот [db.json](https://github.com/pllano/db.json/blob/master/db.json) файл структуры если его там еще нет.
+- В директорию `core` скачает этот [db.json](https://github.com/ruslan-avantis/db.json/blob/master/db.json) файл структуры если его там еще нет.
 ### Автоматическое создание ресурсов
-База автоматически создаст все ресурсы и связи указанные в файле [db.json](https://github.com/pllano/json-db/blob/master/_db_/core/db.json). Для создания индивидуальной конфигурации ресурсов отредактируйте файл [db.json](https://github.com/pllano/json-db/blob/master/_db_/core/db.json) и перед запуском скопируйте его в директорию `/_db_/core/`.
+База автоматически создаст все ресурсы и связи указанные в файле [db.json](https://github.com/ruslan-avantis/json-db/blob/master/_db_/core/db.json). Для создания индивидуальной конфигурации ресурсов отредактируйте файл [db.json](https://github.com/ruslan-avantis/json-db/blob/master/_db_/core/db.json) и перед запуском скопируйте его в директорию `/_db_/core/`.
 ### Поддерживаемые типы данных в db.json
 - `boolean` — Логический тип `true` или `false`
 - `integer` — Целое число
 - `double` — Число с плавающей точкой
 - `string` — Строка
 ### Структура базы данных для интернет-магазина
-Структура базы данных [db.json](https://github.com/pllano/db.json) выведена в отдельный репозиторий
+Структура базы данных [db.json](https://github.com/ruslan-avantis/db.json) выведена в отдельный репозиторий
 ### URL запросов к RESTful API jsonDB
 - `https://example.com/{api_dir}/{table_name}/{id}`
-- `{api_dir}` - папка в которой лежит [index.php](https://github.com/pllano/json-db/blob/master/api/index.php)
+- `{api_dir}` - папка в которой лежит [index.php](https://github.com/ruslan-avantis/json-db/blob/master/api/index.php)
 - `{resource}` - название ресурса к которому обращаемся. Например price или user.
 - `{id}` - уникальный индефикатор
 - `{param}` - праметры запроса
@@ -155,13 +148,13 @@ if (isset($response["headers"]["code"])) {
 
 ### В теле ответа RESTful API jsonDB вернет код состояния HTTP, статус и описание.
 
-[Коды состояния HTTP](https://github.com/pllano/APIS-2018/tree/master/http-codes)
+[Коды состояния HTTP](https://github.com/ruslan-avantis/APIS-2018/tree/master/http-codes)
 
 ## Безопасность
-[Советы по увеличению безопасности API json DB](https://github.com/pllano/json-db/blob/master/doc/security.md)
+[Советы по увеличению безопасности API json DB](https://github.com/ruslan-avantis/json-db/blob/master/doc/security.md)
 
 ## Прямое подключение к DB
-Если вам не нужен API роутинг Вы можете работать с базой данных напрямую без REST API интерфейса - [Документация - работа с DB напрямую](https://github.com/pllano/json-db/blob/master/doc/db.md) или если вам не нужны (кеширование, шифрование) использовать оригинальный пакет [Lazer-Database](https://github.com/Greg0/Lazer-Database/).
+Если вам не нужен API роутинг Вы можете работать с базой данных напрямую без REST API интерфейса - [Документация - работа с DB напрямую](https://github.com/ruslan-avantis/json-db/blob/master/doc/db.md) или если вам не нужны (кеширование, шифрование) использовать оригинальный пакет [Lazer-Database](https://github.com/Greg0/Lazer-Database/).
 
 ### Запуск одной строчкой кода
 ```php
@@ -190,7 +183,7 @@ $db->setCrypt(false); // Шифруем таблицы true|false
 $db->setCryptKey(file_get_contents($_db . 'core/key_db.txt', true)); // Загружаем ключ шифрования
 $db->run();
 ```
-Примечание: Если вы будете пользоваться RESTful API роутингом для cURL запросов, вам не нужно выполнять запуск базы, роутер [index.php](https://github.com/pllano/json-db/blob/master/api/index.php) сделает все сам. Вам достаточно установить пакет с помощью Composer и выпонить дейсвия с настройкой API роутинга описаны выше.
+Примечание: Если вы будете пользоваться RESTful API роутингом для cURL запросов, вам не нужно выполнять запуск базы, роутер [index.php](https://github.com/ruslan-avantis/json-db/blob/master/api/index.php) сделает все сам. Вам достаточно установить пакет с помощью Composer и выпонить дейсвия с настройкой API роутинга описаны выше.
 
 #### Создать ресурс в базе данных
 ```php
@@ -272,15 +265,14 @@ jsonDb::table('resource_name')->find(10)->delete();
 
 Общайтесь с нами через почту open.source@pllano.com
 
-Если вы нашли баг в API json DB загляните в [issues](https://github.com/pllano/json-db/issues), возможно, про него мы уже знаем и
+Если вы нашли баг в API json DB загляните в [issues](https://github.com/ruslan-avantis/json-db/issues), возможно, про него мы уже знаем и
 постараемся исправить в ближайшем будущем. Если нет, лучше всего сообщить о нём там. Там же вы можете оставлять свои пожелания и предложения.
 
 За новостями вы можете следить по
-[коммитам](https://github.com/pllano/json-db/commits/master) в этом репозитории.
-[RSS](https://github.com/pllano/json-db/commits/master.atom).
+[коммитам](https://github.com/ruslan-avantis/json-db/commits/master) в этом репозитории.
+[RSS](https://github.com/ruslan-avantis/json-db/commits/master.atom).
 
 Лицензия
 -------
 
-The MIT License (MIT). Please see [LICENSE](https://github.com/pllano/json-db/blob/master/LICENSE) for more information.
-
+The MIT License (MIT). Please see [LICENSE](https://github.com/ruslan-avantis/json-db/blob/master/LICENSE) for more information.
